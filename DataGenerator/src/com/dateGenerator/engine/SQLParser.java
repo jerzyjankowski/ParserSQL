@@ -92,18 +92,20 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 	public void visit(PlainSelect plainSelect) {
 		plainSelect.getFromItem().accept(this);
 		
-		if (plainSelect.getJoins() != null) {
-			for (Iterator joinsIt = plainSelect.getJoins().iterator(); joinsIt.hasNext();) {
-				Join join = (Join) joinsIt.next();
-				join.getRightItem().accept(this);
-			}
-		}
 		if (plainSelect.getWhere() != null) {
 			FinderRestrictions finderRestrictions = new FinderRestrictions();
 			plainSelect.getWhere().accept(finderRestrictions);
 			finderRestrictions.getRootRestriction().getUsedColumns();
 			patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
 			System.out.println("patternAll: " + patternAll);
+		}
+		
+		if (plainSelect.getJoins() != null) {
+			for (Iterator joinsIt = plainSelect.getJoins().iterator(); joinsIt.hasNext();) {
+				Join join = (Join) joinsIt.next();
+				System.out.println(join.getRightItem());
+				//join.getRightItem().accept(this);
+			}
 		}
 		
 	}

@@ -37,6 +37,13 @@ public class TestData {
 		patternRow.addPatternNode(new PatternNode("placa_dod"));
 		patternTable.addPatternRow(patternRow);
 		patternAll.addPatternTables(patternTable);
+
+		patternTable = new PatternTable("etaty");
+		patternRow = new PatternRow();
+		patternRow.addPatternNode(new PatternNode("nazwa"));
+		patternRow.addPatternNode(new PatternNode("placa_min"));
+		patternTable.addPatternRow(patternRow);
+		patternAll.addPatternTables(patternTable);
 	}
 
 	public String getSqlString() {

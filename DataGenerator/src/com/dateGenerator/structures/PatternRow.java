@@ -1,16 +1,20 @@
 package com.dateGenerator.structures;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PatternRow {
 	private int id;
 	static private int lastId = 0;
 	private List<PatternNode> patternNodes;
+	private Set<String> columnNames;
 
 	public PatternRow() {
 		this.id = lastId++;
 		patternNodes = new ArrayList<PatternNode>();
+		columnNames = new HashSet<String>();
 	}
 
 	public PatternRow(PatternRow patternRow) {
@@ -48,6 +52,7 @@ public class PatternRow {
 
 	public void addPatternNode(PatternNode patternNode) {
 		patternNodes.add(patternNode);
+		columnNames.add(patternNode.getName());
 	}
 
 	public List<PatternNode> getPatternNodes() {
@@ -61,6 +66,10 @@ public class PatternRow {
 	@Override
 	public String toString() {
 		return "PatternRow [id=" + id + ", patternNodes=" + patternNodes + "]";
+	}
+
+	public Set<String> getColumnNames() {
+		return columnNames;
 	}
 
 }
