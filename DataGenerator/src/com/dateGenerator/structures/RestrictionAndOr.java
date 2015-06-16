@@ -62,9 +62,9 @@ public class RestrictionAndOr implements RestrictionInterface {
 
 	@Override
 	public String toString() {
-		return "RestrictionAndOr [restrictionL=" + restrictionL
-				+ ", restrictionR=" + restrictionR + ", type=" + type
-				+ ", restrictionString=" + restrictionString + "]";
+		return "RestrictionAndOr [type=" + type +
+				", restrictionL=" + restrictionL +
+				", restrictionR=" + restrictionR + "]";
 	}
 
 }
