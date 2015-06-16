@@ -1,5 +1,5 @@
 package com.dateGenerator.engine;
 
-public class FinderColumns {
+public class FinderUsedColumns {
 
 }
