@@ -3,16 +3,20 @@ package com.dateGenerator.structures;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.jsqlparser.expression.BinaryExpression;
+import net.sf.jsqlparser.expression.Expression;
+
 import com.dateGenerator.engine.FinderUsedColumns;
 
 public class Restriction implements RestrictionInterface {
 	private String restrictionString;
 	private List<String> columns;
-
-	public Restriction(String restrictionString) {
-		super();
+	private BinaryExpression binaryExpression;
+	
+	public Restriction(String restrictionString, BinaryExpression binaryExpression) {
 		this.restrictionString = restrictionString;
 		columns = new ArrayList<String>();
+		this.binaryExpression = binaryExpression;
 	}
 
 	@Override
@@ -25,12 +29,12 @@ public class Restriction implements RestrictionInterface {
 	@Override
 	public void getUsedColumns() {
 		FinderUsedColumns finderUsedColumns = new FinderUsedColumns();
-		// TODO Auto-generated method stub
-		
+		finderUsedColumns.visitBinaryExpression(binaryExpression);
+		columns.addAll(finderUsedColumns.getUsedColumns());
 	}
 	
 	public Restriction getNegative() {
-		Restriction restriction = new Restriction("not(" + this.restrictionString + ")");
+		Restriction restriction = new Restriction("not(" + this.restrictionString + ")", binaryExpression);//TODO negate expression
 		restriction.columns.addAll(this.getColumns());
 		return restriction;
 	}
@@ -53,6 +57,14 @@ public class Restriction implements RestrictionInterface {
 
 	public void setColumns(List<String> columns) {
 		this.columns = columns;
+	}
+
+	public BinaryExpression getBinaryExpression() {
+		return binaryExpression;
+	}
+
+	public void setBinaryExpression(BinaryExpression binaryExpression) {
+		this.binaryExpression = binaryExpression;
 	}
 
 	@Override

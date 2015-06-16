@@ -2,6 +2,8 @@ package com.dateGenerator.engine;
 
 import java.util.Iterator;
 
+import com.dateGenerator.structures.PatternAll;
+
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
 import net.sf.jsqlparser.expression.BinaryExpression;
@@ -65,6 +67,12 @@ import net.sf.jsqlparser.statement.select.Join;
 
 public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
 
+	private PatternAll patternAll;
+	
+	
+	public SQLParser(PatternAll patternAll) {
+		this.patternAll = patternAll;
+	}
 
 	public void parse(Select select) {
 		select.getSelectBody().accept(this);
@@ -90,7 +98,11 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 		if (plainSelect.getWhere() != null) {
 			FinderRestrictions finderRestrictions = new FinderRestrictions();
 			plainSelect.getWhere().accept(finderRestrictions);
+			finderRestrictions.getRootRestriction().getUsedColumns();
+			patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
+			System.out.println("getAllRestrictions: " + finderRestrictions.getRootRestriction().getAllRestrictions());
 			System.out.println("finderRestrictions: " + finderRestrictions.getRootRestriction());
+			System.out.println("patternAll: " + patternAll);
 		}
 		
 	}

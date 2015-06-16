@@ -1,7 +1,11 @@
 package com.dateGenerator.engine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
+import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.CaseExpression;
 import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.DoubleValue;
@@ -61,6 +65,75 @@ import net.sf.jsqlparser.statement.update.Update;
 
 
 public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor, StatementVisitor {
+
+	private List<String> usedColumns = new ArrayList<String>();
+	
+	public List<String> getUsedColumns() {
+		return usedColumns;
+	}
+
+	public void visitBinaryExpression(BinaryExpression binaryExpression) {
+		if(binaryExpression.getLeftExpression() instanceof Column) {
+			usedColumns.add(binaryExpression.getLeftExpression().toString());
+		}
+		else {
+			binaryExpression.getLeftExpression().accept(this);
+		}
+		if(binaryExpression.getRightExpression() instanceof Column) {
+			usedColumns.add(binaryExpression.getRightExpression().toString());
+		}
+		else {
+			binaryExpression.getRightExpression().accept(this);
+		}
+	}
+	
+	@Override
+	public void visit(Select arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Delete arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Update arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Insert arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Replace arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Drop arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Truncate arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(CreateTable arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void visit(ExpressionList arg0) {
@@ -123,8 +196,8 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 	}
 
 	@Override
-	public void visit(Parenthesis arg0) {
-		// TODO Auto-generated method stub
+	public void visit(Parenthesis parenthesis) {
+		parenthesis.getExpression().accept(this);
 		
 	}
 
@@ -135,39 +208,37 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 	}
 
 	@Override
-	public void visit(Addition arg0) {
-		// TODO Auto-generated method stub
+	public void visit(Addition addition) {
+		visitBinaryExpression(addition);
 		
 	}
 
 	@Override
-	public void visit(Division arg0) {
-		// TODO Auto-generated method stub
+	public void visit(Division division) {
+		visitBinaryExpression(division);
 		
 	}
 
 	@Override
-	public void visit(Multiplication arg0) {
-		// TODO Auto-generated method stub
+	public void visit(Multiplication multiplication) {
+		visitBinaryExpression(multiplication);
 		
 	}
 
 	@Override
-	public void visit(Subtraction arg0) {
-		// TODO Auto-generated method stub
+	public void visit(Subtraction subtraction) {
+		visitBinaryExpression(subtraction);
 		
 	}
 
 	@Override
-	public void visit(AndExpression arg0) {
-		// TODO Auto-generated method stub
-		
+	public void visit(AndExpression andExpression) {
+		visitBinaryExpression(andExpression);
 	}
 
 	@Override
-	public void visit(OrExpression arg0) {
-		// TODO Auto-generated method stub
-		
+	public void visit(OrExpression orExpression) {
+		visitBinaryExpression(orExpression);
 	}
 
 	@Override
@@ -177,20 +248,20 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 	}
 
 	@Override
-	public void visit(EqualsTo arg0) {
-		// TODO Auto-generated method stub
+	public void visit(EqualsTo equalsTo) {
+		visitBinaryExpression(equalsTo);
 		
 	}
 
 	@Override
-	public void visit(GreaterThan arg0) {
-		// TODO Auto-generated method stub
+	public void visit(GreaterThan greaterThan) {
+		visitBinaryExpression(greaterThan);
 		
 	}
 
 	@Override
-	public void visit(GreaterThanEquals arg0) {
-		// TODO Auto-generated method stub
+	public void visit(GreaterThanEquals greaterThanEquals) {
+		visitBinaryExpression(greaterThanEquals);
 		
 	}
 
@@ -213,14 +284,14 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 	}
 
 	@Override
-	public void visit(MinorThan arg0) {
-		// TODO Auto-generated method stub
+	public void visit(MinorThan minorThan) {
+		visitBinaryExpression(minorThan);
 		
 	}
 
 	@Override
-	public void visit(MinorThanEquals arg0) {
-		// TODO Auto-generated method stub
+	public void visit(MinorThanEquals minorThanEquals) {
+		visitBinaryExpression(minorThanEquals);
 		
 	}
 
@@ -232,12 +303,6 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 
 	@Override
 	public void visit(Column arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(SubSelect arg0) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -303,6 +368,24 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 	}
 
 	@Override
+	public void visit(Table arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(SubSelect arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(SubJoin arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void visit(PlainSelect arg0) {
 		// TODO Auto-generated method stub
 		
@@ -310,66 +393,6 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 
 	@Override
 	public void visit(Union arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Select arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Delete arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Update arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Insert arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Replace arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Drop arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Truncate arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(CreateTable arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Table arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(SubJoin arg0) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -25,7 +25,7 @@ public class Main {
 			System.out.println("START ALL: " + testData.getPatternAll() + "\n");
 			
 			Select selectStatement = (Select) statement;
-			SQLParser sqlParser = new SQLParser();
+			SQLParser sqlParser = new SQLParser(testData.getPatternAll());
 			sqlParser.parse(selectStatement);
 			
 		}

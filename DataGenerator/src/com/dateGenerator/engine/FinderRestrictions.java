@@ -100,7 +100,7 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 			
 		}
 		else {
-			Restriction restriction = new Restriction(binaryExpression.toString());
+			Restriction restriction = new Restriction(binaryExpression.toString(), binaryExpression);
 			if(rootRestriction == null) {
 				rootRestriction = restriction;
 			}

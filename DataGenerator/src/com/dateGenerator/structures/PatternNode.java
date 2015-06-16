@@ -1,5 +1,6 @@
 package com.dateGenerator.structures;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatternNode {
@@ -9,6 +10,7 @@ public class PatternNode {
 	public PatternNode(String name) {
 		super();
 		this.name = name;
+		restrictions = new ArrayList<String>();
 	}
 	
 	public void copy(PatternNode patternNode) {

@@ -15,6 +15,7 @@ public class PatternRow {
 
 	public PatternRow(PatternRow patternRow) {
 		this.id = lastId++;
+		this.patternNodes = new ArrayList<PatternNode>();
 		for (PatternNode patternNode : patternRow.getPatternNodes()) {
 			PatternNode newPatternNode = new PatternNode(patternNode.getName());
 			newPatternNode.copy(patternNode);
@@ -23,11 +24,21 @@ public class PatternRow {
 	}
 
 	public void addRestriction(Restriction restriction) {
+		System.out.println("addRestriction: " + restriction.getRestrictionString());
 		for (String column : restriction.getColumns()) {
-
+			if(getNodeByName(column) != null)
+				getNodeByName(column).addRestriction(restriction.getRestrictionString());
 		}
 	}
 
+	private PatternNode getNodeByName(String name) {
+		for(PatternNode patternNode : patternNodes) {
+			if(patternNode.getName().equals(name))
+				return patternNode;
+		}
+		return null;
+	}
+	
 	public int getId() {
 		return id;
 	}
