@@ -33,7 +33,7 @@ public class PatternAll {
 
 	@Override
 	public String toString() {
-		return "PatternAll [patternTables=" + patternTables + "]";
+		return "PatternAll [patternTables(" + patternTables.size() + ")=" + patternTables + "]";
 	}
 
 }

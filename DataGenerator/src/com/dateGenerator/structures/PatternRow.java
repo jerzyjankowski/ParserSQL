@@ -65,7 +65,7 @@ public class PatternRow {
 
 	@Override
 	public String toString() {
-		return "PatternRow [id=" + id + ", patternNodes=" + patternNodes + "]";
+		return "PatternRow [id=" + id + ", patternNodes(" + patternNodes.size() + ")=" + patternNodes + "]";
 	}
 
 	public Set<String> getColumnNames() {

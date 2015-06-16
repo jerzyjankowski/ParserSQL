@@ -103,7 +103,19 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 		if (plainSelect.getJoins() != null) {
 			for (Iterator joinsIt = plainSelect.getJoins().iterator(); joinsIt.hasNext();) {
 				Join join = (Join) joinsIt.next();
-				System.out.println(join.getRightItem());
+				System.out.println("join:");
+				System.out.println("   toString: " + join.toString());
+				System.out.println("   getRightItem:" + join.getRightItem());
+				System.out.println("   getOnExpression: " + join.getOnExpression());
+				System.out.println("   getUsingColumns: " + join.getUsingColumns());
+				System.out.println("   isFull: " + join.isFull());
+				System.out.println("   isLeft: " + join.isLeft());
+				System.out.println("   isRight: " + join.isRight());
+				System.out.println("   isInner: " + join.isInner());
+				System.out.println("   isOuter: " + join.isOuter());
+				System.out.println("   isNatural: " + join.isNatural());
+				System.out.println("   isSimple: " + join.isSimple());
+				
 				//join.getRightItem().accept(this);
 			}
 		}

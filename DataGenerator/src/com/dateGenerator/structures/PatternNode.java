@@ -5,12 +5,17 @@ import java.util.List;
 
 public class PatternNode {
 	private String name;
+	private static int lastId = 0;
+	private int id;
 	private List<String> restrictions;
+	private List<ConcreteRestriction> concreteRestrictions;
 
 	public PatternNode(String name) {
 		super();
 		this.name = name;
 		restrictions = new ArrayList<String>();
+		//concreteRestrictions = new
+		this.id = lastId++;
 	}
 	
 	public void copy(PatternNode patternNode) {

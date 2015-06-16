@@ -25,8 +25,10 @@ public class PatternTable {
 		List<Restriction> restrictions = new ArrayList<Restriction>();
 		for(Restriction restriction : allRestrictions) {
 			for(String column : restriction.getColumns()) {
-				if(columnNames.contains(column))
+				if(columnNames.contains(column)) {
 					restrictions.add(restriction);
+					break;
+				}
 			}
 		}
 		
@@ -89,7 +91,7 @@ public class PatternTable {
 
 	@Override
 	public String toString() {
-		return "PatternTable [name=" + name + ", patternRows=" + patternRows
+		return "PatternTable [name=" + name + ", patternRows(" + patternRows.size() + ")=" + patternRows
 				+ "]";
 	}
 

@@ -13,19 +13,47 @@ public class TestData {
 	public TestData(int i) {
 		switch (i) {
 		case 10:
-			sqlString = "SELECT nazwisko, etat FROM pracownicy WHERE placa_pod + placa_dod > 500 AND (etat = 'ADIUNKT' OR etat = 'ASYSTENT');  ";
+			sqlString = "SELECT * FROM pracownicy WHERE etat = 'ASYSTENT';  ";
 			break;
 		case 11:
-			sqlString = "SELECT nazwisko, etat FROM pracownicy WHERE placa_pod > 500 AND (etat = 'ADIUNKT' OR etat = 'ASYSTENT');  ";
+			sqlString = "SELECT * FROM pracownicy WHERE (etat = 'ADIUNKT' OR etat = 'ASYSTENT');  ";
 			break;
 		case 12:
-			sqlString = "SELECT nazwisko, etat FROM pracownicy WHERE (etat = 'ADIUNKT' OR etat = 'ASYSTENT');  ";
+			sqlString = "SELECT * FROM pracownicy WHERE placa_pod > 500 AND (etat = 'ADIUNKT' OR etat = 'ASYSTENT');  ";
 			break;
 		case 13:
-			sqlString = "SELECT nazwisko, etat FROM pracownicy WHERE etat = 'ASYSTENT';  ";
+			sqlString = "SELECT * FROM pracownicy WHERE placa_pod + placa_dod > 500 AND (etat = 'ADIUNKT' OR etat = 'ASYSTENT');  ";
 			break;
+		case 14:
+			sqlString = "SELECT * FROM pracownicy WHERE placa_pod = placa_dod;  ";
+			break;
+		case 20:
+			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa;  ";
+			break;
+		case 21:
+			sqlString = "SELECT nazwisko, etat, nazwa  FROM pracownicy CROSS JOIN etaty;   ";
+			break;
+		case 22:
+			sqlString = "SELECT nazwisko, placa_pod, nazwa, placa_min  FROM pracownicy INNER JOIN etaty ON etat = nazwa;      ";
+			break;
+//		case 23:
+//			sqlString = "SELECT * FROM pracownicy JOIN zespoly USING (id_zesp);  ";
+//			break;
+//		case 24:
+//			sqlString = "SELECT nazwa, nazwisko, etat  FROM PRACOWNICY p LEFT OUTER JOIN zespoly z  ON z.id_zesp = p.id_zesp;   ";
+//			break;
+		case 30:
+			sqlString = "SELECT * FROM pracownicy, etaty WHERE (etat = 'ADIUNKT' OR nazwa = 'ASYSTENT');  ";
+			break;
+		case 31:
+			sqlString = "SELECT * FROM pracownicy, etaty WHERE placa_pod + placa_min > 500;  ";
+			break;
+		case 32:
+			sqlString = "SELECT * FROM pracownicy, etaty WHERE placa_pod = placa_min;  ";
+			break;
+			   
 		default:
-			sqlString = "SELECT nazwisko, etat FROM pracownicy;  ";
+			sqlString = "SELECT * FROM pracownicy;  ";
 			break;
 		}
 
