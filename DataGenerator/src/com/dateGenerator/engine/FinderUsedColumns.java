@@ -63,7 +63,11 @@ import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 
 
-
+/**
+ * for a restriction finds columns by name used in it and contain them in usedColumns list
+ * @author Jurij
+ *
+ */
 public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor, StatementVisitor {
 
 	private List<String> usedColumns = new ArrayList<String>();

@@ -5,6 +5,7 @@ import com.dateGenerator.structures.PatternNode;
 import com.dateGenerator.structures.PatternRow;
 import com.dateGenerator.structures.PatternTable;
 
+
 public class TestData {
 	private String sqlString = new String();
 	private PatternAll patternAll = new PatternAll();

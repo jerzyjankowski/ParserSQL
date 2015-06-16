@@ -20,8 +20,6 @@ public class PatternTable {
 		}
 
 		List<PatternRow> oldPatternRows = new ArrayList<PatternRow>();
-		System.out.println("patternRows: " + patternRows);
-		System.out.println("oldPatternRows: " + oldPatternRows);
 		for (PatternRow patternRow : patternRows) {
 			oldPatternRows.add(new PatternRow(patternRow));
 		}
@@ -38,9 +36,7 @@ public class PatternTable {
 			
 			for(PatternRow patternRow : oldPatternRows) {
 				PatternRow newPatternRow = new PatternRow(patternRow);
-				System.out.println("patternRow: " + patternRow);
 				for(Restriction restriction : tempRestrictions) {
-					System.out.println(restriction);
 					newPatternRow.addRestriction(restriction);
 				}
 				patternRows.add(newPatternRow);

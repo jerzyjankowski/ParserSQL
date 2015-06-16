@@ -64,7 +64,10 @@ import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.select.Join;
 
-
+/**
+ * main class of parsing sql, finds where clause and give it to finderRestrictions
+ *
+ */
 public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
 
 	private PatternAll patternAll;
@@ -100,8 +103,6 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 			plainSelect.getWhere().accept(finderRestrictions);
 			finderRestrictions.getRootRestriction().getUsedColumns();
 			patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
-			System.out.println("getAllRestrictions: " + finderRestrictions.getRootRestriction().getAllRestrictions());
-			System.out.println("finderRestrictions: " + finderRestrictions.getRootRestriction());
 			System.out.println("patternAll: " + patternAll);
 		}
 		

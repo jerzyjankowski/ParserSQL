@@ -14,6 +14,10 @@ import Util.TestData;
 public class Main {
 
 	public static void main(String[] args) throws JSQLParserException {
+		/**
+		 * for test purposes in class TestData there are example sqls and example table with column
+		 * later these all will be loaded from files
+		 */
 		TestData testData = new TestData(10);
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();

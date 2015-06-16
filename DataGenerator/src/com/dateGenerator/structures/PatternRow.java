@@ -24,7 +24,6 @@ public class PatternRow {
 	}
 
 	public void addRestriction(Restriction restriction) {
-		System.out.println("addRestriction: " + restriction.getRestrictionString());
 		for (String column : restriction.getColumns()) {
 			if(getNodeByName(column) != null)
 				getNodeByName(column).addRestriction(restriction.getRestrictionString());

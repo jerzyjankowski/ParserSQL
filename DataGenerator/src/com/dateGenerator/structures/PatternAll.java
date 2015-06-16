@@ -2,7 +2,10 @@ package com.dateGenerator.structures;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * contains all PatternTables which contains all PatternRows which contains all PatternNodes. 
+ * Tree-like architecture provides maintainable managing from one object only
+ */
 public class PatternAll {
 	private List<PatternTable> patternTables;
 
