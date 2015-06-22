@@ -94,17 +94,24 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 	public void visit(PlainSelect plainSelect) {
 		plainSelect.getFromItem().accept(this);
 		
+		
 		if (plainSelect.getWhere() != null) {
 			FinderRestrictions finderRestrictions = new FinderRestrictions();
 			plainSelect.getWhere().accept(finderRestrictions);
 			finderRestrictions.getRootRestriction().getUsedColumns();
 			patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
-			System.out.println("patternAll: " + patternAll);
 		}
 		
 		if (plainSelect.getJoins() != null) {
 			for (Iterator joinsIt = plainSelect.getJoins().iterator(); joinsIt.hasNext();) {
 				Join join = (Join) joinsIt.next();
+				if(join.getOnExpression() != null) {
+					FinderRestrictions finderRestrictions = new FinderRestrictions();
+					join.getOnExpression().accept(finderRestrictions);
+					finderRestrictions.getRootRestriction().getUsedColumns();
+					patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
+				}
+				
 				System.out.println("join:");
 				System.out.println("   toString: " + join.toString());
 				System.out.println("   getRightItem:" + join.getRightItem());
@@ -121,6 +128,7 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 				//join.getRightItem().accept(this);
 			}
 		}
+		System.out.println("patternAll: " + patternAll);
 		
 	}
 

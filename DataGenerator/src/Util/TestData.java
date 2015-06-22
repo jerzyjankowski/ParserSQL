@@ -51,6 +51,15 @@ public class TestData {
 		case 32:
 			sqlString = "SELECT * FROM pracownicy, etaty WHERE placa_pod = placa_min;  ";
 			break;
+		case 40:
+			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa where placa_pod > 300;  ";
+			break;
+		case 41:
+			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa join zespoly on placa_dod > dodatek_min;  ";
+			break;
+		case 42:
+			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa join zespoly on placa_dod > dodatek_min where placa_pod >1000;  ";
+			break;
 			   
 		default:
 			sqlString = "SELECT * FROM pracownicy;  ";
@@ -70,6 +79,13 @@ public class TestData {
 		patternRow = new PatternRow();
 		patternRow.addPatternNode(new PatternNode("nazwa"));
 		patternRow.addPatternNode(new PatternNode("placa_min"));
+		patternTable.addPatternRow(patternRow);
+		patternAll.addPatternTables(patternTable);
+
+		patternTable = new PatternTable("zespoly");
+		patternRow = new PatternRow();
+		patternRow.addPatternNode(new PatternNode("zespol_nazwa"));
+		patternRow.addPatternNode(new PatternNode("dodatek_min"));
 		patternTable.addPatternRow(patternRow);
 		patternAll.addPatternTables(patternTable);
 	}

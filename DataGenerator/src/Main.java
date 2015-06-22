@@ -17,7 +17,7 @@ public class Main {
 		 * fowr test purposes in class TestData there are example sqls and example table with column
 		 * later these all will be loaded from files
 		 */
-		TestData testData = new TestData(14);
+		TestData testData = new TestData(42);
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();
 		Statement statement = parserManager.parse(new StringReader(testData.getSqlString()));
@@ -36,7 +36,7 @@ public class Main {
 		
 		XMLParser parser = new XMLParser();
 		parser.enablePrintMode(true); //wlaczanie/wylaczanie wyswietlania sparsowanych danych z XML
-		parser.parseToObjects("./resources/tabele.xml");
+		//parser.parseToObjects("./resources/tabele.xml");
 		
 	}
 
