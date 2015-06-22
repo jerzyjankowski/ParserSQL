@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.ExpressionVisitor;
 
 import com.dateGenerator.engine.FinderUsedColumns;
 
@@ -70,5 +71,11 @@ public class Restriction implements RestrictionInterface {
 	@Override
 	public String toString() {
 		return "Restriction [restrictionString=" + restrictionString + "]";
+	}
+	
+	public Restriction copy() {
+		Restriction restriction = new Restriction(new String(restrictionString), binaryExpression) ;
+		restriction.columns.addAll(this.columns);
+		return restriction;
 	}
 }

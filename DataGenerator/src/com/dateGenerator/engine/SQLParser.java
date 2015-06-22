@@ -71,10 +71,12 @@ import net.sf.jsqlparser.statement.select.Join;
 public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
 
 	private PatternAll patternAll;
+	private PatternAll copyPatternAll;
 	
 	
 	public SQLParser(PatternAll patternAll) {
 		this.patternAll = patternAll;
+		copyPatternAll = patternAll.copy();
 	}
 
 	public void parse(Select select) {
