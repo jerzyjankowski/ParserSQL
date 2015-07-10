@@ -20,6 +20,12 @@ public class JoinedRow {
 			numbersToGenerate = new ArrayList<Integer>();
 			errorFlags = new ArrayList<Boolean>();
 		}
+		
+		public JoinedRow(List<PatternRow> rows) {
+			patternRows = rows;
+			numbersToGenerate = new ArrayList<Integer>();
+			errorFlags = new ArrayList<Boolean>();
+		}
 
 		public void add(PatternRow row) {
 			patternRows.add(row);

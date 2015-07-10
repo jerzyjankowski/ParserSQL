@@ -39,12 +39,13 @@ public class Main {
 			
 			Generator generator = new Generator(sqlParser.getPatternAll().getPatternTables()) ;
 			List<JoinedRow> joinedRows = generator.generate();
-			
-			
-			
+
 			
 			System.out.println("--------------------------");
-			System.out.println(joinedRows.toString());
+			
+			for(JoinedRow rw : joinedRows)
+				System.out.print(rw.toString()+ " ");
+			System.out.println();
 			
 		}
 		

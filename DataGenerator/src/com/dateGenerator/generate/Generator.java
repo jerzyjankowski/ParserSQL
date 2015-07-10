@@ -47,25 +47,71 @@ public class Generator {
 			for (PatternRow row : table.getPatternRows()) 
 				generateJoinedRows(new JoinedRow(),row);
 		
-		Set<JoinedRow> OrderedJoinedRows = new HashSet<>(); //usuwanie duplikatów powsta³ych w algorytmie
-		OrderedJoinedRows.addAll(joinedRows);
-		joinedRows.clear();
-		joinedRows.addAll(OrderedJoinedRows);
-		OrderedJoinedRows.clear();
-			
-		for(JoinedRow joinedRow : joinedRows){
-			joinedRow.removeDuplicates();
-			OrderedJoinedRows.addAll(splitRowSet(joinedRow));
-		}
+		Set<JoinedRow> orderedJoinedRows = new HashSet<>(); 
+		orderedJoinedRows.addAll(joinedRows); //usuwanie duplikatów powsta³ych w algorytmie
 		
+		List<JoinedRow> tempJoinedRows = new ArrayList<JoinedRow>(); //kopia listy potrzebna do funkcji splitRowSet
+		List<String> tableNames = new ArrayList<String>();
+		tableNames.addAll(this.tableNames); 
+		tempJoinedRows.addAll(orderedJoinedRows);
+		
+		orderedJoinedRows.clear();
+		joinedRows.clear();
+			
+		for(JoinedRow joinedRow : tempJoinedRows){
+			joinedRow.removeDuplicates();
+			splitRowSet(joinedRow.getPatternRows(),tableNames, new ArrayList<PatternRow>());
+		}
+
 		return joinedRows;
 	}
+	
 
 
-	private List<JoinedRow> splitRowSet(JoinedRow joinedRow) {
-		// TODO Auto-generated method stub
-		return null;
+	private void splitRowSet(List<PatternRow> allRows,
+			List<String> tables, List<PatternRow> visitedRows) {
+		//System.out.println("--------------------------");
+		//show_visited(visitedRows);
+		//showTables(tables);
+		if(tables.isEmpty()){
+			//System.out.print("DODANO Wiersz : ");
+			//show_visited(visitedRows);
+			this.joinedRows.add(new JoinedRow(visitedRows));
+		}else{
+			String actualTable = tables.get(0);
+			tables.remove(0);
+			//System.out.println("[table:"+ actualTable + "]");
+			for(PatternRow row : allRows){
+				//System.out.println("--->"+ row.getId() + "[" + rowToTable.get(row.getId()) + "]");
+				if( rowToTable.get(row.getId()).equals(actualTable)){
+					//System.out.println("TEST3");
+					
+					List<PatternRow> tmpVisitedRows = new ArrayList<PatternRow>();
+					tmpVisitedRows.addAll(visitedRows);
+					tmpVisitedRows.add(row);
+					
+					splitRowSet(allRows,tables,tmpVisitedRows);
+				}
+			}
+			tables.add(actualTable);
+		}
+		return;
+		
 	}
+	
+/*	private void showTables(List<String> strings){
+		System.out.print("names[");
+		for(String rw : strings)
+			System.out.print(rw+",");
+		System.out.println("]");
+	}
+	
+	private void show_visited(List<PatternRow> visited){
+		System.out.print("visited[");
+		for(PatternRow rw : visited)
+			System.out.print(rw.getId()+",");
+		System.out.println("]");
+	}*/
 
 	public void generateJoinedRows(JoinedRow joinedRow, PatternRow row) {
 		if(rowAlreadyProcessed(row.getId())) return;
