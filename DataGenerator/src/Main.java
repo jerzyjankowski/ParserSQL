@@ -22,7 +22,7 @@ public class Main {
 		 * fowr test purposes in class TestData there are example sqls and example table with column
 		 * later these all will be loaded from files
 		 */
-		TestData testData = new TestData(41);
+		TestData testData = new TestData(30);
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();
 		Statement statement = parserManager.parse(new StringReader(testData.getSqlString()));

@@ -47,18 +47,19 @@ public class Generator {
 			for (PatternRow row : table.getPatternRows()) 
 				generateJoinedRows(new JoinedRow(),row);
 		
+		show("before", joinedRows);
+		
 		Set<JoinedRow> orderedJoinedRows = new HashSet<>(); 
-		orderedJoinedRows.addAll(joinedRows); //usuwanie duplikatów powsta³ych w algorytmie
+		orderedJoinedRows.addAll(joinedRows); //usuwanie duplikatow powsta³ych w algorytmie
 		
 		List<JoinedRow> tempJoinedRows = new ArrayList<JoinedRow>(); //kopia listy potrzebna do funkcji splitRowSet
-		List<String> tableNames = new ArrayList<String>();
-		tableNames.addAll(this.tableNames); 
 		tempJoinedRows.addAll(orderedJoinedRows);
 		
 		orderedJoinedRows.clear();
 		joinedRows.clear();
 			
 		for(JoinedRow joinedRow : tempJoinedRows){
+			List<String> tableNames = getJoinedRowTables(joinedRow);
 			joinedRow.removeDuplicates();
 			splitRowSet(joinedRow.getPatternRows(),tableNames, new ArrayList<PatternRow>());
 		}
@@ -67,6 +68,16 @@ public class Generator {
 	}
 	
 
+
+	private List<String> getJoinedRowTables(JoinedRow joinedRow) {
+		Set<String> tableNameSet = new HashSet<>(); 
+		for(PatternRow row : joinedRow.getPatternRows()){
+			tableNameSet.add( this.rowToTable.get(row.getId()) );
+		}
+		List<String> tables = new ArrayList<String>();
+		tables.addAll(tableNameSet);
+		return tables;
+	}
 
 	private void splitRowSet(List<PatternRow> allRows,
 			List<String> tables, List<PatternRow> visitedRows) {
@@ -99,7 +110,20 @@ public class Generator {
 		
 	}
 	
-/*	private void showTables(List<String> strings){
+	private void show(List<JoinedRow> joinedrows){
+		for(JoinedRow rw : joinedrows)
+			System.out.print(rw.toString()+ " ");
+		System.out.println();
+	}
+	
+	private void show(String s, List<JoinedRow> joinedrows){
+		System.out.print(s + " :");
+		for(JoinedRow rw : joinedrows)
+			System.out.print(rw.toString()+ " ");
+		System.out.println();
+	}
+	
+	private void showTables(List<String> strings){
 		System.out.print("names[");
 		for(String rw : strings)
 			System.out.print(rw+",");
@@ -111,7 +135,7 @@ public class Generator {
 		for(PatternRow rw : visited)
 			System.out.print(rw.getId()+",");
 		System.out.println("]");
-	}*/
+	}
 
 	public void generateJoinedRows(JoinedRow joinedRow, PatternRow row) {
 		if(rowAlreadyProcessed(row.getId())) return;
