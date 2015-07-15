@@ -3,7 +3,7 @@ package com.dateGenerator.structures;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConcreteRestriction {
+public class PatternRestriction {
 
 	private int number;
 	private Restriction restriction;
@@ -23,7 +23,7 @@ public class ConcreteRestriction {
 		nodes.remove(node);
 	}
 	
-	public List<PatternNode> getNodes() {
+	public List<PatternNode> getPatternNodes() {
 		return nodes;
 	}
 
@@ -31,13 +31,13 @@ public class ConcreteRestriction {
 		this.nodes = nodes;
 	}
 
-	public ConcreteRestriction(ConcreteRestriction concreteRestriction) {
+	public PatternRestriction(PatternRestriction concreteRestriction) {
 		this.number = concreteRestriction.getNumber();
 		this.restriction = concreteRestriction.getRestriction();
 		this.nodes = new ArrayList<>();
 	}
 
-	public ConcreteRestriction(int number, Restriction restriction) {
+	public PatternRestriction(int number, Restriction restriction) {
 		this.nodes = new ArrayList<>();
 		this.number = number;
 		this.restriction = restriction.copy();

@@ -11,18 +11,18 @@ public class PatternTable {
 	private Set<String> columnNames;
 
 	public static void main(String... args) {
-		PatternNode node1 = new PatternNode("placa_dod", 190);
-		PatternNode node2 = new PatternNode("placa_pod", 191);
-		ConcreteRestriction concreteRestriction = new ConcreteRestriction(1, new Restriction("placa_pod<placa_dod", null));
+		PatternNode node1 = new PatternNode("integer", "placa_dod", 190);
+		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
+		PatternRestriction concreteRestriction = new PatternRestriction(1, new Restriction("placa_pod<placa_dod", null));
 		node1.addConcreteRestriction(concreteRestriction);
 		node2.addConcreteRestriction(concreteRestriction);
 		PatternRow row1 = new PatternRow(301);
 		row1.addPatternNode(node1);
 		row1.addPatternNode(node2);
 		
-		node1 = new PatternNode("placa_dod");
-		node2 = new PatternNode("placa_pod");
-		concreteRestriction = new ConcreteRestriction(1, new Restriction("placa_pod>=placa_dod", null));
+		node1 = new PatternNode("integer", "placa_dod");
+		node2 = new PatternNode("integer", "placa_pod");
+		concreteRestriction = new PatternRestriction(1, new Restriction("placa_pod>=placa_dod", null));
 		node1.addConcreteRestriction(concreteRestriction);
 		node2.addConcreteRestriction(concreteRestriction);
 		PatternRow row2 = new PatternRow();
@@ -37,20 +37,20 @@ public class PatternTable {
 			System.out.println("\nrow: " + row);
 		}
 		
-		List<ConcreteRestriction> concRestrList = new ArrayList<>();
+		List<PatternRestriction> concRestrList = new ArrayList<>();
 		Restriction restriction = new Restriction("placa_pod>placa_min", null);
 		restriction.addColumn("placa_pod");
 		restriction.addColumn("placa_min");
-		concreteRestriction = new ConcreteRestriction(1, restriction);
+		concreteRestriction = new PatternRestriction(1, restriction);
 		for(int i = 0; i < 2; i++) {
-			concRestrList.add(new ConcreteRestriction(concreteRestriction));
+			concRestrList.add(new PatternRestriction(concreteRestriction));
 		}
 		restriction = new Restriction("placa_pod<=placa_min", null);
 		restriction.addColumn("placa_pod");
 		restriction.addColumn("placa_min");
-		concreteRestriction = new ConcreteRestriction(1, restriction);
+		concreteRestriction = new PatternRestriction(1, restriction);
 		for(int i = 0; i < 2; i++) {
-			concRestrList.add(new ConcreteRestriction(concreteRestriction));
+			concRestrList.add(new PatternRestriction(concreteRestriction));
 		}
 		List<Integer> intList = new ArrayList<>();
 		intList.add(1); 
@@ -66,7 +66,7 @@ public class PatternTable {
 		columnNames = new HashSet<String>();
 	}
 	
-	public void addConcreteRestriction(List<ConcreteRestriction> concRestrList, List<Integer> intList, int i) {
+	public void addConcreteRestriction(List<PatternRestriction> concRestrList, List<Integer> intList, int i) {
 		int product = 2;
 		int productBefore = 1;
 		int sequence;

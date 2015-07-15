@@ -1,6 +1,8 @@
 import java.io.StringReader;
 
+import com.dateGenerator.engine.DataGenerator;
 import com.dateGenerator.engine.SQLParser;
+import com.dateGenerator.structures.PatternAll;
 import com.dateGenerator.xml.XMLParser;
 
 import net.sf.jsqlparser.JSQLParserException;
@@ -17,7 +19,7 @@ public class Main {
 		 * fowr test purposes in class TestData there are example sqls and example table with column
 		 * later these all will be loaded from files
 		 */
-		TestData testData = new TestData(42);
+		TestData testData = new TestData(23);
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();
 		Statement statement = parserManager.parse(new StringReader(testData.getSqlString()));
@@ -30,8 +32,14 @@ public class Main {
 			
 			Select selectStatement = (Select) statement;
 			SQLParser sqlParser = new SQLParser(testData.getPatternAll());
-			sqlParser.parse(selectStatement);
+			PatternAll patternAll = sqlParser.parse(selectStatement);
 			
+			System.out.println("patternAll: " + patternAll);
+			
+			DataGenerator dataGenerator = new DataGenerator(patternAll);
+			dataGenerator.generate();
+
+			System.out.println("STOP ALL: \n");
 		}
 		
 		XMLParser parser = new XMLParser();

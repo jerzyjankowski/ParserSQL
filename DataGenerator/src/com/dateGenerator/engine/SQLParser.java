@@ -79,8 +79,9 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 		copyPatternAll = patternAll.copy();
 	}
 
-	public void parse(Select select) {
+	public PatternAll parse(Select select) {
 		select.getSelectBody().accept(this);
+		return patternAll;
 	}
 
 	
@@ -88,6 +89,7 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		binaryExpression.getLeftExpression().accept(this);
 		binaryExpression.getRightExpression().accept(this);
+		System.out.println(binaryExpression.getStringExpression());
 	}
 	
 	@Override
@@ -128,7 +130,6 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 				//join.getRightItem().accept(this);
 			}
 		}
-		System.out.println("patternAll: " + patternAll);
 		
 	}
 

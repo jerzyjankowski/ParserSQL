@@ -23,7 +23,7 @@ public class PatternAll {
 		boolean containsColumnFlag;
 		for(Restriction restriction : restrictions) {
 			List<Integer> intList = new ArrayList<>();//contains list of numbers of PatternRows in tables
-			List<ConcreteRestriction> concRestrList = new ArrayList<ConcreteRestriction>();
+			List<PatternRestriction> concRestrList = new ArrayList<PatternRestriction>();
 			int k = 0;
 			int product = 2;
 			int number = 0;
@@ -44,9 +44,9 @@ public class PatternAll {
 			}
 			for(int i = 0; i < product; i++) {
 				if(i<product/2)
-					concRestrList.add(new ConcreteRestriction(number, restriction));
+					concRestrList.add(new PatternRestriction(number, restriction));
 				else
-					concRestrList.add(new ConcreteRestriction(number, restriction.getNegative()));					
+					concRestrList.add(new PatternRestriction(number, restriction.getNegative()));					
 			}
 			int i = 0;
 			for(PatternTable patternTable : patternTables) {

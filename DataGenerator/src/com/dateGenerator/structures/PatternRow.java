@@ -18,18 +18,18 @@ public class PatternRow {
 		Restriction restriction = new Restriction("placa_min<placa_pod", null);
 		restriction.addColumn("placa_pod");
 		restriction.addColumn("placa_min");
-		ConcreteRestriction concreteRestriction = new ConcreteRestriction(1, restriction);
+		PatternRestriction concreteRestriction = new PatternRestriction(1, restriction);
 //		node1.addConcreteRestriction(concreteRestriction);
 //		node2.addConcreteRestriction(concreteRestriction);
 
-		PatternNode node1 = new PatternNode("bonus", 190);
-		PatternNode node2 = new PatternNode("placa_pod", 191);
+		PatternNode node1 = new PatternNode("integer", "bonus", 190);
+		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
 		PatternRow row1 = new PatternRow(301);
 		row1.addPatternNode(node1);
 		row1.addPatternNode(node2);
 		
-		node1 = new PatternNode("placa_min", 192);
-		node2 = new PatternNode("nazwa", 193);
+		node1 = new PatternNode("integer", "placa_min", 192);
+		node2 = new PatternNode("integer", "nazwa", 193);
 		PatternRow row0 = new PatternRow(302);
 		row0.addPatternNode(node1);
 		row0.addPatternNode(node2);
@@ -77,20 +77,20 @@ public class PatternRow {
 		this.id = lastId++;
 		this.patternNodes = new ArrayList<PatternNode>();
 		Map<PatternNode, PatternNode> mapOldNodesToNewNodes = new HashMap<>();
-		Set<ConcreteRestriction> concreteRestrictionsSet = new HashSet<>();
+		Set<PatternRestriction> concreteRestrictionsSet = new HashSet<>();
 		
 		for (PatternNode patternNode : patternRow.getPatternNodes()) {
 			PatternNode newPatternNode = patternNode.copy();
 			this.patternNodes.add(newPatternNode);
 			mapOldNodesToNewNodes.put(patternNode, newPatternNode);
-			for(ConcreteRestriction concreteRestriction : patternNode.getConcreteRestrictions()) {
+			for(PatternRestriction concreteRestriction : patternNode.getPatternRestrictions()) {
 				concreteRestrictionsSet.add(concreteRestriction);
 			}
 		}
 
-		for(ConcreteRestriction cr : concreteRestrictionsSet) {
-			ConcreteRestriction cr2 = new ConcreteRestriction(cr);
-			for(PatternNode pn : cr.getNodes()) {
+		for(PatternRestriction cr : concreteRestrictionsSet) {
+			PatternRestriction cr2 = new PatternRestriction(cr);
+			for(PatternNode pn : cr.getPatternNodes()) {
 				if(mapOldNodesToNewNodes.containsKey(pn)) {
 					cr2.addNode2(mapOldNodesToNewNodes.get(pn));
 				}
@@ -108,7 +108,7 @@ public class PatternRow {
 		}
 	}
 
-	public void addConcreteRestriction(ConcreteRestriction concreteRestriction) {
+	public void addConcreteRestriction(PatternRestriction concreteRestriction) {
 		for (String column : concreteRestriction.getColumns()) {
 			if(getNodeByName(column) != null)
 				getNodeByName(column).addConcreteRestriction(concreteRestriction);

@@ -8,6 +8,7 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.ExpressionVisitor;
 
 import com.dateGenerator.engine.FinderUsedColumns;
+import com.dateGenerator.engine.NegateRestriction;
 
 public class Restriction implements RestrictionInterface {
 	private String restrictionString;
@@ -35,7 +36,8 @@ public class Restriction implements RestrictionInterface {
 	}
 	
 	public Restriction getNegative() {
-		Restriction restriction = new Restriction("not(" + this.restrictionString + ")", binaryExpression);//TODO negate expression
+		BinaryExpression negativeBinaryExpression = NegateRestriction.negate(binaryExpression);
+		Restriction restriction = new Restriction(negativeBinaryExpression.toString(), negativeBinaryExpression);//TODO negate expression
 		restriction.columns.addAll(this.getColumns());
 		return restriction;
 	}

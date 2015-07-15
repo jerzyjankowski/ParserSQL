@@ -36,6 +36,9 @@ public class TestData {
 		case 22:
 			sqlString = "SELECT nazwisko, placa_pod, nazwa, placa_min  FROM pracownicy INNER JOIN etaty ON etat = nazwa;      ";
 			break;
+		case 23:
+			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa  where placa_pod > placa_min;  ";
+			break;
 //		case 23:
 //			sqlString = "SELECT * FROM pracownicy JOIN zespoly USING (id_zesp);  ";
 //			break;
@@ -68,24 +71,24 @@ public class TestData {
 
 		PatternTable patternTable = new PatternTable("pracownicy");
 		PatternRow patternRow = new PatternRow();
-		patternRow.addPatternNode(new PatternNode("nazwisko"));
-		patternRow.addPatternNode(new PatternNode("etat"));
-		patternRow.addPatternNode(new PatternNode("placa_pod"));
-		patternRow.addPatternNode(new PatternNode("placa_dod"));
+		patternRow.addPatternNode(new PatternNode("integer", "nazwisko"));
+		patternRow.addPatternNode(new PatternNode("integer", "etat"));
+		patternRow.addPatternNode(new PatternNode("integer", "placa_pod"));
+		patternRow.addPatternNode(new PatternNode("integer", "placa_dod"));
 		patternTable.addPatternRow(patternRow);
 		patternAll.addPatternTables(patternTable);
 
 		patternTable = new PatternTable("etaty");
 		patternRow = new PatternRow();
-		patternRow.addPatternNode(new PatternNode("nazwa"));
-		patternRow.addPatternNode(new PatternNode("placa_min"));
+		patternRow.addPatternNode(new PatternNode("integer", "nazwa"));
+		patternRow.addPatternNode(new PatternNode("integer", "placa_min"));
 		patternTable.addPatternRow(patternRow);
 		patternAll.addPatternTables(patternTable);
 
 		patternTable = new PatternTable("zespoly");
 		patternRow = new PatternRow();
-		patternRow.addPatternNode(new PatternNode("zespol_nazwa"));
-		patternRow.addPatternNode(new PatternNode("dodatek_min"));
+		patternRow.addPatternNode(new PatternNode("integer", "zespol_nazwa"));
+		patternRow.addPatternNode(new PatternNode("integer", "dodatek_min"));
 		patternTable.addPatternRow(patternRow);
 		patternAll.addPatternTables(patternTable);
 	}
