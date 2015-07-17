@@ -391,4 +391,10 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 		
 	}
 
+	public PatternAll getPatternAll() {
+		return patternAll;
+	}
+	
+	
+
 }

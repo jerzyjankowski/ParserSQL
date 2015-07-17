@@ -1,4 +1,7 @@
 import java.io.StringReader;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.dateGenerator.engine.DataGenerator;
 import com.dateGenerator.engine.SQLParser;
@@ -19,7 +22,7 @@ public class Main {
 		 * fowr test purposes in class TestData there are example sqls and example table with column
 		 * later these all will be loaded from files
 		 */
-		TestData testData = new TestData(42);
+		TestData testData = new TestData(30);
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();
 		Statement statement = parserManager.parse(new StringReader(testData.getSqlString()));
@@ -36,12 +39,14 @@ public class Main {
 		
 //			System.out.println("patternAll: " + patternAll);
 			
+
 			DataGenerator dataGenerator = new DataGenerator(patternAll, testData.getOutputAll());
 			dataGenerator.generate();
 
 //			System.out.println("patternAll: " + patternAll);
 			
 			System.out.println("STOP ALL: \n");
+
 		}
 		
 		XMLParser parser = new XMLParser();
