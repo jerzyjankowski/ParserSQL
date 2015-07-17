@@ -71,12 +71,9 @@ import net.sf.jsqlparser.statement.select.Join;
 public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
 
 	private PatternAll patternAll;
-	private PatternAll copyPatternAll;
-	
 	
 	public SQLParser(PatternAll patternAll) {
 		this.patternAll = patternAll;
-		copyPatternAll = patternAll.copy();
 	}
 
 	public PatternAll parse(Select select) {
@@ -153,7 +150,6 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 
 	@Override
 	public void visit(Table arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 

@@ -18,6 +18,21 @@ public class PatternAll {
 		patternTables = new ArrayList<PatternTable>();
 	}
 	
+	public void prepare() {
+		for(PatternTable pt : patternTables) {
+			pt.prepare();
+		}
+	}
+	
+	public void setTableAlias(String table, String alias) {
+		System.out.println("table: " + table + " as " + alias);
+		for(PatternTable pt : patternTables) {
+			if(pt.getName().equals(table)) {
+				pt.setAlias(alias);
+			}
+		}
+	}
+	
 	public void addRestrictions(List<Restriction> restrictions) {
 		
 		boolean containsColumnFlag;
@@ -26,11 +41,11 @@ public class PatternAll {
 			List<PatternRestriction> concRestrList = new ArrayList<PatternRestriction>();
 			int k = 0;
 			int product = 2;
-			int number = 0;
 			for(PatternTable patternTable : patternTables) {
 				containsColumnFlag = false;
 				for(String column : restriction.getColumns()) {
 					if(patternTable.containsColumn(column)) {
+						System.out.println("found column: " + column + " " + patternTable.getName() + " " + restriction);
 						containsColumnFlag = true;
 						break;
 					}
@@ -39,14 +54,13 @@ public class PatternAll {
 					int x = patternTable.getPatternRows().size();
 					intList.add(x);
 					product *= x;
-					number++;
 				}
 			}
 			for(int i = 0; i < product; i++) {
 				if(i<product/2)
-					concRestrList.add(new PatternRestriction(number, restriction));
+					concRestrList.add(new PatternRestriction(restriction));
 				else
-					concRestrList.add(new PatternRestriction(number, restriction.getNegative()));					
+					concRestrList.add(new PatternRestriction(restriction.getNegative()));					
 			}
 			int i = 0;
 			for(PatternTable patternTable : patternTables) {

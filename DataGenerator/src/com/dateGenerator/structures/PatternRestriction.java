@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class PatternRestriction {
 
-	private int number;
 	private Restriction restriction;
 	private List<PatternNode> nodes;
 	private int collisionCnt = 0;
@@ -17,11 +16,11 @@ public class PatternRestriction {
 	
 	public void addNode2(PatternNode node) {
 		nodes.add(node);
-		node.addConcreteRestrictionUnrecursively(this);
+		node.addPatternRestrictionUnrecursively(this);
 	}
 	
 	public void removeNode(PatternNode node) {
-		node.removeConcreteRestrictionUnrecursively(this);
+		node.removePatternRestrictionUnrecursively(this);
 		nodes.remove(node);
 	}
 	
@@ -33,28 +32,18 @@ public class PatternRestriction {
 		this.nodes = nodes;
 	}
 
-	public PatternRestriction(PatternRestriction concreteRestriction) {
-		this.number = concreteRestriction.getNumber();
-		this.restriction = concreteRestriction.getRestriction();
+	public PatternRestriction(PatternRestriction patternRestriction) {
+		this.restriction = patternRestriction.getRestriction();
 		this.nodes = new ArrayList<>();
 	}
 
-	public PatternRestriction(int number, Restriction restriction) {
+	public PatternRestriction(Restriction restriction) {
 		this.nodes = new ArrayList<>();
-		this.number = number;
 		this.restriction = restriction.copy();
 	}
 
 	public List<String> getColumns() {
 		return restriction.getColumns();
-	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
 	}
 
 	public Restriction getRestriction() {
@@ -87,21 +76,21 @@ public class PatternRestriction {
 		for(PatternNode node : this.nodes) {
 			nodes.add("PatternNode [name=" + node.getName() + ", id=" + node.getId() + "]");
 		}
-		return "\n            ConcreteRestriction [number=" + number + ", restriction="
+		return "\n            PatternRestriction [ restriction="
 				+ restriction + ", nodes=" + nodes + "]";
 	}
 
 	public void remove() {
 		for(PatternNode pn : nodes) {
-			pn.removeConcreteRestrictionUnrecursively(this);
+			pn.removePatternRestrictionUnrecursively(this); 
 		}
 		
 	}
 	
 	public class Unfinished extends Exception {
 	}
-	class UnexpectedExpression extends Exception{
-		
+	
+	public class UnexpectedExpression extends Exception{
 	}
 	
 	public boolean check() throws Unfinished, UnexpectedExpression {
@@ -116,11 +105,10 @@ public class PatternRestriction {
 		String expression1 = new String(expression0);
 		try {
 			for(PatternNode node : nodes) {
-				if(expression1.contains(node.getName())) {//always?
-					expression1 = expression1.replace(node.getName(), node.getValue().toString());
-//					expression1 = expression1.replace(node.getName(), ""+node.getId());
-					
-				}
+				expression1 = node.replaceNameWithValue(expression1);
+//				if(expression1.contains(node.getName())) {//always?
+//					expression1 = expression1.replace(node.getName(), node.getValue().toString());
+//				}
 			}
 //			System.out.println("expression: " + expression1);
 		}

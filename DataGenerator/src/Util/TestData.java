@@ -70,6 +70,15 @@ public class TestData {
 		case 50:// infinite loop because of unsatisfied where conditions
 			sqlString = "SELECT * FROM pracownicy join etaty on placa_pod = placa_min where placa_pod < 4 AND placa_min > 4;  ";
 			break;
+		case 60:
+			sqlString = "SELECT * FROM pracownicy as p WHERE p.placa_pod = 2048;  ";
+			break;
+		case 61:
+			sqlString = "SELECT * FROM pracownicy as p join etaty as e WHERE p.placa_dod = 2048 and p.placa_pod > e.placa_min;  ";
+			break;
+		case 62:
+			sqlString = "SELECT * FROM pracownicy as p join zespoly as z WHERE p.placa_dod = z.placa_dod;  ";
+			break;
 			   
 		default:
 			sqlString = "SELECT * FROM pracownicy;  ";
@@ -97,12 +106,14 @@ public class TestData {
 		patternRow = new PatternRow();
 		patternRow.addPatternNode(new PatternNode("integer", "zespol_nazwa"));
 		patternRow.addPatternNode(new PatternNode("integer", "dodatek_min"));
+		patternRow.addPatternNode(new PatternNode("integer", "placa_dod"));
 		patternTable.addPatternRow(patternRow);
 		patternAll.addPatternTable(patternTable);
 		
 		
 		outputAll = new OutputAll();
 		OutputTable table = new OutputTable("pracownicy");
+		table.addColumn("nazwisko");
 		table.addColumn("etat");
 		table.addColumn("placa_pod");
 		table.addColumn("placa_dod");
@@ -116,6 +127,7 @@ public class TestData {
 		table = new OutputTable("zespoly");
 		table.addColumn("zespol_nazwa");
 		table.addColumn("dodatek_min");
+		table.addColumn("placa_dod");
 		outputAll.addTable(table);
 	}
 

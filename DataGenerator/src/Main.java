@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.dateGenerator.engine.DataGenerator;
+import com.dateGenerator.engine.FinderAliases;
 import com.dateGenerator.engine.SQLParser;
 import com.dateGenerator.structures.PatternAll;
 import com.dateGenerator.xml.XMLParser;
@@ -19,10 +20,10 @@ public class Main {
 
 	public static void main(String[] args) throws JSQLParserException {
 		/**
-		 * fowr test purposes in class TestData there are example sqls and example table with column
+		 * for test purposes in class TestData there are example sqls and example table with column
 		 * later these all will be loaded from files
 		 */
-		TestData testData = new TestData(42);
+		TestData testData = new TestData(62);
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();
 		Statement statement = parserManager.parse(new StringReader(testData.getSqlString()));
@@ -34,7 +35,9 @@ public class Main {
 			System.out.println("START ALL: \n");
 			
 			Select selectStatement = (Select) statement;
-			SQLParser sqlParser = new SQLParser(testData.getPatternAll());
+			FinderAliases finderAliases = new FinderAliases(testData.getPatternAll());
+			PatternAll  patternAllWithAliases = finderAliases.parse(selectStatement);
+			SQLParser sqlParser = new SQLParser(patternAllWithAliases);
 			PatternAll patternAll = sqlParser.parse(selectStatement);
 		
 //			System.out.println("patternAll: " + patternAll);
@@ -43,7 +46,7 @@ public class Main {
 			DataGenerator dataGenerator = new DataGenerator(patternAll, testData.getOutputAll());
 			dataGenerator.generate();
 
-//			System.out.println("patternAll: " + patternAll);
+			System.out.println("patternAll: " + patternAll);
 			
 			System.out.println("STOP ALL: \n");
 

@@ -9,22 +9,23 @@ public class PatternTable {
 	private String name;
 	private List<PatternRow> patternRows;
 	private Set<String> columnNames;
+	private String alias;
 
 	public static void main(String... args) {
 		PatternNode node1 = new PatternNode("integer", "placa_dod", 190);
 		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
-		PatternRestriction concreteRestriction = new PatternRestriction(1, new Restriction("placa_pod<placa_dod", null));
-		node1.addPatternRestriction(concreteRestriction);
-		node2.addPatternRestriction(concreteRestriction);
+		PatternRestriction patternRestriction = new PatternRestriction(new Restriction("placa_pod<placa_dod", null));
+		node1.addPatternRestriction(patternRestriction);
+		node2.addPatternRestriction(patternRestriction);
 		PatternRow row1 = new PatternRow();
 		row1.addPatternNode(node1);
 		row1.addPatternNode(node2);
 		
 		node1 = new PatternNode("integer", "placa_dod");
 		node2 = new PatternNode("integer", "placa_pod");
-		concreteRestriction = new PatternRestriction(1, new Restriction("placa_pod>=placa_dod", null));
-		node1.addPatternRestriction(concreteRestriction);
-		node2.addPatternRestriction(concreteRestriction);
+		patternRestriction = new PatternRestriction(new Restriction("placa_pod>=placa_dod", null));
+		node1.addPatternRestriction(patternRestriction);
+		node2.addPatternRestriction(patternRestriction);
 		PatternRow row2 = new PatternRow();
 		row2.addPatternNode(node1);
 		row2.addPatternNode(node2);
@@ -41,16 +42,16 @@ public class PatternTable {
 		Restriction restriction = new Restriction("placa_pod>placa_min", null);
 		restriction.addColumn("placa_pod");
 		restriction.addColumn("placa_min");
-		concreteRestriction = new PatternRestriction(1, restriction);
+		patternRestriction = new PatternRestriction(restriction);
 		for(int i = 0; i < 2; i++) {
-			concRestrList.add(new PatternRestriction(concreteRestriction));
+			concRestrList.add(new PatternRestriction(patternRestriction));
 		}
 		restriction = new Restriction("placa_pod<=placa_min", null);
 		restriction.addColumn("placa_pod");
 		restriction.addColumn("placa_min");
-		concreteRestriction = new PatternRestriction(1, restriction);
+		patternRestriction = new PatternRestriction(restriction);
 		for(int i = 0; i < 2; i++) {
-			concRestrList.add(new PatternRestriction(concreteRestriction));
+			concRestrList.add(new PatternRestriction(patternRestriction));
 		}
 		List<Integer> intList = new ArrayList<>();
 		intList.add(1); 
@@ -66,7 +67,16 @@ public class PatternTable {
 		columnNames = new HashSet<String>();
 	}
 	
+	public void prepare() {
+		for(PatternRow patternRow : patternRows) {
+			for(PatternNode patternNode : patternRow.getPatternNodes()) {
+				
+			}
+		}
+	}
+	
 	public void addPatternRestriction(List<PatternRestriction> pattRestrList, List<Integer> intList, int i) {
+		System.out.println("[PatternTable.addPatternRestriction()] in table: " + name);
 		int product = 2;
 		int productBefore = 1;
 		int sequence;
@@ -87,7 +97,7 @@ public class PatternTable {
 		for(int j = 0; j < repeat; j++) {
 			for(PatternRow patternRow : oldPatternRows) {
 				for(int k = 0; k < sequence; k++) {
-					PatternRow newPatternRow = new PatternRow(patternRow, null);
+					PatternRow newPatternRow = new PatternRow(patternRow);
 					newPatternRow.addPatternRestriction(pattRestrList.get(m++));
 					patternRows.add(newPatternRow);
 				}
@@ -108,6 +118,7 @@ public class PatternTable {
 	}
 
 	public void addPatternRow(PatternRow patternRow) {
+		patternRow.setTableName(name);
 		this.patternRows.add(patternRow);
 		for(String column : patternRow.getColumnNames()) 
 			this.columnNames.add(column);
@@ -125,14 +136,33 @@ public class PatternTable {
 		return columnNames;
 	}
 
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+		for(PatternRow patternRow : patternRows) {
+			patternRow.setTableAlias(alias);
+		}
+	}
+
 	@Override
 	public String toString() {
-		return "\n   PatternTable [name=" + name + ", patternRows(" + patternRows.size() + ")=" + patternRows
+		return "\n   PatternTable [name=" + name + " as " + alias + ", patternRows(" + patternRows.size() + ")=" + patternRows
 				+ "]";
 	}
 	
 	public boolean containsColumn(String column) {
-		return columnNames.contains(column);
+		for(String c : columnNames) {
+			if(column.equals(c))
+				return true;
+			if(column.equals(name + "." + c))
+				return true;
+			if(column.equals(alias + "." + c))
+				return true;
+		}
+		return false;
 	}
 	
 	public PatternTable copy() {

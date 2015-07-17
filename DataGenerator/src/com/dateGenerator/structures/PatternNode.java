@@ -19,6 +19,9 @@ public class PatternNode {
 	private Integer value;
 
 
+	private String tableName = "";
+	private String tableAlias = "";
+
 	private List<String> restrictions;
 	private List<Integer> patternRestrictionIds;
 	private List<PatternRestriction> patternRestrictions;
@@ -26,9 +29,9 @@ public class PatternNode {
 	public static void main(String... args) {
 		PatternNode node1 = new PatternNode("integer", "bonus", 190);
 		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
-		PatternRestriction concreteRestriction = new PatternRestriction(1, new Restriction("placa_pod<bonus", null));
-		node1.addPatternRestriction(concreteRestriction);
-		node2.addPatternRestriction(concreteRestriction);
+		PatternRestriction patternRestriction = new PatternRestriction(new Restriction("placa_pod<bonus", null));
+		node1.addPatternRestriction(patternRestriction);
+		node2.addPatternRestriction(patternRestriction);
 		
 		//PatternNode node3 = new PatternNode(node2, new ArrayList<Integer>(Arrays.asList(192,193)));
 		//PatternNode node4 = new PatternNode(node1, new ArrayList<Integer>(Arrays.asList(192,193)));
@@ -40,17 +43,17 @@ public class PatternNode {
 		mapa.put(node1, node5);
 		mapa.put(node2, node6);
 		Set<PatternRestriction> set = new HashSet<>();
-		set.add(concreteRestriction);
-		set.add(concreteRestriction);
+		set.add(patternRestriction);
+		set.add(patternRestriction);
 		
 		for(PatternRestriction cr : set) {
-			PatternRestriction concreteRestriction2 = new PatternRestriction(cr);
+			PatternRestriction patternRestriction2 = new PatternRestriction(cr);
 			for(PatternNode pn : cr.getPatternNodes()) {
 				if(mapa.containsKey(pn)) {
-					concreteRestriction2.addNode2(mapa.get(pn));
+					patternRestriction2.addNode2(mapa.get(pn));
 				}
 				else {
-					concreteRestriction2.addNode2(pn);
+					patternRestriction2.addNode2(pn);
 				}
 			}
 		}
@@ -81,8 +84,38 @@ public class PatternNode {
 		this.id = id;
 	}
 	
+	public String replaceNameWithValue(String expression) {
+		
+		String notCharPattern = "[^a-zA-Z0-9_.]";
+		
+		String columnName = name;
+		String columnPattern0 = "("+notCharPattern+")(" + columnName + ")("+notCharPattern+")";
+		String columnPattern1 = "^(" + columnName + ")("+notCharPattern+")";
+		String columnPattern2 = "("+notCharPattern+")(" + columnName + ")$";
+		
+		String tnColumnName = tableName + "." + name;
+		String tnColumnPattern0 = "("+notCharPattern+")(" + tnColumnName + ")("+notCharPattern+")";
+		String tnColumnPattern1 = "^(" + tnColumnName + ")("+notCharPattern+")";
+		String tnColumnPattern2 = "("+notCharPattern+")(" + tnColumnName + ")$";
+		
+		String taColumnName = tableAlias + "." + name;
+		String taColumnPattern0 = "("+notCharPattern+")(" + taColumnName + ")("+notCharPattern+")";
+		String taColumnPattern1 = "^(" + taColumnName + ")("+notCharPattern+")";
+		String taColumnPattern2 = "("+notCharPattern+")(" + taColumnName + ")$";
+		
+    	expression = expression.replaceAll(columnPattern0, "$1" + value + "$3").replaceAll(columnPattern1, value + "$2").replaceAll(columnPattern2, "$1" + value);
+    	if(!tableName.equals(""))
+    		expression = expression.replaceAll(tnColumnPattern0, "$1" + value + "$3").replaceAll(tnColumnPattern1, value + "$2").replaceAll(tnColumnPattern2, "$1" + value);
+    	if(!tableAlias.equals(""))
+    		expression = expression.replaceAll(taColumnPattern0, "$1" + value + "$3").replaceAll(taColumnPattern1, value + "$2").replaceAll(taColumnPattern2, "$1" + value);
+    	
+		return expression;
+	}
+	
 	public PatternNode copy() {
 		PatternNode patternNode = new PatternNode(type, name);
+		patternNode.setTableName(tableName);
+		patternNode.setTableAlias(tableAlias);
 		patternNode.restrictions.addAll(this.getRestrictions());
 		return patternNode;
 	}
@@ -95,17 +128,17 @@ public class PatternNode {
 		this.name = name;
 	}
 
-	public void addPatternRestriction(PatternRestriction concreteRestriction) {
-		patternRestrictions.add(concreteRestriction);
-		concreteRestriction.addNode(this);
+	public void addPatternRestriction(PatternRestriction patternRestriction) {
+		patternRestrictions.add(patternRestriction);
+		patternRestriction.addNode(this);
 	}
 	
-	public void addConcreteRestrictionUnrecursively(PatternRestriction concreteRestriction) {
-		patternRestrictions.add(concreteRestriction);
+	public void addPatternRestrictionUnrecursively(PatternRestriction patternRestriction) {
+		patternRestrictions.add(patternRestriction);
 	}
 	
-	public void removeConcreteRestrictionUnrecursively(PatternRestriction concreteRestriction) {
-		patternRestrictions.remove(concreteRestriction);
+	public void removePatternRestrictionUnrecursively(PatternRestriction patternRestriction) {
+		patternRestrictions.remove(patternRestriction);
 	}
 	
 	public List<String> getRestrictions() {
@@ -152,10 +185,26 @@ public class PatternNode {
 		this.value = value;
 	}
 
+	public String getTableName() {
+		return tableName;
+	}
+
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+
+	public String getTableAlias() {
+		return tableAlias;
+	}
+
+	public void setTableAlias(String tableAlias) {
+		this.tableAlias = tableAlias;
+	}
+
 	@Override
 	public String toString() {
 		return "\n         PatternNode [type=" + type + " name=" + name + ", id=" + id + ", value=" + value 
-				+ ", concreteRestrictions=" + patternRestrictions + "]";
+				+ ", patternRestrictions=" + patternRestrictions + "]";
 	}
 
 	public String toString2() {
