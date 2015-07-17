@@ -25,7 +25,6 @@ public class PatternAll {
 	}
 	
 	public void setTableAlias(String table, String alias) {
-		System.out.println("table: " + table + " as " + alias);
 		for(PatternTable pt : patternTables) {
 			if(pt.getName().equals(table)) {
 				pt.setAlias(alias);
@@ -45,7 +44,6 @@ public class PatternAll {
 				containsColumnFlag = false;
 				for(String column : restriction.getColumns()) {
 					if(patternTable.containsColumn(column)) {
-						System.out.println("found column: " + column + " " + patternTable.getName() + " " + restriction);
 						containsColumnFlag = true;
 						break;
 					}

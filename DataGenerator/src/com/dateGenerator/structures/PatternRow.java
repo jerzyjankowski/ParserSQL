@@ -94,10 +94,8 @@ public class PatternRow {
 	}
 
 	public void addPatternRestriction(PatternRestriction patternRestriction) {
-		System.out.println("[PatternRow.addPatternRestriction()] in row with id: " + id);
 		for (String column : patternRestriction.getColumns()) {
 			if(getNodeByName(column) != null) {
-				System.out.println("found column: " + column + " " + getNodeByName(column).getId() + " " + patternRestriction);
 				getNodeByName(column).addPatternRestriction(patternRestriction);
 			}
 		}
@@ -105,9 +103,6 @@ public class PatternRow {
 
 	private PatternNode getNodeByName(String name) {
 		for(PatternNode patternNode : patternNodes) {
-			System.out.println("looking for: " + name + " in: " + patternNode.getName() + 
-					" or " + tableName + "." + patternNode.getName() +
-					" or " + tableAlias + "." + patternNode.getName());
 			if(name.equals(patternNode.getName()))
 				return patternNode;
 			if(name.equals(tableName + "." + patternNode.getName()))
@@ -177,7 +172,6 @@ public class PatternRow {
 		PatternRow patternRow = new PatternRow();
 		patternRow.setTableName(tableName);
 		patternRow.setTableAlias(tableAlias);
-		System.out.println("###Set: " + tableName + " " + tableAlias);
 		for(PatternNode patternNode : patternNodes) {
 			patternRow.addPatternNode(patternNode.copy());
 		}

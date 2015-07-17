@@ -104,11 +104,14 @@ public class PatternNode {
 		String taColumnPattern2 = "("+notCharPattern+")(" + taColumnName + ")$";
 		
     	expression = expression.replaceAll(columnPattern0, "$1" + value + "$3").replaceAll(columnPattern1, value + "$2").replaceAll(columnPattern2, "$1" + value);
-    	if(!tableName.equals(""))
+
+		if(!tableName.equals(""))
     		expression = expression.replaceAll(tnColumnPattern0, "$1" + value + "$3").replaceAll(tnColumnPattern1, value + "$2").replaceAll(tnColumnPattern2, "$1" + value);
-    	if(!tableAlias.equals(""))
+
+		if(!tableAlias.equals(""))
     		expression = expression.replaceAll(taColumnPattern0, "$1" + value + "$3").replaceAll(taColumnPattern1, value + "$2").replaceAll(taColumnPattern2, "$1" + value);
-    	
+
+    	System.out.println("Expression after replaces: " + expression);
 		return expression;
 	}
 	
@@ -203,7 +206,7 @@ public class PatternNode {
 
 	@Override
 	public String toString() {
-		return "\n         PatternNode [type=" + type + " name=" + name + ", id=" + id + ", value=" + value 
+		return "\n         PatternNode [type=" + type + " name=" + name + ", id=" + id + ", tableAlias=" + tableAlias + ", value=" + value 
 				+ ", patternRestrictions=" + patternRestrictions + "]";
 	}
 

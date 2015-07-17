@@ -23,7 +23,7 @@ public class Main {
 		 * for test purposes in class TestData there are example sqls and example table with column
 		 * later these all will be loaded from files
 		 */
-		TestData testData = new TestData(62);
+		TestData testData = new TestData(63);
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();
 		Statement statement = parserManager.parse(new StringReader(testData.getSqlString()));
@@ -37,11 +37,9 @@ public class Main {
 			Select selectStatement = (Select) statement;
 			FinderAliases finderAliases = new FinderAliases(testData.getPatternAll());
 			PatternAll  patternAllWithAliases = finderAliases.parse(selectStatement);
-			SQLParser sqlParser = new SQLParser(patternAllWithAliases);
-			PatternAll patternAll = sqlParser.parse(selectStatement);
-		
-//			System.out.println("patternAll: " + patternAll);
 			
+			SQLParser sqlParser = new SQLParser(patternAllWithAliases);
+			PatternAll patternAll = sqlParser.parse(selectStatement);			
 
 			DataGenerator dataGenerator = new DataGenerator(patternAll, testData.getOutputAll());
 			dataGenerator.generate();

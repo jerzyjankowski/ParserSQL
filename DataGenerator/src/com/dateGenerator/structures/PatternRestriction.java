@@ -113,7 +113,7 @@ public class PatternRestriction {
 //			System.out.println("expression: " + expression1);
 		}
 		catch(Exception e){
-			System.out.println("catched exception " + e.getMessage());
+			System.out.println("catched exception " + e);
 		}
 		expression1 = expression1.replace(" ", "");
 		if(operation.equals("=")) {

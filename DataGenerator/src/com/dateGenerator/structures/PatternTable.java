@@ -9,7 +9,7 @@ public class PatternTable {
 	private String name;
 	private List<PatternRow> patternRows;
 	private Set<String> columnNames;
-	private String alias;
+	private String alias = "";
 
 	public static void main(String... args) {
 		PatternNode node1 = new PatternNode("integer", "placa_dod", 190);
@@ -76,7 +76,6 @@ public class PatternTable {
 	}
 	
 	public void addPatternRestriction(List<PatternRestriction> pattRestrList, List<Integer> intList, int i) {
-		System.out.println("[PatternTable.addPatternRestriction()] in table: " + name);
 		int product = 2;
 		int productBefore = 1;
 		int sequence;

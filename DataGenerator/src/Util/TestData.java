@@ -71,14 +71,25 @@ public class TestData {
 			sqlString = "SELECT * FROM pracownicy join etaty on placa_pod = placa_min where placa_pod < 4 AND placa_min > 4;  ";
 			break;
 		case 60:
-			sqlString = "SELECT * FROM pracownicy as p WHERE p.placa_pod = 2048;  ";
+			sqlString = "SELECT * FROM pracownicy AS p WHERE p.placa_pod = 2048;  ";
 			break;
 		case 61:
-			sqlString = "SELECT * FROM pracownicy as p join etaty as e WHERE p.placa_dod = 2048 and p.placa_pod > e.placa_min;  ";
+			sqlString = "SELECT * FROM pracownicy AS p join etaty AS e WHERE p.placa_dod = 2048 and p.placa_pod > e.placa_min;  ";
 			break;
 		case 62:
-			sqlString = "SELECT * FROM pracownicy as p join zespoly as z WHERE p.placa_dod = z.placa_dod;  ";
+			sqlString = "SELECT * FROM pracownicy AS p join zespoly AS z WHERE p.placa_dod = z.placa_dod;  ";
 			break;
+		case 63:
+//			sqlString = "SELECT * FROM T1 INNER JOIN T2 AS t2a  ON T1.col1 = t2a.col1 " +
+//					" INNER JOIN T2 AS t2b  ON T1.col2 = t2b.col2 " + 
+//					" WHERE t2a.col3 = 'A' AND t2b.col3 = 'B';  ";
+			sqlString = "SELECT * FROM zespoly INNER JOIN pracownicy AS pa  ON zespoly.placa_dod = pa.placa_dod " +
+					" INNER JOIN pracownicy AS pb  ON zespoly.dodatek_min = pb.placa_dod " + 
+					" WHERE pa.placa_pod = 100 AND pb.placa_pod = 200;  ";
+			break;
+			
+			
+			  
 			   
 		default:
 			sqlString = "SELECT * FROM pracownicy;  ";
