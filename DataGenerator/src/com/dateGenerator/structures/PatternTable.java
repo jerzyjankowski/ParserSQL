@@ -14,17 +14,17 @@ public class PatternTable {
 		PatternNode node1 = new PatternNode("integer", "placa_dod", 190);
 		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
 		PatternRestriction concreteRestriction = new PatternRestriction(1, new Restriction("placa_pod<placa_dod", null));
-		node1.addConcreteRestriction(concreteRestriction);
-		node2.addConcreteRestriction(concreteRestriction);
-		PatternRow row1 = new PatternRow(301);
+		node1.addPatternRestriction(concreteRestriction);
+		node2.addPatternRestriction(concreteRestriction);
+		PatternRow row1 = new PatternRow();
 		row1.addPatternNode(node1);
 		row1.addPatternNode(node2);
 		
 		node1 = new PatternNode("integer", "placa_dod");
 		node2 = new PatternNode("integer", "placa_pod");
 		concreteRestriction = new PatternRestriction(1, new Restriction("placa_pod>=placa_dod", null));
-		node1.addConcreteRestriction(concreteRestriction);
-		node2.addConcreteRestriction(concreteRestriction);
+		node1.addPatternRestriction(concreteRestriction);
+		node2.addPatternRestriction(concreteRestriction);
 		PatternRow row2 = new PatternRow();
 		row2.addPatternNode(node1);
 		row2.addPatternNode(node2);
@@ -55,7 +55,7 @@ public class PatternTable {
 		List<Integer> intList = new ArrayList<>();
 		intList.add(1); 
 		intList.add(2);
-		patternTable.addConcreteRestriction(concRestrList, intList, 1);
+		patternTable.addPatternRestriction(concRestrList, intList, 1);
 		
 		System.out.println(patternTable);
 	}
@@ -66,7 +66,7 @@ public class PatternTable {
 		columnNames = new HashSet<String>();
 	}
 	
-	public void addConcreteRestriction(List<PatternRestriction> concRestrList, List<Integer> intList, int i) {
+	public void addPatternRestriction(List<PatternRestriction> pattRestrList, List<Integer> intList, int i) {
 		int product = 2;
 		int productBefore = 1;
 		int sequence;
@@ -88,7 +88,7 @@ public class PatternTable {
 			for(PatternRow patternRow : oldPatternRows) {
 				for(int k = 0; k < sequence; k++) {
 					PatternRow newPatternRow = new PatternRow(patternRow, null);
-					newPatternRow.addConcreteRestriction(concRestrList.get(m++));
+					newPatternRow.addPatternRestriction(pattRestrList.get(m++));
 					patternRows.add(newPatternRow);
 				}
 			}
@@ -97,53 +97,7 @@ public class PatternTable {
 			patternRow.remove();
 		}
 	}
-/**
- * 
- * @param allRestrictions means all restrictions in where clause, later on restrictions will be filtered by adequacy. 
- * In restriction list there are only those restriction that are relevant for that table.
- */
-	public void addRestrictions(List<Restriction> allRestrictions) {
-		
-		List<Restriction> restrictions = new ArrayList<Restriction>();
-		for(Restriction restriction : allRestrictions) {
-			for(String column : restriction.getColumns()) {
-				if(columnNames.contains(column)) {
-					restrictions.add(restriction);
-					break;
-				}
-			}
-		}
-		
-		int xCombinations = (int) Math.pow(2, restrictions.size());
-		List<Restriction> negRestrictions = new ArrayList<Restriction>();
-		for (Restriction restriction : restrictions) {
-			negRestrictions.add(restriction.getNegative());
-		}
 
-		List<PatternRow> oldPatternRows = new ArrayList<PatternRow>();
-		for (PatternRow patternRow : patternRows) {
-			oldPatternRows.add(new PatternRow(patternRow));
-		}
-		patternRows.clear();
-
-		for (int i = 0; i < xCombinations; i++) {
-			List<Restriction> tempRestrictions = new ArrayList<Restriction>();
-			for (int j = 0; j < restrictions.size(); j++) {
-				if ((i >> j) % 2 == 0)
-					tempRestrictions.add(negRestrictions.get(j));
-				else
-					tempRestrictions.add(restrictions.get(j));
-			}
-			
-			for(PatternRow patternRow : oldPatternRows) {
-				PatternRow newPatternRow = new PatternRow(patternRow);
-				for(Restriction restriction : tempRestrictions) {
-					newPatternRow.addRestriction(restriction);
-				}
-				patternRows.add(newPatternRow);
-			}
-		}
-	}
 
 	public String getName() {
 		return name;
@@ -187,6 +141,12 @@ public class PatternTable {
 			patternTable.addPatternRow(patternRow.copy());
 		}
 		return patternTable;
+	}
+	
+	public void clearValues() {
+		for(PatternRow patternRow : patternRows) {
+			patternRow.clearValues();
+		}
 	}
 
 }

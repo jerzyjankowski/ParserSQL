@@ -58,14 +58,14 @@ public class PatternAll {
 					}
 				}
 				if(containsColumnFlag) {
-					patternTable.addConcreteRestriction(concRestrList, intList, i);
+					patternTable.addPatternRestriction(concRestrList, intList, i);
 					i++;
 				}
 			}
 		}
 	}
 	
-	public void addPatternTables(PatternTable patternTable) {
+	public void addPatternTable(PatternTable patternTable) {
 		this.patternTables.add(patternTable);
 	}
 	
@@ -85,9 +85,15 @@ public class PatternAll {
 	public PatternAll copy() {
 		PatternAll patternAll = new PatternAll();
 		for(PatternTable patternTable : patternTables) {
-			patternAll.addPatternTables(patternTable.copy());
+			patternAll.addPatternTable(patternTable.copy());
 		}
 		return patternAll;
+	}
+	
+	public void clearValues() {
+		for(PatternTable patternTable : patternTables) {
+			patternTable.clearValues();
+		}
 	}
 
 }

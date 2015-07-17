@@ -4,11 +4,15 @@ import com.dateGenerator.structures.PatternAll;
 import com.dateGenerator.structures.PatternNode;
 import com.dateGenerator.structures.PatternRow;
 import com.dateGenerator.structures.PatternTable;
+import com.dateGenerator.structures.output.OutputAll;
+import com.dateGenerator.structures.output.OutputRow;
+import com.dateGenerator.structures.output.OutputTable;
 
 
 public class TestData {
 	private String sqlString = new String();
 	private PatternAll patternAll = new PatternAll();
+	private OutputAll outputAll = new OutputAll();
 
 	public TestData(int i) {
 		switch (i) {
@@ -61,7 +65,10 @@ public class TestData {
 			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa join zespoly on placa_dod > dodatek_min;  ";
 			break;
 		case 42:
-			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa join zespoly on placa_dod > dodatek_min where placa_pod >1000;  ";
+			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa join zespoly on placa_dod > dodatek_min where placa_pod >2;  ";
+			break;
+		case 50:// infinite loop because of unsatisfied where conditions
+			sqlString = "SELECT * FROM pracownicy join etaty on placa_pod = placa_min where placa_pod < 4 AND placa_min > 4;  ";
 			break;
 			   
 		default:
@@ -69,6 +76,7 @@ public class TestData {
 			break;
 		}
 
+		
 		PatternTable patternTable = new PatternTable("pracownicy");
 		PatternRow patternRow = new PatternRow();
 		patternRow.addPatternNode(new PatternNode("integer", "nazwisko"));
@@ -76,21 +84,39 @@ public class TestData {
 		patternRow.addPatternNode(new PatternNode("integer", "placa_pod"));
 		patternRow.addPatternNode(new PatternNode("integer", "placa_dod"));
 		patternTable.addPatternRow(patternRow);
-		patternAll.addPatternTables(patternTable);
+		patternAll.addPatternTable(patternTable);
 
 		patternTable = new PatternTable("etaty");
 		patternRow = new PatternRow();
 		patternRow.addPatternNode(new PatternNode("integer", "nazwa"));
 		patternRow.addPatternNode(new PatternNode("integer", "placa_min"));
 		patternTable.addPatternRow(patternRow);
-		patternAll.addPatternTables(patternTable);
+		patternAll.addPatternTable(patternTable);
 
 		patternTable = new PatternTable("zespoly");
 		patternRow = new PatternRow();
 		patternRow.addPatternNode(new PatternNode("integer", "zespol_nazwa"));
 		patternRow.addPatternNode(new PatternNode("integer", "dodatek_min"));
 		patternTable.addPatternRow(patternRow);
-		patternAll.addPatternTables(patternTable);
+		patternAll.addPatternTable(patternTable);
+		
+		
+		outputAll = new OutputAll();
+		OutputTable table = new OutputTable("pracownicy");
+		table.addColumn("etat");
+		table.addColumn("placa_pod");
+		table.addColumn("placa_dod");
+		outputAll.addTable(table);
+
+		table = new OutputTable("etaty");
+		table.addColumn("nazwa");
+		table.addColumn("placa_min");
+		outputAll.addTable(table);
+
+		table = new OutputTable("zespoly");
+		table.addColumn("zespol_nazwa");
+		table.addColumn("dodatek_min");
+		outputAll.addTable(table);
 	}
 
 	public String getSqlString() {
@@ -108,4 +134,14 @@ public class TestData {
 	public void setPatternAll(PatternAll patternAll) {
 		this.patternAll = patternAll;
 	}
+
+	public OutputAll getOutputAll() {
+		return outputAll;
+	}
+
+	public void setOutputAll(OutputAll outputAll) {
+		this.outputAll = outputAll;
+	}
+	
+	
 }

@@ -2,12 +2,14 @@ package com.dateGenerator.structures;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class PatternRestriction {
 
 	private int number;
 	private Restriction restriction;
 	private List<PatternNode> nodes;
+	private int collisionCnt = 0;
 	
 	public void addNode(PatternNode node) {
 		nodes.add(node);
@@ -62,7 +64,23 @@ public class PatternRestriction {
 	public void setRestriction(Restriction restriction) {
 		this.restriction = restriction;
 	}
+	
+	public int getCollisionCnt() {
+		return collisionCnt;
+	}
 
+	public void setCollisionCnt(int collisionCnt) {
+		this.collisionCnt = collisionCnt;
+	}
+	
+	public void incrementCollisionCnt() {
+		this.collisionCnt++;
+	}
+
+	public void clearCollisionCnt() {
+		this.collisionCnt = 0;
+	}
+	
 	@Override
 	public String toString() {
 		List<String> nodes = new ArrayList<>();
@@ -79,5 +97,58 @@ public class PatternRestriction {
 		}
 		
 	}
+	
+	public class Unfinished extends Exception {
+	}
+	class UnexpectedExpression extends Exception{
+		
+	}
+	
+	public boolean check() throws Unfinished, UnexpectedExpression {
+		
+		for(PatternNode node : nodes) {
+			if(node.getValue() == null)
+				throw new Unfinished();
+		}
+		
+		String operation = getRestriction().getBinaryExpression().getStringExpression();
+		String expression0 = getRestriction().getBinaryExpression().toString();
+		String expression1 = new String(expression0);
+		try {
+			for(PatternNode node : nodes) {
+				if(expression1.contains(node.getName())) {//always?
+					expression1 = expression1.replace(node.getName(), node.getValue().toString());
+//					expression1 = expression1.replace(node.getName(), ""+node.getId());
+					
+				}
+			}
+//			System.out.println("expression: " + expression1);
+		}
+		catch(Exception e){
+			System.out.println("catched exception " + e.getMessage());
+		}
+		expression1 = expression1.replace(" ", "");
+		if(operation.equals("=")) {
+			String[] expressionArr = expression1.split("=");
+			return ((Integer.parseInt(expressionArr[0]))==(Integer.parseInt(expressionArr[1])));
+		} else if(operation.equals("<>")) {
+			String[] expressionArr = expression1.split("<>");
+			return ((Integer.parseInt(expressionArr[0]))!=(Integer.parseInt(expressionArr[1])));
+		} else if(operation.equals("<")) {
+			String[] expressionArr = expression1.split("<");
+			return ((Integer.parseInt(expressionArr[0]))<(Integer.parseInt(expressionArr[1])));
+		} else if(operation.equals("<=")) {
+			String[] expressionArr = expression1.split("<=");
+			return ((Integer.parseInt(expressionArr[0]))<=(Integer.parseInt(expressionArr[1])));
+		} else if(operation.equals(">")) {
+			String[] expressionArr = expression1.split(">");
+			return ((Integer.parseInt(expressionArr[0]))>(Integer.parseInt(expressionArr[1])));
+		} else if(operation.equals(">=")) {
+			String[] expressionArr = expression1.split(">=");
+			return ((Integer.parseInt(expressionArr[0]))>=(Integer.parseInt(expressionArr[1])));
+		}
+		throw new UnexpectedExpression();
+	}
 
+	
 }

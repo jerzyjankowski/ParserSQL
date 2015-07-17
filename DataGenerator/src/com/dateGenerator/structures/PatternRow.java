@@ -24,18 +24,18 @@ public class PatternRow {
 
 		PatternNode node1 = new PatternNode("integer", "bonus", 190);
 		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
-		PatternRow row1 = new PatternRow(301);
+		PatternRow row1 = new PatternRow();
 		row1.addPatternNode(node1);
 		row1.addPatternNode(node2);
 		
 		node1 = new PatternNode("integer", "placa_min", 192);
 		node2 = new PatternNode("integer", "nazwa", 193);
-		PatternRow row0 = new PatternRow(302);
+		PatternRow row0 = new PatternRow();
 		row0.addPatternNode(node1);
 		row0.addPatternNode(node2);
 		
-		row1.addConcreteRestriction(concreteRestriction);
-		row0.addConcreteRestriction(concreteRestriction);
+		row1.addPatternRestriction(concreteRestriction);
+		row0.addPatternRestriction(concreteRestriction);
 		
 		PatternRow row2 = new PatternRow(row1, null);
 
@@ -57,20 +57,6 @@ public class PatternRow {
 		this.id = lastId++;
 		patternNodes = new ArrayList<PatternNode>();
 		columnNames = new HashSet<String>();
-	}
-
-	public PatternRow(int id) {
-		this.id = id;
-		patternNodes = new ArrayList<PatternNode>();
-		columnNames = new HashSet<String>();
-	}
-
-	public PatternRow(PatternRow patternRow) {
-		this.id = lastId++;
-		this.patternNodes = new ArrayList<PatternNode>();
-		for (PatternNode patternNode : patternRow.getPatternNodes()) {
-			this.patternNodes.add(patternNode.copy());
-		}
 	}
 
 	public PatternRow(PatternRow patternRow, Object object) {
@@ -101,17 +87,10 @@ public class PatternRow {
 		}
 	}
 
-	public void addRestriction(Restriction restriction) {
-		for (String column : restriction.getColumns()) {
-			if(getNodeByName(column) != null)
-				getNodeByName(column).addRestriction(restriction.getRestrictionString());
-		}
-	}
-
-	public void addConcreteRestriction(PatternRestriction concreteRestriction) {
+	public void addPatternRestriction(PatternRestriction concreteRestriction) {
 		for (String column : concreteRestriction.getColumns()) {
 			if(getNodeByName(column) != null)
-				getNodeByName(column).addConcreteRestriction(concreteRestriction);
+				getNodeByName(column).addPatternRestriction(concreteRestriction);
 		}
 	}
 
@@ -161,12 +140,9 @@ public class PatternRow {
 		return patternRow;
 	}
 	
-	public PatternRow copy2() {
-		PatternRow patternRow = new PatternRow(id);
+	public void clearValues() {
 		for(PatternNode patternNode : patternNodes) {
-			patternRow.addPatternNode(patternNode.copy2());
+			patternNode.clearValues();
 		}
-		return patternRow;
 	}
-
 }

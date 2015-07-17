@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
+
+import com.dateGenerator.engine.datagenerating.NodeValueGenerator;
 
 public class PatternNode {
 	private String name;
@@ -17,15 +20,15 @@ public class PatternNode {
 
 
 	private List<String> restrictions;
-	private List<Integer> concreteRestrictionIds;
-	private List<PatternRestriction> concreteRestrictions;
+	private List<Integer> patternRestrictionIds;
+	private List<PatternRestriction> patternRestrictions;
 	
 	public static void main(String... args) {
 		PatternNode node1 = new PatternNode("integer", "bonus", 190);
 		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
 		PatternRestriction concreteRestriction = new PatternRestriction(1, new Restriction("placa_pod<bonus", null));
-		node1.addConcreteRestriction(concreteRestriction);
-		node2.addConcreteRestriction(concreteRestriction);
+		node1.addPatternRestriction(concreteRestriction);
+		node2.addPatternRestriction(concreteRestriction);
 		
 		//PatternNode node3 = new PatternNode(node2, new ArrayList<Integer>(Arrays.asList(192,193)));
 		//PatternNode node4 = new PatternNode(node1, new ArrayList<Integer>(Arrays.asList(192,193)));
@@ -63,8 +66,8 @@ public class PatternNode {
 	public PatternNode(String type, String name) {
 		this.name = name;
 		restrictions = new ArrayList<String>();
-		concreteRestrictions = new ArrayList<>();
-		concreteRestrictionIds = new ArrayList<>();
+		patternRestrictions = new ArrayList<>();
+		patternRestrictionIds = new ArrayList<>();
 		this.type = type;
 		this.id = lastId++;
 	}
@@ -72,42 +75,15 @@ public class PatternNode {
 	public PatternNode(String type, String name, int id) {
 		this.name = name;
 		restrictions = new ArrayList<String>();
-		concreteRestrictions = new ArrayList<>();
-		concreteRestrictionIds = new ArrayList<>();
+		patternRestrictions = new ArrayList<>();
+		patternRestrictionIds = new ArrayList<>();
 		this.type = type;
 		this.id = id;
-	}
-	
-	public PatternNode(PatternNode patternNode, List<Integer> idsInRow) {
-		this.name = patternNode.getName();
-		this.id = lastId++;
-		restrictions = new ArrayList<String>();
-		concreteRestrictionIds = new ArrayList<>();
-
-		concreteRestrictions = new ArrayList<>();
-		List<PatternRestriction> listCR = new ArrayList<PatternRestriction>();
-		for(PatternRestriction concreteRestriction : patternNode.getPatternRestrictions()) {
-			listCR.add(concreteRestriction);
-		}
-		for(PatternRestriction concreteRestriction : listCR) {
-			//TODO kopiowaæ inaczej concreteRestriciton kiedy odnosz¹ siê tylko do wêz³ów wewnêtrznych
-			PatternRestriction newConcreteRestriction = new PatternRestriction(concreteRestriction);
-			newConcreteRestriction.removeNode(patternNode);
-			newConcreteRestriction.addNode(this);
-			concreteRestrictions.add(newConcreteRestriction);
-		}
 	}
 	
 	public PatternNode copy() {
 		PatternNode patternNode = new PatternNode(type, name);
 		patternNode.restrictions.addAll(this.getRestrictions());
-		return patternNode;
-	}
-	
-	public PatternNode copy2() {//exact copy with references to concreteRestrictions
-		PatternNode patternNode = new PatternNode(type, name, id);
-		patternNode.concreteRestrictionIds.addAll(this.getConcreteRestrictionIds());
-		patternNode.concreteRestrictions.addAll(this.getPatternRestrictions());
 		return patternNode;
 	}
 	
@@ -119,21 +95,17 @@ public class PatternNode {
 		this.name = name;
 	}
 
-	public void addRestriction(String restriction) {
-		restrictions.add(restriction);
-	}
-
-	public void addConcreteRestriction(PatternRestriction concreteRestriction) {
-		concreteRestrictions.add(concreteRestriction);
+	public void addPatternRestriction(PatternRestriction concreteRestriction) {
+		patternRestrictions.add(concreteRestriction);
 		concreteRestriction.addNode(this);
 	}
 	
 	public void addConcreteRestrictionUnrecursively(PatternRestriction concreteRestriction) {
-		concreteRestrictions.add(concreteRestriction);
+		patternRestrictions.add(concreteRestriction);
 	}
 	
 	public void removeConcreteRestrictionUnrecursively(PatternRestriction concreteRestriction) {
-		concreteRestrictions.remove(concreteRestriction);
+		patternRestrictions.remove(concreteRestriction);
 	}
 	
 	public List<String> getRestrictions() {
@@ -144,20 +116,16 @@ public class PatternNode {
 		this.restrictions = restrictions;
 	}
 
-	public List<Integer> getConcreteRestrictionIds() {
-		return concreteRestrictionIds;
+	public List<Integer> getPatternRestrictionIds() {
+		return patternRestrictionIds;
 	}
 
-	public void setConcreteRestrictionIds(List<Integer> concreteRestrictionIds) {
-		this.concreteRestrictionIds = concreteRestrictionIds;
+	public void setPatternRestrictionIds(List<Integer> patternRestrictionIds) {
+		this.patternRestrictionIds = patternRestrictionIds;
 	}
 
 	public List<PatternRestriction> getPatternRestrictions() {
-		return concreteRestrictions;
-	}
-
-	public void setConcreteRestrictions(List<PatternRestriction> concreteRestrictions) {
-		this.concreteRestrictions = concreteRestrictions;
+		return patternRestrictions;
 	}
 	
 	public int getId() {
@@ -186,8 +154,8 @@ public class PatternNode {
 
 	@Override
 	public String toString() {
-		return "\n         PatternNode [type=" + type + " name=" + name + ", id=" + id + ", concreteRestrictions="
-				+ concreteRestrictions + "]";
+		return "\n         PatternNode [type=" + type + " name=" + name + ", id=" + id + ", value=" + value 
+				+ ", concreteRestrictions=" + patternRestrictions + "]";
 	}
 
 	public String toString2() {
@@ -197,7 +165,7 @@ public class PatternNode {
 	public void remove() {
 		int i=0, j=0;
 		List<PatternRestriction> listCR = new ArrayList<>();
-		for(PatternRestriction cr : concreteRestrictions) {
+		for(PatternRestriction cr : patternRestrictions) {
 			listCR.add(cr);
 			i++;
 		}
@@ -208,5 +176,19 @@ public class PatternNode {
 		
 	}
 	
+	public void generateValue() {
+		NodeValueGenerator.generateValue(this);
+	}
+	
+	public void generateSpamValue() {
+		NodeValueGenerator.generateSpamValue(this);
+	}
+	
+	public void clearValues() {
+		setValue(null);
+		for(PatternRestriction patternRestriction : patternRestrictions) {
+			patternRestriction.clearCollisionCnt();
+		}
+	}
 
 }
