@@ -177,6 +177,17 @@ public class PatternRow {
 		}
 		return patternRow;
 	}
+
+	public PatternRow copyWithSelfRestrictions() {
+		PatternRow patternRow = new PatternRow();
+		patternRow.setTableName(tableName);
+		patternRow.setTableAlias(tableAlias);
+		for(PatternNode patternNode : patternNodes) {
+			patternRow.addPatternNode(patternNode.copyWithSelfRestrictions());
+		}
+		return patternRow;
+	}
+	
 	
 	public void clearValues() {
 		for(PatternNode patternNode : patternNodes) {

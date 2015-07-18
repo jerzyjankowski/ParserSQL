@@ -55,6 +55,7 @@ public class XMLParser {
 					
 		 
 				}
+				tables.add(table);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -138,5 +139,12 @@ public class XMLParser {
 		this.printMode=mode;
 	}
 
+	public List<XMLTable> getTables() {
+		return tables;
+	}
+
+	public void setTables(List<XMLTable> tables) {
+		this.tables = tables;
+	}
 	
 }

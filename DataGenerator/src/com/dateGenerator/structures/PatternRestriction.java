@@ -106,14 +106,10 @@ public class PatternRestriction {
 		try {
 			for(PatternNode node : nodes) {
 				expression1 = node.replaceNameWithValue(expression1);
-//				if(expression1.contains(node.getName())) {//always?
-//					expression1 = expression1.replace(node.getName(), node.getValue().toString());
-//				}
 			}
-//			System.out.println("expression: " + expression1);
 		}
 		catch(Exception e){
-			System.out.println("catched exception " + e);
+			System.out.println("cought exception " + e);
 		}
 		expression1 = expression1.replace(" ", "");
 		if(operation.equals("=")) {

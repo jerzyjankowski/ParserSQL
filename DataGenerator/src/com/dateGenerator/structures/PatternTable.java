@@ -158,7 +158,8 @@ public class PatternTable {
 	}
 	
 	public void initiatePatternRow() {
-		addPatternRow(mainPatternRow.copy());
+		PatternRow patternRow = mainPatternRow.copyWithSelfRestrictions();
+		addPatternRow(patternRow);
 	}
 
 	@Override

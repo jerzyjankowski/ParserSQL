@@ -7,10 +7,10 @@ public class XMLColumn {
 	
 	private String name;
 	private float nullPercentage = 0;
-	private XMLColumnTypes type = XMLColumnTypes.INT;
+	private XMLColumnTypes type = XMLColumnTypes.INTEGER;
 
-	private int minValue;
-	private int maxValue;
+	private Integer minValue = null;
+	private Integer maxValue = null;
 	
 	private float minUniquePercentage = 0;
 	private float maxUniquePercentage = 100;
@@ -45,18 +45,18 @@ public class XMLColumn {
 		if(rec.equals("DATE")) this.type = XMLColumnTypes.DATE;
 		else if(rec.equals("FLOAT")) this.type = XMLColumnTypes.FLOAT;
 		else if(rec.equals("STRING")) this.type = XMLColumnTypes.STRING;
-		else  this.type = XMLColumnTypes.INT;
+		else  this.type = XMLColumnTypes.INTEGER;
 	}
-	public int getMinValue() {
+	public Integer getMinValue() {
 		return minValue;
 	}
-	public void setMinValue(int minValue) {
+	public void setMinValue(Integer minValue) {
 		this.minValue = minValue;
 	}
-	public int getMaxValue() {
+	public Integer getMaxValue() {
 		return maxValue;
 	}
-	public void setMaxValue(int maxValue) {
+	public void setMaxValue(Integer maxValue) {
 		this.maxValue = maxValue;
 	}
 	public float getNullPercentage() {

@@ -74,6 +74,14 @@ public class OutputAll {
 		tablesMap = new HashMap<>();
 	}
 	
+	public int getRowNumInTable(String tableName) {
+		for(OutputTable outputTable : tables) {
+			if(tableName.equals(outputTable.getName()))
+				return outputTable.getRows().size();
+		}
+		return 0;
+	}
+	
 	public List<OutputTable> getTables() {
 		return tables;
 	}

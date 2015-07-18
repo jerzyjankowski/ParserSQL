@@ -70,7 +70,7 @@ public class NodeValueGenerator {
 	
 	private static void generateIntValue(PatternNode patternNode) {
 
-		int minStartValue  = 0;
+		int minStartValue  = -1000;
 		int maxStartValue = 1000;
 		int minValue = minStartValue;
 		int maxValue = maxStartValue;
@@ -78,11 +78,19 @@ public class NodeValueGenerator {
 		Set<Integer> forbiddenVal = new HashSet<>();
 		List<PatternRestriction> multipleNodeRestrictions = new ArrayList<>();
 		Random rand = new Random();
+		List<PatternRestriction> tempPatternRestrictionList = new ArrayList<>();
 		
 		//find all restrictions, get minValue and maxValue from simple oneargument restrictions 
 		//and remember all multiargument restrictions
-		for (PatternRestriction pRes : patternNode.getPatternRestrictions()) {
-
+		tempPatternRestrictionList.addAll(patternNode.getPatternRestrictions());
+		Random random = new Random();
+		
+		while(!tempPatternRestrictionList.isEmpty()) {
+			//randomize patternRestrictions because sometimes there isn't the one way possible but different way could be ok
+			//these should be changed into one better solution
+			int index = random.nextInt(tempPatternRestrictionList.size());
+			PatternRestriction pRes = tempPatternRestrictionList.remove(index);
+			
 			String operation = pRes.getRestriction().getBinaryExpression()
 					.getStringExpression();
 			String expression = pRes.getRestriction().getBinaryExpression()
@@ -238,7 +246,6 @@ public class NodeValueGenerator {
 			else
 				value = minValue;
 		} while (forbiddenVal.contains(value));
-		
 		patternNode.setValue(value);
 	}
 }

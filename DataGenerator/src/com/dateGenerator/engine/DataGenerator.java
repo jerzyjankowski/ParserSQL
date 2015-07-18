@@ -51,27 +51,24 @@ public class DataGenerator {
 						}
 					}
 				}
-//				System.out.print("\n" + pRow + " ::: " + resRow.size() + ":::");
-//				for(PatternRow pRowTemp : resRow) {
-//					System.out.print(pRowTemp.getId() + " ");
-//				}
-//				System.out.println();
 				if(resRow.size() <= 1)
 					rowLeaves.add(pRow);
 			}
-		}
+		} 
 	}
-	
 	private void testPatternAll() {
 		for(PatternTable pTab : patternAll.getPatternTables()) {
 			for(PatternRow pRow : pTab.getPatternRows()) {
+				System.out.println("-----");
 				for(PatternNode pNod : pRow.getPatternNodes()) {
 					for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
-						System.out.println(pRes.getRestriction().getBinaryExpression().toString());
-						for(PatternNode pNodRes : pRes.getPatternNodes()) {
-							System.out.print("   " + pNodRes.getName() + ":" + pNodRes.getValue());
+						if(pRes.getRestriction().getBinaryExpression().toString().contains("n")) {
+							System.out.println(pRes.getRestriction().getBinaryExpression().toString());
+							for(PatternNode pNodRes : pRes.getPatternNodes()) {
+								System.out.print("   " + pNodRes.getName() + ":" + pNodRes.getValue());
+							}
+							System.out.println();
 						}
-						System.out.println();
 					}
 				}
 			}
@@ -100,12 +97,10 @@ public class DataGenerator {
 			
 			for(PatternRow pr : allRows) {
 				if(!usedRows.get(pr)) {
-//					System.out.println("got leaf: " + pr.getId());
 					rowsToMake.push(pr);
 					visitedRows.put(pr, true);
 					while(!rowsToMake.empty()) {
 						patternRow = rowsToMake.pop();
-//						System.out.println("  got row: " + patternRow.getId());
 						usedRows.put(patternRow, true);
 						for(PatternNode pNod : patternRow.getPatternNodes()) {
 							if(pNod.getValue()!=null)
@@ -116,7 +111,6 @@ public class DataGenerator {
 									if(!visitedRows.get(nodeToRow.get(pNodRes))) {
 										visitedRows.put(nodeToRow.get(pNodRes), true);
 										rowsToMake.push(nodeToRow.get(pNodRes));
-//										System.out.println("    pushed: " + nodeToRow.get(pNodRes).getId());
 									}
 								}
 							}
@@ -126,24 +120,30 @@ public class DataGenerator {
 								boolean correctFlag = true;
 								pNod.generateValue();
 								for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
+
 									try{
 										correctFlag = pRes.check();
-										if(!correctFlag) 
+
+										if(!correctFlag) {
 											collisionRestriction = pRes;
+											break;
+										}
 									} catch(PatternRestriction.Unfinished u) {
 										
 									}
 									catch(Exception e) {
 										System.out.println("[DataGenerator]Exception: " + e);
+										e.printStackTrace();
 									}
 								}
 								if(correctFlag) 
 									break;
+
 								if(i == endFor) {
 									collisionRestriction.incrementCollisionCnt();
 									if(collisionRestriction.getCollisionCnt() > maxCollisionCnt) {
 										System.out.println("Couldn't make that restriction to happen: " + collisionRestriction);
-										break;//there may be no chance to satisfie that restriction
+										break;//there may be no chance to satisfy that restriction
 									}
 									for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
 										for(PatternNode pNodRes : pRes.getPatternNodes()) {
@@ -162,8 +162,25 @@ public class DataGenerator {
 				}
 				outputAll.addRow(pr, rowToTable.get(pr));
 			}
-//			testPatternAll();
+			testPatternAll();
 		}
+		
+		//generating spamRows example:
+		for(PatternTable patternTable : patternAll.getPatternTables()) {
+			int rowNum = outputAll.getRowNumInTable(patternTable.getName());
+			System.out.println(patternTable.getName() + " " + rowNum);
+			for(PatternRow patternMainRow = patternTable.getMainPatternRow(); 
+					rowNum < 42;
+					rowNum++) {
+				PatternRow pr = new PatternRow();
+				for(PatternNode pNod : patternMainRow.getPatternNodes()) {
+					pNod.generateValue();
+					pr.addPatternNode(pNod);
+				}
+				outputAll.addRow(pr, patternTable);
+			}
+		}
+		
 		System.out.println("********\n" + outputAll + "\n*********");
 	}
 }

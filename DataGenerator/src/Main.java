@@ -3,11 +3,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import output.CSVWriter;
+
 import com.dateGenerator.engine.DataGenerator;
 import com.dateGenerator.engine.FinderAliases;
 import com.dateGenerator.engine.SQLParser;
 import com.dateGenerator.structures.PatternAll;
+import com.dateGenerator.structures.output.OutputAll;
 import com.dateGenerator.xml.XMLParser;
+import com.dateGenerator.xml.XMLSpecificationLoader;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
@@ -23,28 +27,49 @@ public class Main {
 		 * for test purposes in class TestData there are example sqls and example table with column
 		 * later these all will be loaded from files
 		 */
-		TestData testData = new TestData(63);
+
+		PatternAll patternAll;
+		OutputAll outputAll;
+		String sqlQuery;
+
+//		TestData testData = new TestData(70);
+//		patternAll = testData.getPatternAll();
+//		outputAll = testData.getOutputAll();
+//		sqlQuery = testData.getSqlQuery();
+		
+		XMLSpecificationLoader loader = new XMLSpecificationLoader();
+		loader.load();
+		patternAll = loader.getPatternAll();
+		outputAll = loader.getOutputAll();
+		sqlQuery = loader.getSqlQuery();
+		
+
+		System.out.println("\n\n\npatternAll:\n" + patternAll);
+		System.out.println("\n\n\noutputAll:\n" + outputAll);
+		System.out.println("\n\n\nsqlQuery:\n" + sqlQuery);
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();
-		Statement statement = parserManager.parse(new StringReader(testData.getSqlString()));
+		Statement statement = parserManager.parse(new StringReader(sqlQuery));
 		
 		if (statement instanceof Select) 
 		{
-			System.out.println("START SQL: " + testData.getSqlString());
-			System.out.println("\nDATA: \n" + testData.getPatternAll() + "\n");
+			
+			System.out.println("START SELECT SQL: " + sqlQuery);
 			System.out.println("START ALL: \n");
 			
 			Select selectStatement = (Select) statement;
-			FinderAliases finderAliases = new FinderAliases(testData.getPatternAll());
+			FinderAliases finderAliases = new FinderAliases(patternAll);
 			PatternAll  patternAllWithAliases = finderAliases.parse(selectStatement);
 			
 			SQLParser sqlParser = new SQLParser(patternAllWithAliases);
-			PatternAll patternAll = sqlParser.parse(selectStatement);			
+			PatternAll parsedPatternAll = sqlParser.parse(selectStatement);			
 
-			DataGenerator dataGenerator = new DataGenerator(patternAll, testData.getOutputAll());
+			DataGenerator dataGenerator = new DataGenerator(patternAll, outputAll);
 			dataGenerator.generate();
 
-			System.out.println("patternAll: " + patternAll);
+			CSVWriter csvWriter = new CSVWriter(); 
+			csvWriter.write(outputAll);
+//			System.out.println("parsedPatternAll: " + parsedPatternAll);
 			
 			System.out.println("STOP ALL: \n");
 

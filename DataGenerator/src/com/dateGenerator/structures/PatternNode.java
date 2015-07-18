@@ -22,8 +22,6 @@ public class PatternNode {
 	private String tableName = "";
 	private String tableAlias = "";
 
-	private List<String> restrictions;
-	private List<Integer> patternRestrictionIds;
 	private List<PatternRestriction> patternRestrictions;
 	
 	public static void main(String... args) {
@@ -68,18 +66,14 @@ public class PatternNode {
 	
 	public PatternNode(String type, String name) {
 		this.name = name;
-		restrictions = new ArrayList<String>();
 		patternRestrictions = new ArrayList<>();
-		patternRestrictionIds = new ArrayList<>();
 		this.type = type;
 		this.id = lastId++;
 	}
 
 	public PatternNode(String type, String name, int id) {
 		this.name = name;
-		restrictions = new ArrayList<String>();
 		patternRestrictions = new ArrayList<>();
-		patternRestrictionIds = new ArrayList<>();
 		this.type = type;
 		this.id = id;
 	}
@@ -118,7 +112,18 @@ public class PatternNode {
 		PatternNode patternNode = new PatternNode(type, name);
 		patternNode.setTableName(tableName);
 		patternNode.setTableAlias(tableAlias);
-		patternNode.restrictions.addAll(this.getRestrictions());
+		return patternNode;
+	}
+	
+	public PatternNode copyWithSelfRestrictions() {
+		PatternNode patternNode = new PatternNode(type, name);
+		patternNode.setTableName(tableName);
+		patternNode.setTableAlias(tableAlias);
+		for(PatternRestriction patternRestriction : patternRestrictions) {
+			PatternRestriction newPatternRestriction = new PatternRestriction(patternRestriction);
+			newPatternRestriction.addNode(patternNode);
+			patternNode.addPatternRestriction(newPatternRestriction);
+		}
 		return patternNode;
 	}
 	
@@ -141,22 +146,6 @@ public class PatternNode {
 	
 	public void removePatternRestrictionUnrecursively(PatternRestriction patternRestriction) {
 		patternRestrictions.remove(patternRestriction);
-	}
-	
-	public List<String> getRestrictions() {
-		return restrictions;
-	}
-
-	public void setRestrictions(List<String> restrictions) {
-		this.restrictions = restrictions;
-	}
-
-	public List<Integer> getPatternRestrictionIds() {
-		return patternRestrictionIds;
-	}
-
-	public void setPatternRestrictionIds(List<Integer> patternRestrictionIds) {
-		this.patternRestrictionIds = patternRestrictionIds;
 	}
 
 	public List<PatternRestriction> getPatternRestrictions() {
@@ -207,10 +196,6 @@ public class PatternNode {
 	public String toString() {
 		return "\n           PatternNode [type=" + type + " name=" + name + ", id=" + id + ", tableAlias=" + tableAlias + ", value=" + value 
 				+ ", patternRestrictions=" + patternRestrictions + "]";
-	}
-
-	public String toString2() {
-		return "PatternNode [name=" + name + ", restrictions=" + restrictions + "]";
 	}
 
 	public void remove() {
