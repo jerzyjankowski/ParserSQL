@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.dateGenerator.structures.PatternNode;
 import com.dateGenerator.structures.PatternRow;
+import com.dateGenerator.structures.PatternTable;
 
 public class OutputTable {
 	private String name;
@@ -20,6 +21,13 @@ public class OutputTable {
 		columns = new ArrayList<>();
 	}
 
+	public OutputTable(PatternTable patternTable) {
+		this(patternTable.getName());
+		for(String columnName : patternTable.getColumnNames()) {
+			addColumn(columnName);
+		}
+	}
+	
 	public String getName() {
 		return name;
 	}

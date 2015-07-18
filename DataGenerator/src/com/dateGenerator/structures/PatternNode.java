@@ -111,7 +111,6 @@ public class PatternNode {
 		if(!tableAlias.equals(""))
     		expression = expression.replaceAll(taColumnPattern0, "$1" + value + "$3").replaceAll(taColumnPattern1, value + "$2").replaceAll(taColumnPattern2, "$1" + value);
 
-    	System.out.println("Expression after replaces: " + expression);
 		return expression;
 	}
 	
@@ -206,7 +205,7 @@ public class PatternNode {
 
 	@Override
 	public String toString() {
-		return "\n         PatternNode [type=" + type + " name=" + name + ", id=" + id + ", tableAlias=" + tableAlias + ", value=" + value 
+		return "\n           PatternNode [type=" + type + " name=" + name + ", id=" + id + ", tableAlias=" + tableAlias + ", value=" + value 
 				+ ", patternRestrictions=" + patternRestrictions + "]";
 	}
 

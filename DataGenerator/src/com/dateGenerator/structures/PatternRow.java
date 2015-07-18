@@ -160,7 +160,7 @@ public class PatternRow {
 
 	@Override
 	public String toString() {
-		return "\n      PatternRow [id=" + id + ", tableName=" + tableName + ", tableAlias=" + tableAlias +
+		return "\n        PatternRow [id=" + id + ", tableName=" + tableName + ", tableAlias=" + tableAlias +
 				", patternNodes(" + patternNodes.size() + ")=" + patternNodes + "]";
 	}
 

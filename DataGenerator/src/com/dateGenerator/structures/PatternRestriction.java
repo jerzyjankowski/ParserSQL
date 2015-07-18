@@ -76,7 +76,7 @@ public class PatternRestriction {
 		for(PatternNode node : this.nodes) {
 			nodes.add("PatternNode [name=" + node.getName() + ", id=" + node.getId() + "]");
 		}
-		return "\n            PatternRestriction [ restriction="
+		return "\n              PatternRestriction [ restriction="
 				+ restriction + ", nodes=" + nodes + "]";
 	}
 

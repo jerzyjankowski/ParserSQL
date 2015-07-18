@@ -8,6 +8,7 @@ import java.util.Set;
 public class PatternTable {
 	private String name;
 	private List<PatternRow> patternRows;
+	private PatternRow mainPatternRow;
 	private Set<String> columnNames;
 	private String alias = "";
 
@@ -146,10 +147,24 @@ public class PatternTable {
 		}
 	}
 
+	public PatternRow getMainPatternRow() {
+		return mainPatternRow;
+	}
+
+	public void setMainPatternRow(PatternRow mainPatternRow) {
+		this.mainPatternRow = mainPatternRow;
+		for(String column : mainPatternRow.getColumnNames()) 
+			this.columnNames.add(column);
+	}
+	
+	public void initiatePatternRow() {
+		addPatternRow(mainPatternRow.copy());
+	}
+
 	@Override
 	public String toString() {
-		return "\n   PatternTable [name=" + name + " as " + alias + ", patternRows(" + patternRows.size() + ")=" + patternRows
-				+ "]";
+		return "\n   PatternTable [name=" + name + " as " + alias + ",\n     mainPatternRow=" + mainPatternRow +
+				",\n     patternRows(" + patternRows.size() + ")=" + patternRows + "]";
 	}
 	
 	public boolean containsColumn(String column) {
@@ -169,6 +184,7 @@ public class PatternTable {
 		for(PatternRow patternRow : patternRows) {
 			patternTable.addPatternRow(patternRow.copy());
 		}
+		patternTable.setMainPatternRow(mainPatternRow);
 		return patternTable;
 	}
 	

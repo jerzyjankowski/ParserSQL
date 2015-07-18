@@ -43,6 +43,9 @@ public class TestData {
 		case 23:
 			sqlString = "SELECT * FROM pracownicy join etaty on etat = nazwa  where placa_pod > placa_min;  ";
 			break;
+		case 230:
+			sqlString = "SELECT * FROM pracownicy join etaty on placa_pod > placa_min;  ";
+			break;
 //		case 23:
 //			sqlString = "SELECT * FROM pracownicy JOIN zespoly USING (id_zesp);  ";
 //			break;
@@ -96,6 +99,7 @@ public class TestData {
 			break;
 		}
 
+		outputAll = new OutputAll();
 		
 		PatternTable patternTable = new PatternTable("pracownicy");
 		PatternRow patternRow = new PatternRow();
@@ -103,43 +107,47 @@ public class TestData {
 		patternRow.addPatternNode(new PatternNode("integer", "etat"));
 		patternRow.addPatternNode(new PatternNode("integer", "placa_pod"));
 		patternRow.addPatternNode(new PatternNode("integer", "placa_dod"));
-		patternTable.addPatternRow(patternRow);
+		patternTable.setMainPatternRow(patternRow);
 		patternAll.addPatternTable(patternTable);
+		outputAll.addTable(new OutputTable(patternTable));
 
 		patternTable = new PatternTable("etaty");
 		patternRow = new PatternRow();
 		patternRow.addPatternNode(new PatternNode("integer", "nazwa"));
 		patternRow.addPatternNode(new PatternNode("integer", "placa_min"));
-		patternTable.addPatternRow(patternRow);
+		patternTable.setMainPatternRow(patternRow);
 		patternAll.addPatternTable(patternTable);
+		outputAll.addTable(new OutputTable(patternTable));
 
 		patternTable = new PatternTable("zespoly");
 		patternRow = new PatternRow();
 		patternRow.addPatternNode(new PatternNode("integer", "zespol_nazwa"));
 		patternRow.addPatternNode(new PatternNode("integer", "dodatek_min"));
 		patternRow.addPatternNode(new PatternNode("integer", "placa_dod"));
-		patternTable.addPatternRow(patternRow);
+		patternTable.setMainPatternRow(patternRow);
 		patternAll.addPatternTable(patternTable);
+		outputAll.addTable(new OutputTable(patternTable));
+		
+		patternAll.initiatePatternRow();
 		
 		
-		outputAll = new OutputAll();
-		OutputTable table = new OutputTable("pracownicy");
-		table.addColumn("nazwisko");
-		table.addColumn("etat");
-		table.addColumn("placa_pod");
-		table.addColumn("placa_dod");
-		outputAll.addTable(table);
-
-		table = new OutputTable("etaty");
-		table.addColumn("nazwa");
-		table.addColumn("placa_min");
-		outputAll.addTable(table);
-
-		table = new OutputTable("zespoly");
-		table.addColumn("zespol_nazwa");
-		table.addColumn("dodatek_min");
-		table.addColumn("placa_dod");
-		outputAll.addTable(table);
+//		OutputTable table = new OutputTable("pracownicy");
+//		table.addColumn("nazwisko");
+//		table.addColumn("etat");
+//		table.addColumn("placa_pod");
+//		table.addColumn("placa_dod");
+//		outputAll.addTable(table);
+//
+//		table = new OutputTable("etaty");
+//		table.addColumn("nazwa");
+//		table.addColumn("placa_min");
+//		outputAll.addTable(table);
+//
+//		table = new OutputTable("zespoly");
+//		table.addColumn("zespol_nazwa");
+//		table.addColumn("dodatek_min");
+//		table.addColumn("placa_dod");
+//		outputAll.addTable(table);
 	}
 
 	public String getSqlString() {

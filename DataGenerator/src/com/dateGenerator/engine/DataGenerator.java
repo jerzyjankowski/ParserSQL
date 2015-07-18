@@ -140,10 +140,11 @@ public class DataGenerator {
 								if(correctFlag) 
 									break;
 								if(i == endFor) {
-									System.out.println("ups i = " + endFor);
 									collisionRestriction.incrementCollisionCnt();
-									if(collisionRestriction.getCollisionCnt() > maxCollisionCnt)
+									if(collisionRestriction.getCollisionCnt() > maxCollisionCnt) {
+										System.out.println("Couldn't make that restriction to happen: " + collisionRestriction);
 										break;//there may be no chance to satisfie that restriction
+									}
 									for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
 										for(PatternNode pNodRes : pRes.getPatternNodes()) {
 											pNodRes.setValue(null);
@@ -161,7 +162,7 @@ public class DataGenerator {
 				}
 				outputAll.addRow(pr, rowToTable.get(pr));
 			}
-			testPatternAll();
+//			testPatternAll();
 		}
 		System.out.println("********\n" + outputAll + "\n*********");
 	}

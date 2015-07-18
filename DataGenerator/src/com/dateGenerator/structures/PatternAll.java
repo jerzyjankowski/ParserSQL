@@ -18,6 +18,12 @@ public class PatternAll {
 		patternTables = new ArrayList<PatternTable>();
 	}
 	
+	public void initiatePatternRow() {
+		for(PatternTable patternTable : patternTables) {
+			patternTable.initiatePatternRow();
+		}
+	}
+	
 	public void prepare() {
 		for(PatternTable pt : patternTables) {
 			pt.prepare();
@@ -31,16 +37,21 @@ public class PatternAll {
 			}
 		}
 	}
-	
+	/**
+	 * 
+	 * @param restrictions
+	 */
 	public void addRestrictions(List<Restriction> restrictions) {
 		
 		boolean containsColumnFlag;
 		for(Restriction restriction : restrictions) {
+			System.out.println("\n[01] restriction=" + restriction);
 			List<Integer> intList = new ArrayList<>();//contains list of numbers of PatternRows in tables
-			List<PatternRestriction> concRestrList = new ArrayList<PatternRestriction>();
+			List<PatternRestriction> pRestrList = new ArrayList<PatternRestriction>();
 			int k = 0;
 			int product = 2;
 			for(PatternTable patternTable : patternTables) {
+				System.out.println("[02] patternTable.getName()=" + patternTable.getName());
 				containsColumnFlag = false;
 				for(String column : restriction.getColumns()) {
 					if(patternTable.containsColumn(column)) {
@@ -53,12 +64,13 @@ public class PatternAll {
 					intList.add(x);
 					product *= x;
 				}
+				System.out.println("[03] containsColumnFlag=" + containsColumnFlag + " " + intList + " " + product);
 			}
 			for(int i = 0; i < product; i++) {
 				if(i<product/2)
-					concRestrList.add(new PatternRestriction(restriction));
+					pRestrList.add(new PatternRestriction(restriction));
 				else
-					concRestrList.add(new PatternRestriction(restriction.getNegative()));					
+					pRestrList.add(new PatternRestriction(restriction.getNegative()));					
 			}
 			int i = 0;
 			for(PatternTable patternTable : patternTables) {
@@ -70,7 +82,8 @@ public class PatternAll {
 					}
 				}
 				if(containsColumnFlag) {
-					patternTable.addPatternRestriction(concRestrList, intList, i);
+					System.out.println("[04] pRestrList=" + pRestrList + ", intList=" + intList + ", i=" + i);
+					patternTable.addPatternRestriction(pRestrList, intList, i);
 					i++;
 				}
 			}
