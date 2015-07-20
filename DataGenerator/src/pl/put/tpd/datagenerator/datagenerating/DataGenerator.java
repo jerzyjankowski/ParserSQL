@@ -154,7 +154,7 @@ public class DataGenerator {
 				}
 				outputAll.addRow(pr, rowToTable.get(pr));
 			}
-			testPatternAll();
+//			testPatternAll();
 		}
 		
 		//generating spamRows example:

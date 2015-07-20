@@ -25,6 +25,10 @@
 				<NAME>n</NAME>
 				<TYPE>INTEGER</TYPE>
 			</ATTRIBUTE>
+			<ATTRIBUTE>
+				<NAME>name</NAME>
+				<TYPE>STRING</TYPE>
+			</ATTRIBUTE>
 		</ATTRIBUTES>
 	</TABLE>
 	
@@ -45,6 +49,10 @@
 			<ATTRIBUTE>
 				<NAME>i</NAME>
 				<TYPE>INTEGER</TYPE>
+			</ATTRIBUTE>
+			<ATTRIBUTE>
+				<NAME>a_name</NAME>
+				<TYPE>STRING</TYPE>
 			</ATTRIBUTE>
 		</ATTRIBUTES>
 	</TABLE>

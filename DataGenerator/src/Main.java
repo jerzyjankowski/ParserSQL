@@ -48,7 +48,7 @@ public class Main {
 			
 			Select selectStatement = (Select) statement;
 			
-			//finds aliases in sql statement and writes them into patternAll
+			//finds aliases in SQL statement and writes them into patternAll
 			FinderAliases finderAliases = new FinderAliases(patternAll);
 			PatternAll  patternAllWithAliases = finderAliases.parse(selectStatement);
 			

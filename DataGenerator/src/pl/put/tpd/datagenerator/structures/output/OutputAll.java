@@ -24,9 +24,9 @@ public class OutputAll {
 		patternRow.addPatternNode(nodePDod);
 		patternTable.addPatternRow(patternRow);
 		patternAll.addPatternTable(patternTable);
-		nodeEtat.setValue(7);
-		nodePPod.setValue(8);
-		nodePDod.setValue(9);
+		nodeEtat.setValue("7");
+		nodePPod.setValue("8");
+		nodePDod.setValue("9");
 		
 		OutputAll all = new OutputAll();
 		OutputTable table = new OutputTable("pracownicy");

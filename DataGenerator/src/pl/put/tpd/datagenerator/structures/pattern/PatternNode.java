@@ -19,7 +19,7 @@ public class PatternNode {
 	private static int lastId = 0;
 	private int id;
 	private String type;
-	private Integer value;
+	private String value;
 
 
 	private String tableName = "";
@@ -157,6 +157,10 @@ public class PatternNode {
 		return expression;
 	}
 	
+	public boolean findSelfInString(String string) {
+		return (!string.equals(replaceNameWithValue(string)));
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -194,11 +198,11 @@ public class PatternNode {
 		this.type = type;
 	}
 
-	public Integer getValue() {
+	public String getValue() {
 		return value;
 	}
 
-	public void setValue(Integer value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 

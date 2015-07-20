@@ -16,8 +16,14 @@ public class CSVWriter {
 		try {
 			for(OutputTable outputTable : outputAll.getTables()) {
 				resultWriter = new PrintWriter("output/" + outputTable.getName() + ".csv", "UTF-8");
+				String line = "";
+				for(String s : outputTable.getColumns()) {
+					line += s + ",";
+				}
+				line = line.substring(0, line.length()-1);
+				resultWriter.println(line);
 				for(OutputRow outputRow : outputTable.getRows()) {
-					String line = "";
+					line = "";
 					for(String s : outputRow.getNodes())
 						line += s + ",";
 					line = line.substring(0, line.length()-1);
