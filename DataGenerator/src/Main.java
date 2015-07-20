@@ -3,21 +3,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import output.CSVWriter;
-
-import com.dateGenerator.engine.DataGenerator;
-import com.dateGenerator.engine.FinderAliases;
-import com.dateGenerator.engine.SQLParser;
-import com.dateGenerator.structures.PatternAll;
-import com.dateGenerator.structures.output.OutputAll;
-import com.dateGenerator.xml.XMLParser;
-import com.dateGenerator.xml.XMLSpecificationLoader;
-
+import pl.put.tpd.datagenerator.datagenerating.DataGenerator;
+import pl.put.tpd.datagenerator.datagenerating.TestData;
+import pl.put.tpd.datagenerator.graphbuilding.FinderAliases;
+import pl.put.tpd.datagenerator.graphbuilding.SQLParser;
+import pl.put.tpd.datagenerator.inputloding.XMLParser;
+import pl.put.tpd.datagenerator.inputloding.XMLSpecificationLoader;
+import pl.put.tpd.datagenerator.outputwriting.CSVWriter;
+import pl.put.tpd.datagenerator.structures.output.OutputAll;
+import pl.put.tpd.datagenerator.structures.pattern.PatternAll;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Select;
-import Util.TestData;
 
  
 public class Main {
