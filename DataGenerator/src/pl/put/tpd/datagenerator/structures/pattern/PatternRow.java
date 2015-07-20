@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import pl.put.tpd.datagenerator.structures.pattern.exceptions.NotOnlySelfRestrictions;
 import pl.put.tpd.datagenerator.structures.restriction.Restriction;
 
 public class PatternRow {
@@ -50,7 +51,16 @@ public class PatternRow {
 		System.out.println("\nrow1: " + row1);
 		System.out.println("\nrow2: " + row2);
 	}
+
+	public PatternRow() {
+		this.id = lastId++;
+		patternNodes = new ArrayList<PatternNode>();
+		columnNames = new HashSet<String>();
+	}
 	
+	/**
+	 * 
+	 */
 	public void remove() {
 		for(PatternNode patternNode : patternNodes) {
 			patternNode.remove();
@@ -58,12 +68,10 @@ public class PatternRow {
 		patternNodes.clear();
 	}
 
-	public PatternRow() {
-		this.id = lastId++;
-		patternNodes = new ArrayList<PatternNode>();
-		columnNames = new HashSet<String>();
-	}
-
+	/**
+	 * 
+	 * @param patternRow
+	 */
 	public PatternRow(PatternRow patternRow) {
 		this.id = lastId++;
 		this.patternNodes = new ArrayList<PatternNode>();
@@ -86,15 +94,19 @@ public class PatternRow {
 			PatternRestriction cr2 = new PatternRestriction(cr);
 			for(PatternNode pn : cr.getPatternNodes()) {
 				if(mapOldNodesToNewNodes.containsKey(pn)) {
-					cr2.addNode2(mapOldNodesToNewNodes.get(pn));
+					cr2.addNodeAddingSelfToNode(mapOldNodesToNewNodes.get(pn));
 				}
 				else {
-					cr2.addNode2(pn);
+					cr2.addNodeAddingSelfToNode(pn);
 				}
 			}
 		}
 	}
 
+	/**
+	 * 
+	 * @param patternRestriction
+	 */
 	public void addPatternRestriction(PatternRestriction patternRestriction) {
 		for (String column : patternRestriction.getColumns()) {
 			if(getNodeByName(column) != null) {
@@ -103,6 +115,11 @@ public class PatternRow {
 		}
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
 	private PatternNode getNodeByName(String name) {
 		for(PatternNode patternNode : patternNodes) {
 			if(name.equals(patternNode.getName()))
@@ -114,6 +131,15 @@ public class PatternRow {
 			
 		}
 		return null;
+	}
+	
+	/**
+	 * 
+	 */
+	public void clearValues() {
+		for(PatternNode patternNode : patternNodes) {
+			patternNode.clearValue();
+		}
 	}
 	
 	public int getId() {
@@ -160,16 +186,20 @@ public class PatternRow {
 		this.patternNodes = patternNodes;
 	}
 
+	public Set<String> getColumnNames() {
+		return columnNames;
+	}
+
 	@Override
 	public String toString() {
 		return "\n        PatternRow [id=" + id + ", tableName=" + tableName + ", tableAlias=" + tableAlias +
 				", patternNodes(" + patternNodes.size() + ")=" + patternNodes + "]";
 	}
-
-	public Set<String> getColumnNames() {
-		return columnNames;
-	}
 	
+	/**
+	 * copy patternRow without restriction on included patternNodes
+	 * @return
+	 */
 	public PatternRow copy() {
 		PatternRow patternRow = new PatternRow();
 		patternRow.setTableName(tableName);
@@ -180,20 +210,22 @@ public class PatternRow {
 		return patternRow;
 	}
 
+	/**
+	 * copy patternRow with restrictions from patternNodes from that patternRow that have only one node connected
+	 * used to initiate patternRow
+	 * @return
+	 */
 	public PatternRow copyWithSelfRestrictions() {
 		PatternRow patternRow = new PatternRow();
 		patternRow.setTableName(tableName);
 		patternRow.setTableAlias(tableAlias);
 		for(PatternNode patternNode : patternNodes) {
-			patternRow.addPatternNode(patternNode.copyWithSelfRestrictions());
+			try {
+				patternRow.addPatternNode(patternNode.copyWithSelfRestrictions());
+			} catch (NotOnlySelfRestrictions e) {
+				e.printStackTrace();
+			}
 		}
 		return patternRow;
-	}
-	
-	
-	public void clearValues() {
-		for(PatternNode patternNode : patternNodes) {
-			patternNode.clearValues();
-		}
 	}
 }

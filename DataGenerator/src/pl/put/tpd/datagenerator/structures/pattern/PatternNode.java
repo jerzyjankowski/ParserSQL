@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.Set;
 
 import pl.put.tpd.datagenerator.datagenerating.NodeValueGenerator;
+import pl.put.tpd.datagenerator.datagenerating.exceptions.NotExpectedNodeTypeException;
+import pl.put.tpd.datagenerator.structures.pattern.exceptions.NotOnlySelfRestrictions;
 import pl.put.tpd.datagenerator.structures.restriction.Restriction;
 
 public class PatternNode {
@@ -49,10 +51,10 @@ public class PatternNode {
 			PatternRestriction patternRestriction2 = new PatternRestriction(cr);
 			for(PatternNode pn : cr.getPatternNodes()) {
 				if(mapa.containsKey(pn)) {
-					patternRestriction2.addNode2(mapa.get(pn));
+					patternRestriction2.addNodeAddingSelfToNode(mapa.get(pn));
 				}
 				else {
-					patternRestriction2.addNode2(pn);
+					patternRestriction2.addNodeAddingSelfToNode(pn);
 				}
 			}
 		}
@@ -78,7 +80,53 @@ public class PatternNode {
 		this.type = type;
 		this.id = id;
 	}
+	/**
+	 * removes all restrictions connected with that patternNode
+	 */
+	public void remove() {
+		List<PatternRestriction> listCR = new ArrayList<>();
+		for(PatternRestriction cr : patternRestrictions) {
+			listCR.add(cr);
+		}
+		for(PatternRestriction cr : listCR) {
+			cr.remove();
+		}
+	}
 	
+	/**
+	 * removes patternRestriction from list of patternRestrictions connected to that node
+	 * @param patternRestriction
+	 */
+	public void removePatternRestrictionUnrecursively(PatternRestriction patternRestriction) {
+		patternRestrictions.remove(patternRestriction);
+	}
+
+	/**
+	 * generate value using static class
+	 */
+	public void generateValue() {
+		try {
+			NodeValueGenerator.generateValue(this);
+		} catch (NotExpectedNodeTypeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * set null value and clear collision counter in connected restrictions
+	 */
+	public void clearValue() {
+		setValue(null);
+		for(PatternRestriction patternRestriction : patternRestrictions) {
+			patternRestriction.clearCollisionCnt();
+		}
+	}
+	/**
+	 * 
+	 * @param expression
+	 * @return String expression with values of node instead of his fullname appearance with column name or table name and column name or table alias and column name
+	 */
 	public String replaceNameWithValue(String expression) {
 		
 		String notCharPattern = "[^a-zA-Z0-9_.]";
@@ -109,25 +157,6 @@ public class PatternNode {
 		return expression;
 	}
 	
-	public PatternNode copy() {
-		PatternNode patternNode = new PatternNode(type, name);
-		patternNode.setTableName(tableName);
-		patternNode.setTableAlias(tableAlias);
-		return patternNode;
-	}
-	
-	public PatternNode copyWithSelfRestrictions() {
-		PatternNode patternNode = new PatternNode(type, name);
-		patternNode.setTableName(tableName);
-		patternNode.setTableAlias(tableAlias);
-		for(PatternRestriction patternRestriction : patternRestrictions) {
-			PatternRestriction newPatternRestriction = new PatternRestriction(patternRestriction);
-			newPatternRestriction.addNode(patternNode);
-			patternNode.addPatternRestriction(newPatternRestriction);
-		}
-		return patternNode;
-	}
-	
 	public String getName() {
 		return name;
 	}
@@ -143,10 +172,6 @@ public class PatternNode {
 	
 	public void addPatternRestrictionUnrecursively(PatternRestriction patternRestriction) {
 		patternRestrictions.add(patternRestriction);
-	}
-	
-	public void removePatternRestrictionUnrecursively(PatternRestriction patternRestriction) {
-		patternRestrictions.remove(patternRestriction);
 	}
 
 	public List<PatternRestriction> getPatternRestrictions() {
@@ -198,34 +223,36 @@ public class PatternNode {
 		return "\n           PatternNode [type=" + type + " name=" + name + ", id=" + id + ", tableAlias=" + tableAlias + ", value=" + value 
 				+ ", patternRestrictions=" + patternRestrictions + "]";
 	}
-
-	public void remove() {
-		int i=0, j=0;
-		List<PatternRestriction> listCR = new ArrayList<>();
-		for(PatternRestriction cr : patternRestrictions) {
-			listCR.add(cr);
-			i++;
-		}
-		for(PatternRestriction cr : listCR) {
-			cr.remove();
-			j++;
-		}
-		
+	
+	/**
+	 * 
+	 * @return patternNode with same type, name, table name and table aliases, connected restrictions are nor preserved nor copied
+	 */
+	public PatternNode copy() {
+		PatternNode patternNode = new PatternNode(type, name);
+		patternNode.setTableName(tableName);
+		patternNode.setTableAlias(tableAlias);
+		return patternNode;
 	}
 	
-	public void generateValue() {
-		NodeValueGenerator.generateValue(this);
-	}
-	
-	public void generateSpamValue() {
-		NodeValueGenerator.generateSpamValue(this);
-	}
-	
-	public void clearValues() {
-		setValue(null);
+	/**
+	 * 
+	 * @return patternNode with same type, name, table name and table aliases, connected restrictions copied but connected to that new patternNode only when they where connected only to this node
+	 * @throws NotOnlySelfRestrictions
+	 */
+	public PatternNode copyWithSelfRestrictions() throws NotOnlySelfRestrictions{
+		PatternNode patternNode = new PatternNode(type, name);
+		patternNode.setTableName(tableName);
+		patternNode.setTableAlias(tableAlias);
 		for(PatternRestriction patternRestriction : patternRestrictions) {
-			patternRestriction.clearCollisionCnt();
+			for(PatternNode pn : patternRestriction.getPatternNodes())
+				if(pn != this) 
+					throw new NotOnlySelfRestrictions();  
+			PatternRestriction newPatternRestriction = new PatternRestriction(patternRestriction);
+			newPatternRestriction.addNode(patternNode);
+			patternNode.addPatternRestriction(newPatternRestriction);
 		}
+		return patternNode;
 	}
 
 }

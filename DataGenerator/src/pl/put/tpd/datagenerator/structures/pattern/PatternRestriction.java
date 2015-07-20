@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import pl.put.tpd.datagenerator.datagenerating.PatternFulfilledChecking;
+import pl.put.tpd.datagenerator.structures.pattern.exceptions.UnexpectedExpression;
 import pl.put.tpd.datagenerator.structures.restriction.Restriction;
 
 public class PatternRestriction {
@@ -12,15 +14,55 @@ public class PatternRestriction {
 	private List<PatternNode> nodes;
 	private int collisionCnt = 0;
 	
+	public PatternRestriction(PatternRestriction patternRestriction) {
+		this.restriction = patternRestriction.getRestriction();
+		this.nodes = new ArrayList<>();
+	}
+
+	public PatternRestriction(Restriction restriction) {
+		this.nodes = new ArrayList<>();
+		this.restriction = restriction.copy();
+	}
+
+	/**
+	 * removes from connected nodes connections to that restriction
+	 */
+	public void remove() {
+		for(PatternNode pn : nodes) {
+			pn.removePatternRestrictionUnrecursively(this); 
+		}
+	}
+	
+	/**
+	 * 
+	 * @return if expression is valid or true if there are some nodes connected that doesn't have values generated
+	 * @throws UnexpectedExpression
+	 */
+	public boolean check() throws UnexpectedExpression {
+		return PatternFulfilledChecking.check(this);
+	}
+	
+	/**
+	 * add node to list of connected nodes
+	 * @param node
+	 */
 	public void addNode(PatternNode node) {
 		nodes.add(node);
 	}
 	
-	public void addNode2(PatternNode node) {
+	/**
+	 * add node to list of connected nodes and add self to that node's list of connected restrictions
+	 * @param node
+	 */
+	public void addNodeAddingSelfToNode(PatternNode node) {
 		nodes.add(node);
 		node.addPatternRestrictionUnrecursively(this);
 	}
 	
+	/**
+	 * remove self from node's list of connected restrictions and remove that node from self's list of connected nodes
+	 * @param node
+	 */
 	public void removeNode(PatternNode node) {
 		node.removePatternRestrictionUnrecursively(this);
 		nodes.remove(node);
@@ -32,16 +74,6 @@ public class PatternRestriction {
 
 	public void setNodes(List<PatternNode> nodes) {
 		this.nodes = nodes;
-	}
-
-	public PatternRestriction(PatternRestriction patternRestriction) {
-		this.restriction = patternRestriction.getRestriction();
-		this.nodes = new ArrayList<>();
-	}
-
-	public PatternRestriction(Restriction restriction) {
-		this.nodes = new ArrayList<>();
-		this.restriction = restriction.copy();
 	}
 
 	public List<String> getColumns() {
@@ -64,6 +96,9 @@ public class PatternRestriction {
 		this.collisionCnt = collisionCnt;
 	}
 	
+	/**
+	 * increment collision counter
+	 */
 	public void incrementCollisionCnt() {
 		this.collisionCnt++;
 	}
@@ -80,61 +115,5 @@ public class PatternRestriction {
 		}
 		return "\n              PatternRestriction [ restriction="
 				+ restriction + ", nodes=" + nodes + "]";
-	}
-
-	public void remove() {
-		for(PatternNode pn : nodes) {
-			pn.removePatternRestrictionUnrecursively(this); 
-		}
-		
-	}
-	
-	public class Unfinished extends Exception {
-	}
-	
-	public class UnexpectedExpression extends Exception{
-	}
-	
-	public boolean check() throws Unfinished, UnexpectedExpression {
-		
-		for(PatternNode node : nodes) {
-			if(node.getValue() == null)
-				throw new Unfinished();
-		}
-		
-		String operation = getRestriction().getBinaryExpression().getStringExpression();
-		String expression0 = getRestriction().getBinaryExpression().toString();
-		String expression1 = new String(expression0);
-		try {
-			for(PatternNode node : nodes) {
-				expression1 = node.replaceNameWithValue(expression1);
-			}
-		}
-		catch(Exception e){
-			System.out.println("cought exception " + e);
-		}
-		expression1 = expression1.replace(" ", "");
-		if(operation.equals("=")) {
-			String[] expressionArr = expression1.split("=");
-			return ((Integer.parseInt(expressionArr[0]))==(Integer.parseInt(expressionArr[1])));
-		} else if(operation.equals("<>")) {
-			String[] expressionArr = expression1.split("<>");
-			return ((Integer.parseInt(expressionArr[0]))!=(Integer.parseInt(expressionArr[1])));
-		} else if(operation.equals("<")) {
-			String[] expressionArr = expression1.split("<");
-			return ((Integer.parseInt(expressionArr[0]))<(Integer.parseInt(expressionArr[1])));
-		} else if(operation.equals("<=")) {
-			String[] expressionArr = expression1.split("<=");
-			return ((Integer.parseInt(expressionArr[0]))<=(Integer.parseInt(expressionArr[1])));
-		} else if(operation.equals(">")) {
-			String[] expressionArr = expression1.split(">");
-			return ((Integer.parseInt(expressionArr[0]))>(Integer.parseInt(expressionArr[1])));
-		} else if(operation.equals(">=")) {
-			String[] expressionArr = expression1.split(">=");
-			return ((Integer.parseInt(expressionArr[0]))>=(Integer.parseInt(expressionArr[1])));
-		}
-		throw new UnexpectedExpression();
-	}
-
-	
+	}	
 }

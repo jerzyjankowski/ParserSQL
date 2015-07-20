@@ -19,7 +19,6 @@ public class DataGenerator {
 	private OutputAll outputAll;
 	private Map<PatternNode, PatternRow> nodeToRow = new HashMap<>();
 	private Map<PatternRow, PatternTable> rowToTable = new HashMap<>();
-	private Set<PatternRow> rowLeaves = new HashSet<PatternRow>();
 	private Set<PatternRow> allRows = new HashSet<>();
 	
 	public DataGenerator(PatternAll patternAll, OutputAll outputAll) {
@@ -27,7 +26,8 @@ public class DataGenerator {
 		this.outputAll = outputAll;
 	}
 	
-	private void prepareMap() {
+	//fills maps and set
+	private void prepare() {
 		for(PatternTable pTab : patternAll.getPatternTables()) {
 			for(PatternRow pRow : pTab.getPatternRows()) {
 				rowToTable.put(pRow,pTab);
@@ -39,23 +39,7 @@ public class DataGenerator {
 		}
 	}
 	
-	private void prepareLeaves() {
-		for(PatternTable pTab : patternAll.getPatternTables()) {
-			for(PatternRow pRow : pTab.getPatternRows()) {
-				Set<PatternRow> resRow = new HashSet<>();
-				for(PatternNode pNod : pRow.getPatternNodes()) {
-					for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
-						for(PatternNode pNodRes : pRes.getPatternNodes()) {
-							if(nodeToRow.get(pNodRes) != pRow)
-								resRow.add(nodeToRow.get(pNodRes));
-						}
-					}
-				}
-				if(resRow.size() <= 1)
-					rowLeaves.add(pRow);
-			}
-		} 
-	}
+	//prints restriction for test purposes
 	private void testPatternAll() {
 		for(PatternTable pTab : patternAll.getPatternTables()) {
 			for(PatternRow pRow : pTab.getPatternRows()) {
@@ -75,10 +59,14 @@ public class DataGenerator {
 		}
 	}
 	
-	public void generate() {
+	/**
+	 * generate data based on Pattern family to the Output family
+	 * @param maxGeneratingTries number of tries of generating one value before taking to account that it is impossible to generate value that fulfill every restriction
+	 * @param maxCollisionCnt number of changes in sequence of generating value for restriction before taking into account that this restriction is impossible to fulfill
+	 */
+	public void generate(int maxGeneratingTries, int maxCollisionCnt) {
 		
-		prepareMap();
-		prepareLeaves();
+		prepare();
 		
 		for(int j = 0; j < 1; j++) {
 			patternAll.clearValues();		
@@ -101,10 +89,13 @@ public class DataGenerator {
 					rowsToMake.push(pr);
 					visitedRows.put(pr, true);
 					while(!rowsToMake.empty()) {
+						
 						patternRow = rowsToMake.pop();
 						if(print)System.out.println("row popped from stack, patternRow.getId()=" + patternRow.getId());
 						usedRows.put(patternRow, true);
+						
 						for(PatternNode pNod : patternRow.getPatternNodes()) {
+							
 							if(pNod.getValue()!=null)
 								continue;
 							//update stacks
@@ -116,9 +107,10 @@ public class DataGenerator {
 									}
 								}
 							}
-							int endFor = 20, maxCollisionCnt = 20;
 							PatternRestriction collisionRestriction = null;
-							for(int i = 0; i <= endFor; i++) {
+							
+							for(int i = 0; i <= maxGeneratingTries; i++) {
+								
 								boolean correctFlag = true;
 								pNod.generateValue();
 								for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
@@ -130,9 +122,7 @@ public class DataGenerator {
 											collisionRestriction = pRes;
 											break;
 										}
-									} catch(PatternRestriction.Unfinished u) {
-										
-									}
+									} 
 									catch(Exception e) {
 										System.out.println("[DataGenerator]Exception: " + e);
 										e.printStackTrace();
@@ -141,7 +131,7 @@ public class DataGenerator {
 								if(correctFlag) 
 									break;
 
-								if(i == endFor) {
+								if(i == maxGeneratingTries) {
 									collisionRestriction.incrementCollisionCnt();
 									if(collisionRestriction.getCollisionCnt() > maxCollisionCnt) {
 										System.out.println("Couldn't make that restriction to happen: " + collisionRestriction);

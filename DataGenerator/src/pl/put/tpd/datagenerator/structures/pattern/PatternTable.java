@@ -70,14 +70,13 @@ public class PatternTable {
 		columnNames = new HashSet<String>();
 	}
 	
-	public void prepare() {
-		for(PatternRow patternRow : patternRows) {
-			for(PatternNode patternNode : patternRow.getPatternNodes()) {
-				
-			}
-		}
-	}
-	
+	/**
+	 * copy rows with restrictions and connect them with restrictions
+	 * all parameters are part of plan gotten in patternAll to copy rows and connect them with restrictions
+	 * @param pattRestrList
+	 * @param intList
+	 * @param i
+	 */
 	public void addPatternRestriction(List<PatternRestriction> pattRestrList, List<Integer> intList, int i) {
 		int product = 2;
 		int productBefore = 1;
@@ -109,7 +108,41 @@ public class PatternTable {
 			patternRow.remove();
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param column
+	 * @return boolean information if table contains column regarding table name and table alias
+	 */
+	public boolean containsColumn(String column) {
+		for(String c : columnNames) {
+			if(column.equals(c))
+				return true;
+			if(column.equals(name + "." + c))
+				return true;
+			if(column.equals(alias + "." + c))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * copy mainPatternRow to the first patternRow which will be copied and extended with restrictions
+	 */
+	public void initiatePatternRow() {
+		PatternRow patternRow = mainPatternRow.copyWithSelfRestrictions();
+		addPatternRow(patternRow);
+	}
+	
+	/**
+	 * 
+	 * delegates to all patternRows to clear values in patternNodes
+	 */
+	public void clearValues() {
+		for(PatternRow patternRow : patternRows) {
+			patternRow.clearValues();
+		}
+	}
 
 	public String getName() {
 		return name;
@@ -158,11 +191,6 @@ public class PatternTable {
 		for(String column : mainPatternRow.getColumnNames()) 
 			this.columnNames.add(column);
 	}
-	
-	public void initiatePatternRow() {
-		PatternRow patternRow = mainPatternRow.copyWithSelfRestrictions();
-		addPatternRow(patternRow);
-	}
 
 	@Override
 	public String toString() {
@@ -170,18 +198,10 @@ public class PatternTable {
 				",\n     patternRows(" + patternRows.size() + ")=" + patternRows + "]";
 	}
 	
-	public boolean containsColumn(String column) {
-		for(String c : columnNames) {
-			if(column.equals(c))
-				return true;
-			if(column.equals(name + "." + c))
-				return true;
-			if(column.equals(alias + "." + c))
-				return true;
-		}
-		return false;
-	}
-	
+	/**
+	 * coppy table without restrictions on patternNodes
+	 * @return
+	 */
 	public PatternTable copy() {
 		PatternTable patternTable = new PatternTable(name);
 		for(PatternRow patternRow : patternRows) {
@@ -189,12 +209,6 @@ public class PatternTable {
 		}
 		patternTable.setMainPatternRow(mainPatternRow);
 		return patternTable;
-	}
-	
-	public void clearValues() {
-		for(PatternRow patternRow : patternRows) {
-			patternRow.clearValues();
-		}
 	}
 
 }

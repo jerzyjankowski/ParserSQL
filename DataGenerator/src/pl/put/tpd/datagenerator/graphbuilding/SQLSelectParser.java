@@ -64,14 +64,16 @@ import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.select.Join;
 
 /**
- * main class of parsing sql, finds where clause and give it to finderRestrictions
+ * main class of parsing SQL finds all restrictions
+ * firstly finds where clause and join's "on" expression then give it to finderRestrictions 
+ * finally adds restriction to outputAll
  *
  */
-public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
+public class SQLSelectParser implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
 
 	private PatternAll patternAll;
 	
-	public SQLParser(PatternAll patternAll) {
+	public SQLSelectParser(PatternAll patternAll) {
 		this.patternAll = patternAll;
 	}
 
@@ -79,8 +81,6 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 		select.getSelectBody().accept(this);
 		return patternAll;
 	}
-
-	
 	
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		binaryExpression.getLeftExpression().accept(this);
@@ -90,8 +90,8 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 	
 	@Override
 	public void visit(PlainSelect plainSelect) {
-		plainSelect.getFromItem().accept(this);
 		
+		plainSelect.getFromItem().accept(this);
 		
 		if (plainSelect.getWhere() != null) {
 			FinderRestrictions finderRestrictions = new FinderRestrictions();
@@ -122,8 +122,6 @@ public class SQLParser implements SelectVisitor, FromItemVisitor, ExpressionVisi
 				System.out.println("   isOuter: " + join.isOuter());
 				System.out.println("   isNatural: " + join.isNatural());
 				System.out.println("   isSimple: " + join.isSimple());
-				
-				//join.getRightItem().accept(this);
 			}
 		}
 		

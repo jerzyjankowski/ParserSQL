@@ -20,15 +20,18 @@ import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
-
-public class XMLSpecificationLoader {
+/**
+ * Create patternAll, outputAll and sqlQuery based on input files
+ *
+ */
+public class SpecificationLoader {
 	
 	private String sqlQuery = new String();
 	private PatternAll patternAll = new PatternAll();
 	private OutputAll outputAll = new OutputAll();
 	
 	public static void main(String... args) {
-		XMLSpecificationLoader loader = new XMLSpecificationLoader();
+		SpecificationLoader loader = new SpecificationLoader();
 		loader.load();
 
 		PatternAll patternAll;
@@ -51,12 +54,10 @@ public class XMLSpecificationLoader {
 		
 		for(XMLTable xmlTable : xmlParser.getTables()) {
 			
-			System.out.println(xmlTable);
 			PatternTable patternTable = new PatternTable(xmlTable.getName());
 			PatternRow patternRow = new PatternRow();
 			
 			for(XMLColumn xmlColumn : xmlTable.getColumns()) {
-				System.out.println("   " + xmlColumn);
 				PatternNode patternNode = new PatternNode(xmlColumn.getType().toString(), xmlColumn.getName());
 				addMinValueRestriction(patternNode, xmlTable, xmlColumn);
 				addMaxValueRestriction(patternNode, xmlTable, xmlColumn);
@@ -68,10 +69,8 @@ public class XMLSpecificationLoader {
 			outputAll.addTable(new OutputTable(patternTable)); 
 		}
 		patternAll.initiatePatternRow();
-//		System.out.println(patternAll);
 		
 		loadSqlQuery("input/query.sql");
-//		System.out.println(sqlString);
 	}
 	
 	private void addMinValueRestriction(PatternNode patternNode, XMLTable xmlTable, XMLColumn xmlColumn) {
@@ -110,7 +109,6 @@ public class XMLSpecificationLoader {
 				sqlQuery += line;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		sqlQuery = sqlQuery.replaceAll("\\s+", " ");

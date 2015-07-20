@@ -40,7 +40,6 @@ public class FinderAliases implements SelectVisitor, FromItemVisitor{
 				Table table = (Table)join.getRightItem();
 				
 				if(tables.contains(table.getName())) {
-					System.out.println("duplicated table");
 					
 					PatternTable patternTable = null;
 					for(PatternTable pt : patternAll.getPatternTables()) {
@@ -54,7 +53,7 @@ public class FinderAliases implements SelectVisitor, FromItemVisitor{
 						patternAll.addPatternTable(newPatternTable);
 					}
 					else
-						System.out.println("There is not patternTable with name of that duplicated table.");
+						System.out.println("There is no patternTable with name of that duplicated table.");
 				} else {
 					tables.add(table.getName());
 					if(table.getAlias() != null)

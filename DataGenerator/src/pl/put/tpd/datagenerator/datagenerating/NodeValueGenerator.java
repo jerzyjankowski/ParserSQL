@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import pl.put.tpd.datagenerator.datagenerating.exceptions.NotExpectedNodeTypeException;
 import pl.put.tpd.datagenerator.structures.pattern.PatternNode;
 import pl.put.tpd.datagenerator.structures.pattern.PatternRestriction;
 
@@ -43,29 +44,16 @@ public class NodeValueGenerator {
 			return RestrictionType.OTHER;
 	}
 
-	public static void generateValue(PatternNode patternNode) {
-		generateIntValue(patternNode);
-	}
-
-	public static void generateSpamValue(PatternNode patternNode) {
-		generateSpamIntValue(patternNode);
-	}
-	
-	private static void generateSpamIntValue(PatternNode patternNode) {
-		int minValue  = 0;
-		int maxValue = 1000;
-		Set<Integer> forbiddenVal = new HashSet<>();
-		
-		int value;
-		Random rand = new Random();
-		do {
-			if (maxValue > minValue)
-				value = rand.nextInt(maxValue - minValue) + minValue;
-			else
-				value = minValue;
-		} while (forbiddenVal.contains(value));
-		
-		patternNode.setValue(value);
+	/**
+	 * method that is distributing generating depends on type
+	 * @param patternNode
+	 * @throws NotExpectedNodeTypeException 
+	 */
+	public static void generateValue(PatternNode patternNode) throws NotExpectedNodeTypeException {
+		if(patternNode.getType().equals("INTEGER"))
+			generateIntValue(patternNode);
+		else
+			throw new NotExpectedNodeTypeException();
 	}
 	
 	private static void generateIntValue(PatternNode patternNode) {
@@ -83,7 +71,6 @@ public class NodeValueGenerator {
 		//find all restrictions, get minValue and maxValue from simple oneargument restrictions 
 		//and remember all multiargument restrictions
 		tempPatternRestrictionList.addAll(patternNode.getPatternRestrictions());
-		Random random = new Random();
 		
 //		while(!tempPatternRestrictionList.isEmpty()) {
 //			//randomize patternRestrictions because sometimes there isn't the one way possible but different way could be ok
@@ -158,6 +145,7 @@ public class NodeValueGenerator {
 				System.out.println("NodeValueGenerator.generateIntValue not allowed restriction - incorrect parsed");
 			}
 		}
+		
 		//iterate by each multiargument restriction in random fashion and get minValue or maxValue if it won't be improper
 		//minValue must be lesser than maxValue
 		while(!multipleNodeRestrictions.isEmpty()) {
@@ -245,7 +233,8 @@ public class NodeValueGenerator {
 				//in this case later on other nodes that spoil that min/max value restriction will be generated from scratch
 			}
 		}
-		//generating value thanks to gained information about minValue and maxValue
+		
+		//generates value thanks to gained information about minValue and maxValue
 		int value;
 		do {
 			if (maxValue > minValue)

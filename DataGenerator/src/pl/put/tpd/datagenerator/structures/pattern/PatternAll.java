@@ -7,40 +7,18 @@ import pl.put.tpd.datagenerator.structures.restriction.Restriction;
 /**
  * contains all PatternTables which contains all PatternRows which contains all PatternNodes. 
  * Tree-like architecture provides maintainable managing from one object only
+ * 
+ * plans adding and delegate restrictions to the tables that are connected with that restrictions to add them
  */
 public class PatternAll {
 	private List<PatternTable> patternTables;
-
-	public static void main(String... args) {
-		
-
-	}
 	
 	public PatternAll() {
 		patternTables = new ArrayList<PatternTable>();
 	}
 	
-	public void initiatePatternRow() {
-		for(PatternTable patternTable : patternTables) {
-			patternTable.initiatePatternRow();
-		}
-	}
-	
-	public void prepare() {
-		for(PatternTable pt : patternTables) {
-			pt.prepare();
-		}
-	}
-	
-	public void setTableAlias(String table, String alias) {
-		for(PatternTable pt : patternTables) {
-			if(pt.getName().equals(table)) {
-				pt.setAlias(alias);
-			}
-		}
-	}
 	/**
-	 * 
+	 * plans and distribute restriction adding through tables
 	 * @param restrictions
 	 */
 	public void addRestrictions(List<Restriction> restrictions) {
@@ -87,6 +65,37 @@ public class PatternAll {
 			}
 		}
 	}
+
+	/**
+	 * delegates to all tables to copy mainPatternRow to the first patternRow which will be copied and extended with restrictions
+	 */
+	public void initiatePatternRow() {
+		for(PatternTable patternTable : patternTables) {
+			patternTable.initiatePatternRow();
+		}
+	}
+	
+	/**
+	 * sets only alias to a table
+	 * @param table
+	 * @param alias
+	 */
+	public void setTableAlias(String table, String alias) {
+		for(PatternTable pt : patternTables) {
+			if(pt.getName().equals(table)) {
+				pt.setAlias(alias);
+			}
+		}
+	}
+	
+	/**
+	 * delegates to all patternTables to clear values in patternNodes
+	 */
+	public void clearValues() {
+		for(PatternTable patternTable : patternTables) {
+			patternTable.clearValues();
+		}
+	}
 	
 	public void addPatternTable(PatternTable patternTable) {
 		this.patternTables.add(patternTable);
@@ -112,11 +121,4 @@ public class PatternAll {
 		}
 		return patternAll;
 	}
-	
-	public void clearValues() {
-		for(PatternTable patternTable : patternTables) {
-			patternTable.clearValues();
-		}
-	}
-
 }

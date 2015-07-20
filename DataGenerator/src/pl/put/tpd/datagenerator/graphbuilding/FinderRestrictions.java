@@ -66,7 +66,7 @@ import net.sf.jsqlparser.statement.update.Update;
 
 /**
  * For where clause finds all restrictions and puts it in hierarchical structure where root is rootRestriction, 
- * there are normal restrictions - leafes and and/or restrictions which are inner nodes of a tree
+ * there are normal restrictions - leaves and and/or restrictions which are inner nodes of a tree
  *
  */
 public class FinderRestrictions implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor, StatementVisitor {
