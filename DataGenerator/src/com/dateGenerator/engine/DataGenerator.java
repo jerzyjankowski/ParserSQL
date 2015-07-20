@@ -80,7 +80,7 @@ public class DataGenerator {
 		prepareMap();
 		prepareLeaves();
 		
-		for(int j = 0; j < 2; j++) {
+		for(int j = 0; j < 1; j++) {
 			patternAll.clearValues();		
 			Stack<PatternRow> rowsToMake = new Stack<>();
 			Stack<PatternRow> rowMade = new Stack<>();
@@ -94,13 +94,15 @@ public class DataGenerator {
 			for(PatternRow pr : allRows) {
 				visitedRows.put(pr, false);
 			}
-			
+			boolean print = false;
 			for(PatternRow pr : allRows) {
 				if(!usedRows.get(pr)) {
+					if(print)System.out.println("row from list, patternRow.getId()=" + pr.getId());
 					rowsToMake.push(pr);
 					visitedRows.put(pr, true);
 					while(!rowsToMake.empty()) {
 						patternRow = rowsToMake.pop();
+						if(print)System.out.println("row popped from stack, patternRow.getId()=" + patternRow.getId());
 						usedRows.put(patternRow, true);
 						for(PatternNode pNod : patternRow.getPatternNodes()) {
 							if(pNod.getValue()!=null)
@@ -114,7 +116,7 @@ public class DataGenerator {
 									}
 								}
 							}
-							int endFor = 10, maxCollisionCnt = 10;
+							int endFor = 20, maxCollisionCnt = 20;
 							PatternRestriction collisionRestriction = null;
 							for(int i = 0; i <= endFor; i++) {
 								boolean correctFlag = true;
@@ -166,21 +168,21 @@ public class DataGenerator {
 		}
 		
 		//generating spamRows example:
-		for(PatternTable patternTable : patternAll.getPatternTables()) {
-			int rowNum = outputAll.getRowNumInTable(patternTable.getName());
-			System.out.println(patternTable.getName() + " " + rowNum);
-			for(PatternRow patternMainRow = patternTable.getMainPatternRow(); 
-					rowNum < 42;
-					rowNum++) {
-				PatternRow pr = new PatternRow();
-				for(PatternNode pNod : patternMainRow.getPatternNodes()) {
-					pNod.generateValue();
-					pr.addPatternNode(pNod);
-				}
-				outputAll.addRow(pr, patternTable);
-			}
-		}
+//		for(PatternTable patternTable : patternAll.getPatternTables()) {
+//			int rowNum = outputAll.getRowNumInTable(patternTable.getName());
+//			System.out.println(patternTable.getName() + " " + rowNum);
+//			for(PatternRow patternMainRow = patternTable.getMainPatternRow(); 
+//					rowNum < 42;
+//					rowNum++) {
+//				PatternRow pr = new PatternRow();
+//				for(PatternNode pNod : patternMainRow.getPatternNodes()) {
+//					pNod.generateValue();
+//					pr.addPatternNode(pNod);
+//				}
+//				outputAll.addRow(pr, patternTable);
+//			}
+//		}
 		
-		System.out.println("********\n" + outputAll + "\n*********");
+//		System.out.println("********\n" + outputAll + "\n*********");
 	}
 }

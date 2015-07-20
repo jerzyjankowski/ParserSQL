@@ -69,7 +69,7 @@ public class Main {
 
 			CSVWriter csvWriter = new CSVWriter(); 
 			csvWriter.write(outputAll);
-//			System.out.println("parsedPatternAll: " + parsedPatternAll);
+			System.out.println("parsedPatternAll: " + parsedPatternAll);
 			
 			System.out.println("STOP ALL: \n");
 

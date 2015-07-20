@@ -80,6 +80,10 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 		return rootRestriction;
 	}
 	
+//	public void visitUnaryExpression(Expression expression) {
+//		
+//	}
+	
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		if(binaryExpression.getStringExpression().equals("AND") ||
 				binaryExpression.getStringExpression().equals("OR")) {
@@ -276,9 +280,21 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	}
 
 	@Override
-	public void visit(Between arg0) {
-		// TODO Auto-generated method stub
+	public void visit(Between between) {
+		GreaterThanEquals greaterThanEquals = new GreaterThanEquals();
+		MinorThanEquals minorThanEquals = new MinorThanEquals();
 		
+		greaterThanEquals.setLeftExpression(between.getLeftExpression());
+		greaterThanEquals.setRightExpression(between.getBetweenExpressionStart());
+		
+		minorThanEquals.setLeftExpression(between.getLeftExpression());
+		minorThanEquals.setRightExpression(between.getBetweenExpressionEnd());
+
+		System.out.println("Between: " + between+ ", gte: " + greaterThanEquals);
+		
+		AndExpression andExpression = new AndExpression(minorThanEquals, greaterThanEquals);
+		
+		visitBinaryExpression(andExpression);
 	}
 
 	@Override
@@ -300,8 +316,10 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	}
 
 	@Override
-	public void visit(InExpression arg0) {
-		// TODO Auto-generated method stub
+	public void visit(InExpression inExpression) {
+		System.out.println("inExpression=" + inExpression);
+		System.out.println("  leftExpression=" + inExpression.getLeftExpression() + ", items=" + inExpression.getItemsList());
+		//visitBinaryExpression(inExpression);
 		
 	}
 
@@ -330,8 +348,8 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	}
 
 	@Override
-	public void visit(NotEqualsTo arg0) {
-		// TODO Auto-generated method stub
+	public void visit(NotEqualsTo notEqualsTo) {
+		visitBinaryExpression(notEqualsTo);
 		
 	}
 

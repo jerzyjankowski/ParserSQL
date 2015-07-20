@@ -85,12 +85,14 @@ public class NodeValueGenerator {
 		tempPatternRestrictionList.addAll(patternNode.getPatternRestrictions());
 		Random random = new Random();
 		
-		while(!tempPatternRestrictionList.isEmpty()) {
-			//randomize patternRestrictions because sometimes there isn't the one way possible but different way could be ok
-			//these should be changed into one better solution
-			int index = random.nextInt(tempPatternRestrictionList.size());
-			PatternRestriction pRes = tempPatternRestrictionList.remove(index);
-			
+//		while(!tempPatternRestrictionList.isEmpty()) {
+//			//randomize patternRestrictions because sometimes there isn't the one way possible but different way could be ok
+//			//these should be changed into one better solution
+//			int index = random.nextInt(tempPatternRestrictionList.size());
+//			PatternRestriction pRes = tempPatternRestrictionList.remove(index);
+		boolean print = false;
+		if(print)System.out.println("\n--------" + patternNode.getId());
+		for(PatternRestriction pRes : patternNode.getPatternRestrictions()) {
 			String operation = pRes.getRestriction().getBinaryExpression()
 					.getStringExpression();
 			String expression = pRes.getRestriction().getBinaryExpression()
@@ -177,9 +179,13 @@ public class NodeValueGenerator {
 			tempMaxValue = maxValue;
 			
 			if (operation.equals("=")) {
+				if(print)System.out.println("restriction: " + pRes);
 				for (PatternNode pNodRes : pRes.getPatternNodes()) {
+					if (pNodRes != patternNode)
+						if(print)System.out.println("  " + pNodRes.getTableAlias() + "." + pNodRes.getName() + "=" + pNodRes.getValue());
 					if (pNodRes != patternNode && pNodRes.getValue() != null) {
 						tempMinValue = tempMaxValue = pNodRes.getValue();
+						if(print)System.out.println("  not null, tempMinValue=" + tempMinValue + ", tempMaxValue=" + tempMaxValue);
 					}
 				}
 			} else if (operation == "<>") {
@@ -227,7 +233,8 @@ public class NodeValueGenerator {
 					}
 				}
 			}
-			
+			if(print)System.out.println("    tempMinValue=" + tempMinValue + ", tempMaxValue=" + tempMaxValue);
+			if(print)System.out.println("    minValue=" + minValue + ", maxValue=" + maxValue + ", ifIf=" + (tempMinValue <= maxValue && tempMaxValue >= minValue) );
 			if(tempMinValue <= maxValue && tempMaxValue >= minValue) {
 				if(minValue < tempMinValue)
 					minValue = tempMinValue;
@@ -246,6 +253,8 @@ public class NodeValueGenerator {
 			else
 				value = minValue;
 		} while (forbiddenVal.contains(value));
+		if(print)System.out.println("    minValue=" + minValue + ", maxValue=" + maxValue);
+		if(print)System.out.println("generated: " + value);
 		patternNode.setValue(value);
 	}
 }
