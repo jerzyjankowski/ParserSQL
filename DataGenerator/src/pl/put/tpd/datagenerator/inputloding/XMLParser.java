@@ -27,12 +27,17 @@ public class XMLParser {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
 			doc.getDocumentElement().normalize();
+			
+			Element root = doc.getDocumentElement();
+			int M = Integer.parseInt(root.getAttribute("M"));
+			int T = Integer.parseInt(root.getAttribute("T"));			
  
 			NodeList tabList = doc.getElementsByTagName("TABLE");		 
 			for (int i = 0; i < tabList.getLength(); i++) {
 
 				XMLTable table = new XMLTable();
-				
+				table.setM(M);
+				table.setT(T);
 				Node tabNode = tabList.item(i);
 				if (tabNode.getNodeType() == Node.ELEMENT_NODE) {
 		 
