@@ -77,6 +77,7 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	private RestrictionInterface rootRestriction;
 
 	public RestrictionInterface getRootRestriction() {
+		System.out.println("rootRestriction=" + rootRestriction);
 		return rootRestriction;
 	}
 	
@@ -98,6 +99,7 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	}
 	
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
+		System.out.println("hejjo");
 		if(binaryExpression.getStringExpression().equals("AND") ||
 				binaryExpression.getStringExpression().equals("OR")) {
 			RestrictionAndOr restrictionAndOr = new RestrictionAndOr(binaryExpression.getStringExpression(), binaryExpression.toString());
@@ -373,6 +375,7 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	public void visit(InExpression inExpression) {
 		System.out.println("inExpression=" + inExpression);
 		System.out.println("  leftExpression=" + inExpression.getLeftExpression() + ", items=" + inExpression.getItemsList());
+		System.out.println("class of itemsList=" + inExpression.getItemsList().getClass());
 		visitUnaryExpression(inExpression);
 		
 	}

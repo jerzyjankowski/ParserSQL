@@ -143,6 +143,39 @@ public class PatternRow {
 		}
 	}
 	
+	/**
+	 * copy patternRow without restriction on included patternNodes
+	 * @return
+	 */
+	public PatternRow copy() {
+		PatternRow patternRow = new PatternRow();
+		patternRow.setTableName(tableName);
+		patternRow.setTableAlias(tableAlias);
+		for(PatternNode patternNode : patternNodes) {
+			patternRow.addPatternNode(patternNode.copy());
+		}
+		return patternRow;
+	}
+
+	/**
+	 * copy patternRow with restrictions from patternNodes from that patternRow that have only one node connected
+	 * used to initiate patternRow
+	 * @return
+	 */
+	public PatternRow copyWithSelfRestrictions() {
+		PatternRow patternRow = new PatternRow();
+		patternRow.setTableName(tableName);
+		patternRow.setTableAlias(tableAlias);
+		for(PatternNode patternNode : patternNodes) {
+			try {
+				patternRow.addPatternNode(patternNode.copyWithSelfRestrictions());
+			} catch (NotOnlySelfRestrictions e) {
+				e.printStackTrace();
+			}
+		}
+		return patternRow;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -215,38 +248,5 @@ public class PatternRow {
 	public String toString() {
 		return "\n        PatternRow [id=" + id + ", tableName=" + tableName + ", tableAlias=" + tableAlias +
 				", patternNodes(" + patternNodes.size() + ")=" + patternNodes + "]";
-	}
-	
-	/**
-	 * copy patternRow without restriction on included patternNodes
-	 * @return
-	 */
-	public PatternRow copy() {
-		PatternRow patternRow = new PatternRow();
-		patternRow.setTableName(tableName);
-		patternRow.setTableAlias(tableAlias);
-		for(PatternNode patternNode : patternNodes) {
-			patternRow.addPatternNode(patternNode.copy());
-		}
-		return patternRow;
-	}
-
-	/**
-	 * copy patternRow with restrictions from patternNodes from that patternRow that have only one node connected
-	 * used to initiate patternRow
-	 * @return
-	 */
-	public PatternRow copyWithSelfRestrictions() {
-		PatternRow patternRow = new PatternRow();
-		patternRow.setTableName(tableName);
-		patternRow.setTableAlias(tableAlias);
-		for(PatternNode patternNode : patternNodes) {
-			try {
-				patternRow.addPatternNode(patternNode.copyWithSelfRestrictions());
-			} catch (NotOnlySelfRestrictions e) {
-				e.printStackTrace();
-			}
-		}
-		return patternRow;
 	}
 }

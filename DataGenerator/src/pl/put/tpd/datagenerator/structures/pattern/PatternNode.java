@@ -164,6 +164,37 @@ public class PatternNode {
 		return (!string.equals(replaceNameWithValue(string)));
 	}
 	
+	/**
+	 * 
+	 * @return patternNode with same type, name, table name and table aliases, connected restrictions are nor preserved nor copied
+	 */
+	public PatternNode copy() {
+		PatternNode patternNode = new PatternNode(type, name);
+		patternNode.setTableName(tableName);
+		patternNode.setTableAlias(tableAlias);
+		return patternNode;
+	}
+	
+	/**
+	 * 
+	 * @return patternNode with same type, name, table name and table aliases, connected restrictions copied but connected to that new patternNode only when they where connected only to this node
+	 * @throws NotOnlySelfRestrictions
+	 */
+	public PatternNode copyWithSelfRestrictions() throws NotOnlySelfRestrictions{
+		PatternNode patternNode = new PatternNode(type, name);
+		patternNode.setTableName(tableName);
+		patternNode.setTableAlias(tableAlias);
+		for(PatternRestriction patternRestriction : patternRestrictions) {
+			for(PatternNode pn : patternRestriction.getPatternNodes())
+				if(pn != this) 
+					throw new NotOnlySelfRestrictions();  
+			PatternRestriction newPatternRestriction = new PatternRestriction(patternRestriction);
+			newPatternRestriction.addNode(patternNode);
+			patternNode.addPatternRestriction(newPatternRestriction);
+		}
+		return patternNode;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -229,37 +260,6 @@ public class PatternNode {
 	public String toString() {
 		return "\n           PatternNode [type=" + type + " name=" + name + ", id=" + id + ", tableAlias=" + tableAlias + ", value=" + value 
 				+ ", patternRestrictions=" + patternRestrictions + "]";
-	}
-	
-	/**
-	 * 
-	 * @return patternNode with same type, name, table name and table aliases, connected restrictions are nor preserved nor copied
-	 */
-	public PatternNode copy() {
-		PatternNode patternNode = new PatternNode(type, name);
-		patternNode.setTableName(tableName);
-		patternNode.setTableAlias(tableAlias);
-		return patternNode;
-	}
-	
-	/**
-	 * 
-	 * @return patternNode with same type, name, table name and table aliases, connected restrictions copied but connected to that new patternNode only when they where connected only to this node
-	 * @throws NotOnlySelfRestrictions
-	 */
-	public PatternNode copyWithSelfRestrictions() throws NotOnlySelfRestrictions{
-		PatternNode patternNode = new PatternNode(type, name);
-		patternNode.setTableName(tableName);
-		patternNode.setTableAlias(tableAlias);
-		for(PatternRestriction patternRestriction : patternRestrictions) {
-			for(PatternNode pn : patternRestriction.getPatternNodes())
-				if(pn != this) 
-					throw new NotOnlySelfRestrictions();  
-			PatternRestriction newPatternRestriction = new PatternRestriction(patternRestriction);
-			newPatternRestriction.addNode(patternNode);
-			patternNode.addPatternRestriction(newPatternRestriction);
-		}
-		return patternNode;
 	}
 
 }

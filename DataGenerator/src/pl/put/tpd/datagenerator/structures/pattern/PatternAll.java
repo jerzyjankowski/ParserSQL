@@ -111,6 +111,14 @@ public class PatternAll {
 		}
 	}
 	
+	public PatternAll copy() {
+		PatternAll patternAll = new PatternAll();
+		for(PatternTable patternTable : patternTables) {
+			patternAll.addPatternTable(patternTable.copy());
+		}
+		return patternAll;
+	}
+	
 	public void addPatternTable(PatternTable patternTable) {
 		this.patternTables.add(patternTable);
 	}
@@ -126,13 +134,5 @@ public class PatternAll {
 	@Override
 	public String toString() {
 		return "PatternAll [patternTables(" + patternTables.size() + ")=" + patternTables + "]";
-	}
-	
-	public PatternAll copy() {
-		PatternAll patternAll = new PatternAll();
-		for(PatternTable patternTable : patternTables) {
-			patternAll.addPatternTable(patternTable.copy());
-		}
-		return patternAll;
 	}
 }

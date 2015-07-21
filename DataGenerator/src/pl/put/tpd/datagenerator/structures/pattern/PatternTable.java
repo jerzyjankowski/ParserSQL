@@ -143,6 +143,19 @@ public class PatternTable {
 			patternRow.clearValues();
 		}
 	}
+	
+	/**
+	 * coppy table without restrictions on patternNodes
+	 * @return
+	 */
+	public PatternTable copy() {
+		PatternTable patternTable = new PatternTable(name);
+		for(PatternRow patternRow : patternRows) {
+			patternTable.addPatternRow(patternRow.copy());
+		}
+		patternTable.setMainPatternRow(mainPatternRow);
+		return patternTable;
+	}
 
 	public String getName() {
 		return name;
@@ -196,19 +209,6 @@ public class PatternTable {
 	public String toString() {
 		return "\n   PatternTable [name=" + name + " as " + alias + ",\n     mainPatternRow=" + mainPatternRow +
 				",\n     patternRows(" + patternRows.size() + ")=" + patternRows + "]";
-	}
-	
-	/**
-	 * coppy table without restrictions on patternNodes
-	 * @return
-	 */
-	public PatternTable copy() {
-		PatternTable patternTable = new PatternTable(name);
-		for(PatternRow patternRow : patternRows) {
-			patternTable.addPatternRow(patternRow.copy());
-		}
-		patternTable.setMainPatternRow(mainPatternRow);
-		return patternTable;
 	}
 
 }

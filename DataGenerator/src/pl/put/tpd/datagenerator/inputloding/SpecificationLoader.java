@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import pl.put.tpd.datagenerator.structures.output.OutputAll;
 import pl.put.tpd.datagenerator.structures.output.OutputTable;
@@ -17,6 +19,9 @@ import pl.put.tpd.datagenerator.structures.pattern.PatternTable;
 import pl.put.tpd.datagenerator.structures.restriction.Restriction;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.InExpression;
+import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -78,17 +83,26 @@ public class SpecificationLoader {
 	}
 	
 	private void addInListValueRestriction(PatternNode patternNode, XMLTable xmlTable, XMLColumn xmlColumn) {
-		if(xmlColumn.getValues() != null) {
+		if(!xmlColumn.getValues().isEmpty()) {
 			System.out.println("xmlColumn.getValues()=" + xmlColumn.getValues());
-//			Table table = new Table(null, xmlTable.getName());
-//			Column column = new Column(table, xmlColumn.getName());
-//			LongValue longValue = new LongValue(xmlColumn.getMinValue().toString());
-//			BinaryExpression binaryExpression = new MinorThanEquals();
-//			binaryExpression.setLeftExpression(column);
-//			binaryExpression.setRightExpression(longValue);
-//			Restriction restriction = new Restriction(xmlColumn.getName() + ">=" + xmlColumn.getMinValue(), binaryExpression);
-//			restriction.addColumn(xmlColumn.getName()); 
-//			patternNode.addPatternRestriction(new PatternRestriction(restriction));
+			Table table = new Table(null, xmlTable.getName());
+			Column column = new Column(table, xmlColumn.getName());
+			ExpressionList list = new ExpressionList();
+			list.setExpressions(xmlColumn.getValues());
+//			for(String s : xmlColumn.getValues()) {
+//				LongValue longValue = new LongValue(s);
+//				list.add(longValue);
+//			}
+			
+			InExpression inExpression = new InExpression();
+			inExpression.setLeftExpression(column);
+			inExpression.setItemsList(list);
+			
+			System.out.println("inExpression=" + xmlColumn.getName() + " IN " + inExpression.getItemsList());
+			
+			Restriction restriction = new Restriction(xmlColumn.getName() + " IN " + inExpression.getItemsList(), inExpression);
+			restriction.addColumn(xmlColumn.getName()); 
+			patternNode.addPatternRestriction(new PatternRestriction(restriction));
 		}
 	}
 	

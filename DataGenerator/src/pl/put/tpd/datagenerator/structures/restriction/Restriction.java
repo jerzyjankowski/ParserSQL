@@ -55,6 +55,12 @@ public class Restriction implements RestrictionInterface {
 		}
 		return null;
 	}
+	
+	public Restriction copy() {
+		Restriction restriction = new Restriction(new String(restrictionString), expression) ;
+		restriction.columns.addAll(this.columns);
+		return restriction;
+	}
 
 	public String getRestrictionString() {
 		return restrictionString;
@@ -91,11 +97,5 @@ public class Restriction implements RestrictionInterface {
 	@Override
 	public String toString() {
 		return "Restriction [restrictionString=" + restrictionString + "]";
-	}
-	
-	public Restriction copy() {
-		Restriction restriction = new Restriction(new String(restrictionString), expression) ;
-		restriction.columns.addAll(this.columns);
-		return restriction;
 	}
 }
