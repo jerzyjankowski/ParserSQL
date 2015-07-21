@@ -61,16 +61,35 @@ public class SpecificationLoader {
 				PatternNode patternNode = new PatternNode(xmlColumn.getType().toString(), xmlColumn.getName());
 				addMinValueRestriction(patternNode, xmlTable, xmlColumn);
 				addMaxValueRestriction(patternNode, xmlTable, xmlColumn);
+				addInListValueRestriction(patternNode, xmlTable, xmlColumn);
 				patternRow.addPatternNode(patternNode);
 			}
 			
 			patternTable.setMainPatternRow(patternRow);
 			patternAll.addPatternTable(patternTable);
-			outputAll.addTable(new OutputTable(patternTable)); 
+			
+			OutputTable outputTable = new OutputTable(patternTable);
+			outputTable.setRowNum(50);
+			outputAll.addTable(outputTable); 
 		}
 		patternAll.initiatePatternRow();
 		
 		loadSqlQuery("input/query.sql");
+	}
+	
+	private void addInListValueRestriction(PatternNode patternNode, XMLTable xmlTable, XMLColumn xmlColumn) {
+		if(xmlColumn.getValues() != null) {
+			System.out.println("xmlColumn.getValues()=" + xmlColumn.getValues());
+//			Table table = new Table(null, xmlTable.getName());
+//			Column column = new Column(table, xmlColumn.getName());
+//			LongValue longValue = new LongValue(xmlColumn.getMinValue().toString());
+//			BinaryExpression binaryExpression = new MinorThanEquals();
+//			binaryExpression.setLeftExpression(column);
+//			binaryExpression.setRightExpression(longValue);
+//			Restriction restriction = new Restriction(xmlColumn.getName() + ">=" + xmlColumn.getMinValue(), binaryExpression);
+//			restriction.addColumn(xmlColumn.getName()); 
+//			patternNode.addPatternRestriction(new PatternRestriction(restriction));
+		}
 	}
 	
 	private void addMinValueRestriction(PatternNode patternNode, XMLTable xmlTable, XMLColumn xmlColumn) {

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import pl.put.tpd.datagenerator.structures.output.OutputAll;
+import pl.put.tpd.datagenerator.structures.output.OutputTable;
 import pl.put.tpd.datagenerator.structures.pattern.PatternAll;
 import pl.put.tpd.datagenerator.structures.pattern.PatternNode;
 import pl.put.tpd.datagenerator.structures.pattern.PatternRestriction;
@@ -60,6 +61,32 @@ public class DataGenerator {
 	}
 	
 	/**
+	 * for every patternRow in graph where edge is restriction connecting nodes from patternRows marks them as done, there won't be createing instances of them anymore because for at least one patternRow patternTable that contains it is full
+	 * @param patternRow patternRow that belongs to graph which elements will be marked as done
+	 */
+	private void markPatternRowGraphDone (PatternRow patternRow) {
+		Stack<PatternRow> rowsToMark = new Stack<>();
+		Set<PatternRow> rowsMarked = new HashSet<>();
+		rowsToMark.push(patternRow);
+		while(!rowsToMark.isEmpty()) {
+			PatternRow pRow = rowsToMark.pop();
+			rowsMarked.add(pRow);
+			pRow.markDone();
+			//add neighbours to the stack if they weren't visited
+			for(PatternNode pNod : pRow.getPatternNodes()) {
+				for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
+					for(PatternNode pNodRes : pRes.getPatternNodes()) {
+						PatternRow tempPRow = nodeToRow.get(pNodRes);
+						if(!rowsMarked.contains(tempPRow)) {
+							rowsToMark.push(tempPRow);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 * generate data based on Pattern family to the Output family
 	 * @param maxGeneratingTries number of tries of generating one value before taking to account that it is impossible to generate value that fulfill every restriction
 	 * @param maxCollisionCnt number of changes in sequence of generating value for restriction before taking into account that this restriction is impossible to fulfill
@@ -68,7 +95,7 @@ public class DataGenerator {
 		
 		prepare();
 		
-		for(int j = 0; j < 1; j++) {
+		for(int j = 0; j < 10000; j++) {
 			patternAll.clearValues();		
 			Stack<PatternRow> rowsToMake = new Stack<>();
 			Stack<PatternRow> rowMade = new Stack<>();
@@ -83,81 +110,105 @@ public class DataGenerator {
 				visitedRows.put(pr, false);
 			}
 			boolean print = false;
+			boolean isUndoneRow = false;
 			for(PatternRow pr : allRows) {
-				if(!usedRows.get(pr)) {
-					if(print)System.out.println("row from list, patternRow.getId()=" + pr.getId());
-					rowsToMake.push(pr);
-					visitedRows.put(pr, true);
-					while(!rowsToMake.empty()) {
-						
-						patternRow = rowsToMake.pop();
-						if(print)System.out.println("row popped from stack, patternRow.getId()=" + patternRow.getId());
-						usedRows.put(patternRow, true);
-						
-						for(PatternNode pNod : patternRow.getPatternNodes()) {
+				if(pr.isDone()) {
+					usedRows.put(pr, true);
+				}
+				else {
+					if(!usedRows.get(pr)) {
+						if(print)System.out.println("row from list, patternRow.getId()=" + pr.getId());
+						rowsToMake.push(pr);
+						visitedRows.put(pr, true);
+						while(!rowsToMake.empty()) {
 							
-							if(pNod.getValue()!=null)
-								continue;
-							//update stacks
-							for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
-								for(PatternNode pNodRes : pRes.getPatternNodes()) {
-									if(!visitedRows.get(nodeToRow.get(pNodRes))) {
-										visitedRows.put(nodeToRow.get(pNodRes), true);
-										rowsToMake.push(nodeToRow.get(pNodRes));
-									}
-								}
-							}
-							PatternRestriction collisionRestriction = null;
+							patternRow = rowsToMake.pop();
+							if(print)System.out.println("row popped from stack, patternRow.getId()=" + patternRow.getId());
+							usedRows.put(patternRow, true);
 							
-							for(int i = 0; i <= maxGeneratingTries; i++) {
+							for(PatternNode pNod : patternRow.getPatternNodes()) {
 								
-								boolean correctFlag = true;
-								pNod.generateValue();
+								if(pNod.getValue()!=null)
+									continue;
+								//update stacks
 								for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
-
-									try{
-										correctFlag = pRes.check();
-
-										if(!correctFlag) {
-											collisionRestriction = pRes;
-											break;
+									for(PatternNode pNodRes : pRes.getPatternNodes()) {
+										if(!visitedRows.get(nodeToRow.get(pNodRes))) {
+											visitedRows.put(nodeToRow.get(pNodRes), true);
+											rowsToMake.push(nodeToRow.get(pNodRes));
 										}
-									} 
-									catch(Exception e) {
-										System.out.println("[DataGenerator]Exception: " + e);
-										e.printStackTrace();
 									}
 								}
-								if(correctFlag) 
-									break;
-
-								if(i == maxGeneratingTries) {
-									collisionRestriction.incrementCollisionCnt();
-									if(collisionRestriction.getCollisionCnt() > maxCollisionCnt) {
-										System.out.println("Couldn't make that restriction to happen: " + collisionRestriction);
-										break;//there may be no chance to satisfy that restriction
-									}
+								PatternRestriction collisionRestriction = null;
+								
+								for(int i = 0; i <= maxGeneratingTries; i++) {
+									
+									boolean correctFlag = true;
+									pNod.generateValue();
 									for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
-										for(PatternNode pNodRes : pRes.getPatternNodes()) {
-											pNodRes.setValue(null);
-											if(usedRows.get(nodeToRow.get(pNodRes))) {
-												usedRows.put(nodeToRow.get(pNodRes), false);
-												rowsToMake.push(nodeToRow.get(pNodRes));
+	
+										try{
+											correctFlag = pRes.check();
+	
+											if(!correctFlag) {
+												collisionRestriction = pRes;
+												break;
+											}
+										} 
+										catch(Exception e) {
+											System.out.println("[DataGenerator]Exception: " + e);
+											e.printStackTrace();
+										}
+									}
+									if(correctFlag) 
+										break;
+	
+									if(i == maxGeneratingTries) {
+										collisionRestriction.incrementCollisionCnt();
+										if(collisionRestriction.getCollisionCnt() > maxCollisionCnt) {
+											System.out.println("Couldn't make that restriction to happen: " + collisionRestriction);
+											break;//there may be no chance to satisfy that restriction
+										}
+										for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
+											for(PatternNode pNodRes : pRes.getPatternNodes()) {
+												pNodRes.setValue(null);
+												if(usedRows.get(nodeToRow.get(pNodRes))) {
+													usedRows.put(nodeToRow.get(pNodRes), false);
+													rowsToMake.push(nodeToRow.get(pNodRes));
+												}
 											}
 										}
+										pNod.generateValue();
 									}
-									pNod.generateValue();
-								}
-							} 
+								} 
+							}
 						}
 					}
+					isUndoneRow = true;
+					boolean correct = outputAll.addRow(pr, rowToTable.get(pr));
+					if(!correct) {
+						markPatternRowGraphDone(pr);
+					}
 				}
-				outputAll.addRow(pr, rowToTable.get(pr));
 			}
+			if(isUndoneRow == false)
+				break;
 //			testPatternAll();
 		}
 		
-		//generating spamRows example:
+		//generating spamRows example:	
+		for(OutputTable outputTable : outputAll.getTables()) {
+			PatternRow patternMainRow = patternAll.getMainPatternRow(outputTable.getName());
+			for(int i = outputTable.getRows().size(); i < outputTable.getRowNum(); i++) {
+				PatternRow pr = new PatternRow();
+				for(PatternNode pNod : patternMainRow.getPatternNodes()) {
+					pNod.generateValue();
+					pr.addPatternNode(pNod);
+				}
+				outputTable.addRow(pr);
+			}
+		}
+		
 //		for(PatternTable patternTable : patternAll.getPatternTables()) {
 //			int rowNum = outputAll.getRowNumInTable(patternTable.getName());
 //			System.out.println(patternTable.getName() + " " + rowNum);

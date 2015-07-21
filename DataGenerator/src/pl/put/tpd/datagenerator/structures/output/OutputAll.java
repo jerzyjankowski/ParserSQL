@@ -95,11 +95,18 @@ public class OutputAll {
 		tablesMap.put(table.getName(), table);
 	}
 
-	public void addRow(PatternRow patternRow, PatternTable patternTable) {
+	/**
+	 * 
+	 * @param row
+	 * @return if row where added, means that return if table wasn't full
+	 */
+	public boolean addRow(PatternRow patternRow, PatternTable patternTable) {
 		if(tablesMap.containsKey(patternTable.getName()))
-			tablesMap.get(patternTable.getName()).addRow(patternRow);
-		else
+			return tablesMap.get(patternTable.getName()).addRow(patternRow);
+		else {
 			System.out.println("[OutputAll.addRow()] Error unknown table name" + patternTable.getName());
+			return false;
+		}
 	}
 	
 	@Override

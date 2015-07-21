@@ -13,6 +13,7 @@ public class OutputTable {
 	private String name;
 	private List<OutputRow> rows;
 	private List<String> columns;
+	private int rowNum;
 	
 	public OutputTable(String name) {
 		super();
@@ -48,16 +49,26 @@ public class OutputTable {
 		this.rows.add(row);
 	}
 
-	public void addRow(PatternRow row) { 
-		Map<String, String> m = new HashMap<>();
-		for(PatternNode pn : row.getPatternNodes()) {
-			m.put(pn.getName(), pn.getValue().toString());
+	/**
+	 * 
+	 * @param row
+	 * @return if row where added, means that return if table wasn't full
+	 */
+	public boolean addRow(PatternRow row) { 
+		if(rows.size() < rowNum) {
+			Map<String, String> m = new HashMap<>();
+			for(PatternNode pn : row.getPatternNodes()) {
+				m.put(pn.getName(), pn.getValue().toString());
+			}
+			OutputRow tempRow = new OutputRow();
+			for(String column : columns) {
+				tempRow.addNode(new String(m.get(column)));
+			}
+			addRow(tempRow);
+			return true;
 		}
-		OutputRow tempRow = new OutputRow();
-		for(String column : columns) {
-			tempRow.addNode(new String(m.get(column)));
-		}
-		addRow(tempRow);
+		else
+			return false;
 		
 	}
 	
@@ -71,6 +82,14 @@ public class OutputTable {
 	
 	public void addColumn(String column) {
 		this.columns.add(column);
+	}
+	
+	public int getRowNum() {
+		return rowNum;
+	}
+
+	public void setRowNum(int rowNum) {
+		this.rowNum = rowNum;
 	}
 
 	@Override

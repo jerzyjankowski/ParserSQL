@@ -97,10 +97,7 @@ public class SQLSelectParser implements SelectVisitor, FromItemVisitor, Expressi
 		if (plainSelect.getWhere() != null) {
 			FinderRestrictions finderRestrictions = new FinderRestrictions();
 			plainSelect.getWhere().accept(finderRestrictions);
-			System.out.println("finderRestrictions,rootRestriction=" + finderRestrictions.getRootRestriction());
 			finderRestrictions.getRootRestriction().getUsedColumns(); 
-			System.out.println("finderRestrictions,usedColumns=" + ((Restriction)(finderRestrictions.getRootRestriction())).getColumns());
-			System.out.println("finderRestrictions,getAllRestrictions=" + finderRestrictions.getRootRestriction().getAllRestrictions());
 			patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
 		}
 		

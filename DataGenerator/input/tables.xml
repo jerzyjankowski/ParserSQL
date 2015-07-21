@@ -20,6 +20,12 @@
 			<ATTRIBUTE>
 				<NAME>o</NAME>
 				<TYPE>INTEGER</TYPE>
+				<VALUES>
+					<VALUE>21</VALUE>
+					<VALUE>22</VALUE>
+					<VALUE>23</VALUE>
+					<VALUE>24</VALUE>
+				</VALUES>
 			</ATTRIBUTE>
 			<ATTRIBUTE>
 				<NAME>n</NAME>

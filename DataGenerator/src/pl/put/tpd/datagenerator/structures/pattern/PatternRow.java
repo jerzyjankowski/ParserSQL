@@ -16,6 +16,7 @@ public class PatternRow {
 	static private int lastId = 0;
 	private List<PatternNode> patternNodes;
 	private Set<String> columnNames;
+	private boolean doneWithGenerating;
 	
 	private String tableName = "";
 	private String tableAlias = "";
@@ -188,6 +189,26 @@ public class PatternRow {
 
 	public Set<String> getColumnNames() {
 		return columnNames;
+	}
+
+	public boolean isDoneWithGenerating() {
+		return doneWithGenerating;
+	}
+
+	public void setDoneWithGenerating(boolean doneWithGenerating) {
+		this.doneWithGenerating = doneWithGenerating;
+	}
+
+	public boolean isDone() {
+		return isDoneWithGenerating();
+	}
+
+	public void markDone() {
+		setDoneWithGenerating(true);
+	}
+
+	public void unmarkDone() {
+		setDoneWithGenerating(false);
 	}
 
 	@Override

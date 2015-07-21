@@ -18,6 +18,19 @@ public class PatternAll {
 	}
 	
 	/**
+	 * 
+	 * @param tableName
+	 * @return patternRow that where created with restrictions from input files only
+	 */
+	public PatternRow getMainPatternRow(String tableName) {
+		for(PatternTable patternTable : patternTables) {
+			if(patternTable.getName().equals(tableName))
+				return patternTable.getMainPatternRow();
+		}
+		return null;
+	}
+	
+	/**
 	 * plans and distribute restriction adding through tables
 	 * @param restrictions
 	 */
