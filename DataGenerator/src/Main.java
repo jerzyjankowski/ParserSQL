@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import pl.put.tpd.datagenerator.datagenerating.DataGenerator;
-import pl.put.tpd.datagenerator.datagenerating.TestData;
+import pl.put.tpd.datagenerator.datagenerating.TestDataGenerator;
 import pl.put.tpd.datagenerator.graphbuilding.FinderAliases;
 import pl.put.tpd.datagenerator.graphbuilding.SQLSelectParser;
 import pl.put.tpd.datagenerator.inputloding.XMLParser;
@@ -27,7 +27,7 @@ public class Main {
 		String sqlQuery;
 		
 //		used for test purpose, without external input files
-//		TestData testData = new TestData(70);
+//		TestDataGenerator testData = new TestDataGenerator(62);
 //		patternAll = testData.getPatternAll();
 //		outputAll = testData.getOutputAll();
 //		sqlQuery = testData.getSqlQuery();
@@ -37,6 +37,7 @@ public class Main {
 		patternAll = loader.getPatternAll();
 		outputAll = loader.getOutputAll();
 		sqlQuery = loader.getSqlQuery();
+		
 		
 		CCJSqlParserManager parserManager = new CCJSqlParserManager();
 		Statement statement = parserManager.parse(new StringReader(sqlQuery));
@@ -54,8 +55,9 @@ public class Main {
 			
 			//Create graph
 			SQLSelectParser sqlParser = new SQLSelectParser(patternAllWithAliases);
-			PatternAll parsedPatternAll = sqlParser.parse(selectStatement);			
-
+			PatternAll parsedPatternAll = sqlParser.parse(selectStatement);	
+			
+			//generate data
 			DataGenerator dataGenerator = new DataGenerator(patternAll, outputAll);
 			dataGenerator.generate(20, 20);
 

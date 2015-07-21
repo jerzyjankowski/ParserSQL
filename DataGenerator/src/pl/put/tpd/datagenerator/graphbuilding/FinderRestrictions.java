@@ -11,6 +11,7 @@ import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.CaseExpression;
 import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.DoubleValue;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.ExpressionVisitor;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.InverseExpression;
@@ -79,9 +80,22 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 		return rootRestriction;
 	}
 	
-//	public void visitUnaryExpression(Expression expression) {
-//		
-//	}
+	public void visitUnaryExpression(Expression expression) {
+		Restriction restriction = new Restriction(expression.toString(), expression);
+		if(rootRestriction == null) {
+			rootRestriction = restriction;
+		}
+		else {
+			if(lastRestriction == null) {
+				lastRestriction = restrictionStack.pop();
+				lastRestriction.setRestrictionR(restriction);
+			}
+			else {
+				lastRestriction.setRestrictionL(restriction);
+			}
+		}
+		lastRestriction = null;
+	}
 	
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		if(binaryExpression.getStringExpression().equals("AND") ||
@@ -106,20 +120,7 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 			
 		}
 		else {
-			Restriction restriction = new Restriction(binaryExpression.toString(), binaryExpression);
-			if(rootRestriction == null) {
-				rootRestriction = restriction;
-			}
-			else {
-				if(lastRestriction == null) {
-					lastRestriction = restrictionStack.pop();
-					lastRestriction.setRestrictionR(restriction);
-				}
-				else {
-					lastRestriction.setRestrictionL(restriction);
-				}
-			}
-			lastRestriction = null;
+			visitUnaryExpression(binaryExpression);
 		}
 			
 	}
@@ -315,26 +316,6 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	}
 
 	@Override
-	public void visit(InExpression inExpression) {
-		System.out.println("inExpression=" + inExpression);
-		System.out.println("  leftExpression=" + inExpression.getLeftExpression() + ", items=" + inExpression.getItemsList());
-		//visitBinaryExpression(inExpression);
-		
-	}
-
-	@Override
-	public void visit(IsNullExpression arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(LikeExpression arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void visit(MinorThan minorThan) {
 		visitBinaryExpression(minorThan);
 		
@@ -353,7 +334,51 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	}
 
 	@Override
-	public void visit(Column arg0) {
+	public void visit(LikeExpression arg0) {
+		// TODO Auto-generated method stub
+	}
+		
+
+	@Override
+	public void visit(Matches arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(BitwiseAnd arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(BitwiseOr arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(BitwiseXor arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Concat arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(InExpression inExpression) {
+		System.out.println("inExpression=" + inExpression);
+		System.out.println("  leftExpression=" + inExpression.getLeftExpression() + ", items=" + inExpression.getItemsList());
+		visitUnaryExpression(inExpression);
+		
+	}
+
+	@Override
+	public void visit(IsNullExpression arg0) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -389,31 +414,7 @@ public class FinderRestrictions implements SelectVisitor, FromItemVisitor, Expre
 	}
 
 	@Override
-	public void visit(Concat arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Matches arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(BitwiseAnd arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(BitwiseOr arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(BitwiseXor arg0) {
+	public void visit(Column arg0) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -6,6 +6,7 @@ import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.CaseExpression;
 import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.DoubleValue;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.ExpressionVisitor;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.InverseExpression;
@@ -44,38 +45,40 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 
 public class NegateRestriction {
 
-	static public BinaryExpression negate(BinaryExpression binaryExpression) {
-		
-		if (binaryExpression instanceof EqualsTo) {
-			BinaryExpression be = new NotEqualsTo();
-			be.setLeftExpression(binaryExpression.getLeftExpression());
-			be.setRightExpression(binaryExpression.getRightExpression());
-			return be;
-		}else if (binaryExpression instanceof NotEqualsTo) {
-			BinaryExpression be = new EqualsTo();
-			be.setLeftExpression(binaryExpression.getLeftExpression());
-			be.setRightExpression(binaryExpression.getRightExpression());
-			return be;
-		}else if (binaryExpression instanceof GreaterThan) {
-			BinaryExpression be = new MinorThanEquals();
-			be.setLeftExpression(binaryExpression.getLeftExpression());
-			be.setRightExpression(binaryExpression.getRightExpression());
-			return be;
-		}else if (binaryExpression instanceof GreaterThanEquals) {
-			BinaryExpression be = new MinorThan();
-			be.setLeftExpression(binaryExpression.getLeftExpression());
-			be.setRightExpression(binaryExpression.getRightExpression());
-			return be;
-		}else if (binaryExpression instanceof MinorThan) {
-			BinaryExpression be = new GreaterThanEquals();
-			be.setLeftExpression(binaryExpression.getLeftExpression());
-			be.setRightExpression(binaryExpression.getRightExpression());
-			return be;
-		}else if (binaryExpression instanceof MinorThanEquals) {
-			BinaryExpression be = new GreaterThan();
-			be.setLeftExpression(binaryExpression.getLeftExpression());
-			be.setRightExpression(binaryExpression.getRightExpression());
-			return be;
+	static public BinaryExpression negateBinaryExpression(Expression expression) {
+		if(expression instanceof BinaryExpression) {
+			BinaryExpression binaryExpression = (BinaryExpression)expression;
+			if (binaryExpression instanceof EqualsTo) {
+				BinaryExpression be = new NotEqualsTo();
+				be.setLeftExpression(binaryExpression.getLeftExpression());
+				be.setRightExpression(binaryExpression.getRightExpression());
+				return be;
+			}else if (binaryExpression instanceof NotEqualsTo) {
+				BinaryExpression be = new EqualsTo();
+				be.setLeftExpression(binaryExpression.getLeftExpression());
+				be.setRightExpression(binaryExpression.getRightExpression());
+				return be;
+			}else if (binaryExpression instanceof GreaterThan) {
+				BinaryExpression be = new MinorThanEquals();
+				be.setLeftExpression(binaryExpression.getLeftExpression());
+				be.setRightExpression(binaryExpression.getRightExpression());
+				return be;
+			}else if (binaryExpression instanceof GreaterThanEquals) {
+				BinaryExpression be = new MinorThan();
+				be.setLeftExpression(binaryExpression.getLeftExpression());
+				be.setRightExpression(binaryExpression.getRightExpression());
+				return be;
+			}else if (binaryExpression instanceof MinorThan) {
+				BinaryExpression be = new GreaterThanEquals();
+				be.setLeftExpression(binaryExpression.getLeftExpression());
+				be.setRightExpression(binaryExpression.getRightExpression());
+				return be;
+			}else if (binaryExpression instanceof MinorThanEquals) {
+				BinaryExpression be = new GreaterThan();
+				be.setLeftExpression(binaryExpression.getLeftExpression());
+				be.setRightExpression(binaryExpression.getRightExpression());
+				return be;
+			}
 		}
 		return null;
 

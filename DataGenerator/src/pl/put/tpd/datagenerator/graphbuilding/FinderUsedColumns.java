@@ -9,6 +9,7 @@ import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.CaseExpression;
 import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.DoubleValue;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.ExpressionVisitor;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.InverseExpression;
@@ -76,6 +77,20 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 		return usedColumns;
 	}
 
+	public void findUsedColumns(Expression expression) {
+		if(expression instanceof BinaryExpression) {
+			visitBinaryExpression((BinaryExpression)expression);
+		}
+		else if(expression instanceof InExpression) {
+			if(((InExpression)expression).getLeftExpression() instanceof Column) {
+				usedColumns.add(((InExpression)expression).getLeftExpression().toString());
+			}
+		}
+		else {
+			System.out.println("Restriction unexpected restriction");
+		}
+	}
+	
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		if(binaryExpression.getLeftExpression() instanceof Column) {
 			usedColumns.add(binaryExpression.getLeftExpression().toString());

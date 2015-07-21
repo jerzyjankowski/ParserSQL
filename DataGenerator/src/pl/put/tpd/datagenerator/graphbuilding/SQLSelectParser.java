@@ -3,6 +3,7 @@ package pl.put.tpd.datagenerator.graphbuilding;
 import java.util.Iterator;
 
 import pl.put.tpd.datagenerator.structures.pattern.PatternAll;
+import pl.put.tpd.datagenerator.structures.restriction.Restriction;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
 import net.sf.jsqlparser.expression.BinaryExpression;
@@ -96,7 +97,10 @@ public class SQLSelectParser implements SelectVisitor, FromItemVisitor, Expressi
 		if (plainSelect.getWhere() != null) {
 			FinderRestrictions finderRestrictions = new FinderRestrictions();
 			plainSelect.getWhere().accept(finderRestrictions);
-			finderRestrictions.getRootRestriction().getUsedColumns();
+			System.out.println("finderRestrictions,rootRestriction=" + finderRestrictions.getRootRestriction());
+			finderRestrictions.getRootRestriction().getUsedColumns(); 
+			System.out.println("finderRestrictions,usedColumns=" + ((Restriction)(finderRestrictions.getRootRestriction())).getColumns());
+			System.out.println("finderRestrictions,getAllRestrictions=" + finderRestrictions.getRootRestriction().getAllRestrictions());
 			patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
 		}
 		

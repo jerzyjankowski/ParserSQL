@@ -7,7 +7,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.sf.jsqlparser.expression.BinaryExpression;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import pl.put.tpd.datagenerator.datagenerating.exceptions.NotExpectedNodeTypeException;
+import pl.put.tpd.datagenerator.graphbuilding.FinderRestrictions;
 import pl.put.tpd.datagenerator.structures.pattern.PatternNode;
 import pl.put.tpd.datagenerator.structures.pattern.PatternRestriction;
 
@@ -92,77 +96,77 @@ public class NodeValueGenerator {
 		Random rand = new Random();
 		
 		for(PatternRestriction pRes : patternNode.getPatternRestrictions()) {
-			
-			String operation = pRes.getRestriction().getBinaryExpression()
-					.getStringExpression();
-			String[] expressionArr = new String[2];
-			expressionArr[0] = pRes.getRestriction().getBinaryExpression()
-					.getLeftExpression().toString().trim();
-			expressionArr[1] = pRes.getRestriction().getBinaryExpression()
-					.getRightExpression().toString().trim();
-
-			String comparativeStringValue = null;
-			
-			System.out.println("operation=" + operation + ", expressionArr[0]=" + expressionArr[0].toString() + ", expressionArr[1]=" + expressionArr[1].toString());
-			
-			switch (getStringRestrictionType(pRes)) {
-			
-				case STRING_SIMPLE_AB: {
-					System.out.println("string_simple_ab");
-						
-					for(PatternNode tempNode : pRes.getPatternNodes()) {
-						if(tempNode != patternNode) {
-							comparativeStringValue = tempNode.getValue();
+			if(pRes.getRestriction().getExpression() instanceof BinaryExpression) {
+				String operation = pRes.getRestriction().getBinaryExpression()
+						.getStringExpression();
+				String[] expressionArr = new String[2];
+				expressionArr[0] = pRes.getRestriction().getBinaryExpression()
+						.getLeftExpression().toString().trim();
+				expressionArr[1] = pRes.getRestriction().getBinaryExpression()
+						.getRightExpression().toString().trim();
+	
+				String comparativeStringValue = null;
+				
+				System.out.println("operation=" + operation + ", expressionArr[0]=" + expressionArr[0].toString() + ", expressionArr[1]=" + expressionArr[1].toString());
+				
+				switch (getStringRestrictionType(pRes)) {
+				
+					case STRING_SIMPLE_AB: {
+						System.out.println("string_simple_ab");
+							
+						for(PatternNode tempNode : pRes.getPatternNodes()) {
+							if(tempNode != patternNode) {
+								comparativeStringValue = tempNode.getValue();
+							}
 						}
+						if(comparativeStringValue == null)
+							continue;
 					}
-					if(comparativeStringValue == null)
-						continue;
+					break;
+					
+					case STRING_SIMPLE_AT: {
+						System.out.println("string_simple_at");
+	//					if(!patternNode.findSelfInString(expressionArr[0])) {
+	//						comparativeStringValue = expressionArr[0];
+	//					}
+	//					else {
+	//						comparativeStringValue = expressionArr[1];
+	//					}
+						comparativeStringValue = expressionArr[1].replace("\"", "");
+						comparativeStringValue = comparativeStringValue.replace("\'", "");
+					}
+					break;
+					
+					case STRING_SIMPLE_TB: {
+						System.out.println("string_simple_tb");
+						comparativeStringValue = expressionArr[0].replace("\"", "");
+						comparativeStringValue = comparativeStringValue.replace("\'", "");
+					}
+					break;
+					
+					case OTHER: {
+						System.out.println("NodeValueGenerator.generateStringValue not allowed OTHER restriction");
+					}
+					break;
+					
+					default:
+					System.out.println("NodeValueGenerator.generateStringValue not allowed restriction - incorrect parsed");
 				}
-				break;
-				
-				case STRING_SIMPLE_AT: {
-					System.out.println("string_simple_at");
-//					if(!patternNode.findSelfInString(expressionArr[0])) {
-//						comparativeStringValue = expressionArr[0];
-//					}
-//					else {
-//						comparativeStringValue = expressionArr[1];
-//					}
-					comparativeStringValue = expressionArr[1].replace("\"", "");
-					comparativeStringValue = comparativeStringValue.replace("\'", "");
+				System.out.println("comparativeStringValue=" + comparativeStringValue);
+				if (operation.equals("=")) {
+					if(equalValue != null) {
+						//we have collision so we could set any value and we still have collision. we can set previous "must to set" value
+						patternNode.setValue(equalValue);
+						return;
+					}
+					else {
+						equalValue = comparativeStringValue;
+					}
+				} else if (operation == "<>") {
+					notEqualValues.add(comparativeStringValue);
 				}
-				break;
-				
-				case STRING_SIMPLE_TB: {
-					System.out.println("string_simple_tb");
-					comparativeStringValue = expressionArr[0].replace("\"", "");
-					comparativeStringValue = comparativeStringValue.replace("\'", "");
-				}
-				break;
-				
-				case OTHER: {
-					System.out.println("NodeValueGenerator.generateStringValue not allowed OTHER restriction");
-				}
-				break;
-				
-				default:
-				System.out.println("NodeValueGenerator.generateStringValue not allowed restriction - incorrect parsed");
-			}
-			System.out.println("comparativeStringValue=" + comparativeStringValue);
-			if (operation.equals("=")) {
-				if(equalValue != null) {
-					//we have collision so we could set any value and we still have collision. we can set previous "must to set" value
-					patternNode.setValue(equalValue);
-					return;
-				}
-				else {
-					equalValue = comparativeStringValue;
-				}
-			} else if (operation == "<>") {
-				notEqualValues.add(comparativeStringValue);
 			}
 		}
-		
 		if(equalValue != null) {
 			patternNode.setValue(equalValue);
 		}
@@ -183,6 +187,7 @@ public class NodeValueGenerator {
 		int maxValue = maxStartValue;
 		int tempMinValue, tempMaxValue;
 		Set<Integer> forbiddenVal = new HashSet<>();
+		Set<Integer> possibleVal = new HashSet<>();
 		List<PatternRestriction> multipleNodeRestrictions = new ArrayList<>();
 		Random rand = new Random();
 		List<PatternRestriction> tempPatternRestrictionList = new ArrayList<>();
@@ -199,168 +204,202 @@ public class NodeValueGenerator {
 		boolean print = false;
 		if(print)System.out.println("\n--------" + patternNode.getId());
 		for(PatternRestriction pRes : patternNode.getPatternRestrictions()) {
-			
-			String operation = pRes.getRestriction().getBinaryExpression()
-					.getStringExpression();
-			String[] expressionArr = new String[2];
-			expressionArr[0] = pRes.getRestriction().getBinaryExpression()
-					.getLeftExpression().toString().trim();
-			expressionArr[1] = pRes.getRestriction().getBinaryExpression()
-					.getRightExpression().toString().trim();
-			
-			tempMinValue = minValue;
-			tempMaxValue = maxValue;
-			switch (getIntRestrictionType(pRes)) {
-			
-				case INT_SIMPLE_A2: {
-					int intVal =  Integer.parseInt(expressionArr[1]);
-					if (operation.equals("=")) {
-						minValue = maxValue = intVal;
-					} else if (operation == "<>") {
-						forbiddenVal.add(intVal);
-					} else if (operation == ">") {
-						minValue = intVal + 1;
-					} else if (operation == "<=") {
-						maxValue = intVal;
-					} else if (operation == "<") {
-						maxValue = intVal - 1;
-					} else if (operation == ">=") {
-						minValue = intVal;
+			Expression expression = pRes.getRestriction().getExpression();
+			if(pRes.getRestriction().getExpression() instanceof BinaryExpression) {
+				BinaryExpression binaryExpression = (BinaryExpression)expression;
+				String operation = binaryExpression.getStringExpression();
+				String[] expressionArr = new String[2];
+				expressionArr[0] = binaryExpression.getLeftExpression().toString().trim();
+				expressionArr[1] = binaryExpression.getRightExpression().toString().trim();
+				
+				tempMinValue = minValue;
+				tempMaxValue = maxValue;
+				switch (getIntRestrictionType(pRes)) {
+				
+					case INT_SIMPLE_A2: {
+						int intVal =  Integer.parseInt(expressionArr[1]);
+						if (operation.equals("=")) {
+							minValue = maxValue = intVal;
+						} else if (operation == "<>") {
+							forbiddenVal.add(intVal);
+						} else if (operation == ">") {
+							minValue = intVal + 1;
+						} else if (operation == "<=") {
+							maxValue = intVal;
+						} else if (operation == "<") {
+							maxValue = intVal - 1;
+						} else if (operation == ">=") {
+							minValue = intVal;
+						}
+					}
+					break;
+					
+					case INT_SIMPLE_1B: {
+						int intVal =  Integer.parseInt(expressionArr[1]);
+						if (operation.equals("=")) {
+							minValue = maxValue = intVal;
+						} else if (operation == "<>") {
+							forbiddenVal.add(intVal);
+						} else if (operation == ">") {
+							maxValue = intVal - 1;
+						} else if (operation == "<=") {
+							minValue = intVal;
+						} else if (operation == "<") {
+							minValue = intVal + 1;
+						} else if (operation == ">=") {
+							maxValue = intVal;
+						}
+					}
+					break;
+					
+					case INT_SIMPLE_AB: {
+						multipleNodeRestrictions.add(pRes);
+					}
+					break;
+					
+					case OTHER: {
+						System.out.println("NodeValueGenerator.generateIntValue not allowed OTHER restriction");
+					}
+					break;
+					
+					default:
+					System.out.println("NodeValueGenerator.generateIntValue not allowed restriction - incorrect parsed");
+				}
+			} 
+			else if(expression instanceof InExpression) {
+				InExpression inExpression = (InExpression) expression;
+				
+				FinderInItemsFromList finderInItemsFromList = new FinderInItemsFromList();
+				inExpression.getItemsList().accept(finderInItemsFromList);
+				
+				if(!inExpression.isNot()) {
+					for(String stringVal : finderInItemsFromList.getExpressionList()) {
+						possibleVal.add(Integer.parseInt(stringVal));
 					}
 				}
-				break;
-				
-				case INT_SIMPLE_1B: {
-					int intVal =  Integer.parseInt(expressionArr[1]);
-					if (operation.equals("=")) {
-						minValue = maxValue = intVal;
-					} else if (operation == "<>") {
-						forbiddenVal.add(intVal);
-					} else if (operation == ">") {
-						maxValue = intVal - 1;
-					} else if (operation == "<=") {
-						minValue = intVal;
-					} else if (operation == "<") {
-						minValue = intVal + 1;
-					} else if (operation == ">=") {
-						maxValue = intVal;
+				else {
+					for(String stringVal : finderInItemsFromList.getExpressionList()) {
+						forbiddenVal.add(Integer.parseInt(stringVal));
 					}
 				}
-				break;
 				
-				case INT_SIMPLE_AB: {
-					multipleNodeRestrictions.add(pRes);
-				}
-				break;
-				
-				case OTHER: {
-					System.out.println("NodeValueGenerator.generateIntValue not allowed OTHER restriction");
-				}
-				break;
-				
-				default:
-				System.out.println("NodeValueGenerator.generateIntValue not allowed restriction - incorrect parsed");
+			}
+			else {
+				System.out.println("[NodeValueGenerator.generateIntValue()] not supported expression");
 			}
 		}
-		
-		//iterate by each multiargument restriction in random fashion and get minValue or maxValue if it won't be improper
+		//iterate by each multiargument restriction of BinaryRestriction type in random fashion and get minValue or maxValue if it won't be improper
 		//minValue must be lesser than maxValue
 		while(!multipleNodeRestrictions.isEmpty()) {
 			int i = rand.nextInt(multipleNodeRestrictions.size());
 			PatternRestriction pRes = multipleNodeRestrictions.remove(i);
-			
-			String operation = pRes.getRestriction().getBinaryExpression()
-					.getStringExpression();
-			String expression = pRes.getRestriction().getBinaryExpression()
-					.toString();
-
-			String[] expressionArr = new String[2];
-			expressionArr[0] = pRes.getRestriction().getBinaryExpression()
-					.getLeftExpression().toString().trim();
-			expressionArr[1] = pRes.getRestriction().getBinaryExpression()
-					.getRightExpression().toString().trim();
-			
-			tempMinValue = minValue;
-			tempMaxValue = maxValue;
-			
-			if (operation.equals("=")) {
-				if(print)System.out.println("restriction: " + pRes);
-				for (PatternNode pNodRes : pRes.getPatternNodes()) {
-					if (pNodRes != patternNode)
-						if(print)System.out.println("  " + pNodRes.getTableAlias() + "." + pNodRes.getName() + "=" + pNodRes.getValue());
-					if (pNodRes != patternNode && pNodRes.getValue() != null) {
-						tempMinValue = tempMaxValue = Integer.parseInt(pNodRes.getValue());
-						if(print)System.out.println("  not null, tempMinValue=" + tempMinValue + ", tempMaxValue=" + tempMaxValue);
+			if(pRes.getRestriction().getExpression() instanceof BinaryExpression) {
+				String operation = pRes.getRestriction().getBinaryExpression()
+						.getStringExpression();
+				String expression = pRes.getRestriction().getBinaryExpression()
+						.toString();
+	
+				String[] expressionArr = new String[2];
+				expressionArr[0] = pRes.getRestriction().getBinaryExpression()
+						.getLeftExpression().toString().trim();
+				expressionArr[1] = pRes.getRestriction().getBinaryExpression()
+						.getRightExpression().toString().trim();
+				
+				tempMinValue = minValue;
+				tempMaxValue = maxValue;
+				
+				if (operation.equals("=")) {
+					if(print)System.out.println("restriction: " + pRes);
+					for (PatternNode pNodRes : pRes.getPatternNodes()) {
+						if (pNodRes != patternNode)
+							if(print)System.out.println("  " + pNodRes.getTableAlias() + "." + pNodRes.getName() + "=" + pNodRes.getValue());
+						if (pNodRes != patternNode && pNodRes.getValue() != null) {
+							tempMinValue = tempMaxValue = Integer.parseInt(pNodRes.getValue());
+							if(print)System.out.println("  not null, tempMinValue=" + tempMinValue + ", tempMaxValue=" + tempMaxValue);
+						}
+					}
+				} else if (operation == "<>") {
+					for (PatternNode pNodRes : pRes.getPatternNodes()) {
+						if (pNodRes != patternNode && pNodRes.getValue() != null) {
+							forbiddenVal.add(Integer.parseInt(pNodRes.getValue()));
+						}
+					}
+				} else if (operation == ">") {
+					for (PatternNode pNodRes : pRes.getPatternNodes()) {
+						if (pNodRes != patternNode && pNodRes.getValue() != null) {
+							if (expressionArr[0].contains(pNodRes.getName()))
+								tempMaxValue = Integer.parseInt(pNodRes.getValue()) - 1;
+							else
+								tempMinValue = Integer.parseInt(pNodRes.getValue()) + 1;
+	
+						}
+					}
+				} else if (operation == "<=") {
+					for (PatternNode pNodRes : pRes.getPatternNodes()) {
+						if (pNodRes != patternNode && pNodRes.getValue() != null) {
+							if (expressionArr[0].contains(pNodRes.getName()))
+								tempMinValue = Integer.parseInt(pNodRes.getValue());
+							else
+								tempMaxValue = Integer.parseInt(pNodRes.getValue());
+						}
+					}
+				} else if (operation == "<") {
+					for (PatternNode pNodRes : pRes.getPatternNodes()) {
+						if (pNodRes != patternNode && pNodRes.getValue() != null) {
+							if (expressionArr[0].contains(pNodRes.getName()))
+								tempMinValue = Integer.parseInt(pNodRes.getValue()) + 1;
+							else
+								tempMaxValue = Integer.parseInt(pNodRes.getValue()) - 1;
+	
+						}
+					}
+				} else if (operation == ">=") {
+					for (PatternNode pNodRes : pRes.getPatternNodes()) {
+						if (pNodRes != patternNode && pNodRes.getValue() != null) {
+							if (expressionArr[0].contains(pNodRes.getName()))
+								tempMaxValue = Integer.parseInt(pNodRes.getValue());
+							else
+								tempMinValue = Integer.parseInt(pNodRes.getValue());
+						}
 					}
 				}
-			} else if (operation == "<>") {
-				for (PatternNode pNodRes : pRes.getPatternNodes()) {
-					if (pNodRes != patternNode && pNodRes.getValue() != null) {
-						forbiddenVal.add(Integer.parseInt(pNodRes.getValue()));
-					}
+				if(print)System.out.println("    tempMinValue=" + tempMinValue + ", tempMaxValue=" + tempMaxValue);
+				if(print)System.out.println("    minValue=" + minValue + ", maxValue=" + maxValue + ", ifIf=" + (tempMinValue <= maxValue && tempMaxValue >= minValue) );
+				if(tempMinValue <= maxValue && tempMaxValue >= minValue) {
+					if(minValue < tempMinValue)
+						minValue = tempMinValue;
+					if(maxValue > tempMaxValue)
+						maxValue = tempMaxValue;
 				}
-			} else if (operation == ">") {
-				for (PatternNode pNodRes : pRes.getPatternNodes()) {
-					if (pNodRes != patternNode && pNodRes.getValue() != null) {
-						if (expressionArr[0].contains(pNodRes.getName()))
-							tempMaxValue = Integer.parseInt(pNodRes.getValue()) - 1;
-						else
-							tempMinValue = Integer.parseInt(pNodRes.getValue()) + 1;
-
-					}
-				}
-			} else if (operation == "<=") {
-				for (PatternNode pNodRes : pRes.getPatternNodes()) {
-					if (pNodRes != patternNode && pNodRes.getValue() != null) {
-						if (expressionArr[0].contains(pNodRes.getName()))
-							tempMinValue = Integer.parseInt(pNodRes.getValue());
-						else
-							tempMaxValue = Integer.parseInt(pNodRes.getValue());
-					}
-				}
-			} else if (operation == "<") {
-				for (PatternNode pNodRes : pRes.getPatternNodes()) {
-					if (pNodRes != patternNode && pNodRes.getValue() != null) {
-						if (expressionArr[0].contains(pNodRes.getName()))
-							tempMinValue = Integer.parseInt(pNodRes.getValue()) + 1;
-						else
-							tempMaxValue = Integer.parseInt(pNodRes.getValue()) - 1;
-
-					}
-				}
-			} else if (operation == ">=") {
-				for (PatternNode pNodRes : pRes.getPatternNodes()) {
-					if (pNodRes != patternNode && pNodRes.getValue() != null) {
-						if (expressionArr[0].contains(pNodRes.getName()))
-							tempMaxValue = Integer.parseInt(pNodRes.getValue());
-						else
-							tempMinValue = Integer.parseInt(pNodRes.getValue());
-					}
+				else {
+					//in this case later on other nodes that spoil that min/max value restriction will be generated from scratch
 				}
 			}
-			if(print)System.out.println("    tempMinValue=" + tempMinValue + ", tempMaxValue=" + tempMaxValue);
-			if(print)System.out.println("    minValue=" + minValue + ", maxValue=" + maxValue + ", ifIf=" + (tempMinValue <= maxValue && tempMaxValue >= minValue) );
-			if(tempMinValue <= maxValue && tempMaxValue >= minValue) {
-				if(minValue < tempMinValue)
-					minValue = tempMinValue;
-				if(maxValue > tempMaxValue)
-					maxValue = tempMaxValue;
-			}
-			else {
-				//in this case later on other nodes that spoil that min/max value restriction will be generated from scratch
-			}
+			else
+				System.out.println("[NodeValueGenerator] that wasn't BinaryExpression");
 		}
 		
 		//generates value thanks to gained information about minValue and maxValue
 		int value;
 		do {
-			if (maxValue > minValue)
-				value = rand.nextInt(maxValue - minValue) + minValue;
-			else
-				value = minValue;
+			if(possibleVal.isEmpty()) {
+				if (maxValue > minValue)
+					value = rand.nextInt(maxValue - minValue) + minValue;
+				else
+					value = minValue;
+			}
+			else {
+List<Integer> endPossibleVal = new ArrayList<>();
+				for(int pv : possibleVal) {
+					if(pv>=minValue && pv<=maxValue && !forbiddenVal.contains(pv))
+						endPossibleVal.add(pv);
+				}
+				System.out.println("endPossibleVal=" + endPossibleVal);
+				value = endPossibleVal.get(rand.nextInt(endPossibleVal.size()));
+			}
 		} while (forbiddenVal.contains(value));
-		if(print)System.out.println("    minValue=" + minValue + ", maxValue=" + maxValue);
-		if(print)System.out.println("generated: " + value);
+//		System.out.println("   value=" + value + ", minValue=" + minValue + ", maxValue=" + maxValue + ", possibleVal=" + possibleVal + ", forbiddenVal=" + forbiddenVal);
+		
 		patternNode.setValue(""+value);
 	}
 	

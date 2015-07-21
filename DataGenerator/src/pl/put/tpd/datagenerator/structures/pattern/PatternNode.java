@@ -135,24 +135,27 @@ public class PatternNode {
 		String columnPattern0 = "("+notCharPattern+")(" + columnName + ")("+notCharPattern+")";
 		String columnPattern1 = "^(" + columnName + ")("+notCharPattern+")";
 		String columnPattern2 = "("+notCharPattern+")(" + columnName + ")$";
+		String columnPattern3 = "^(" + columnName + ")$";
 		
 		String tnColumnName = tableName + "." + name;
 		String tnColumnPattern0 = "("+notCharPattern+")(" + tnColumnName + ")("+notCharPattern+")";
 		String tnColumnPattern1 = "^(" + tnColumnName + ")("+notCharPattern+")";
 		String tnColumnPattern2 = "("+notCharPattern+")(" + tnColumnName + ")$";
+		String tnColumnPattern3 = "^(" + tnColumnName + ")$";
 		
 		String taColumnName = tableAlias + "." + name;
 		String taColumnPattern0 = "("+notCharPattern+")(" + taColumnName + ")("+notCharPattern+")";
 		String taColumnPattern1 = "^(" + taColumnName + ")("+notCharPattern+")";
 		String taColumnPattern2 = "("+notCharPattern+")(" + taColumnName + ")$";
+		String taColumnPattern3 = "^(" + taColumnName + ")$";
 		
-    	expression = expression.replaceAll(columnPattern0, "$1" + value + "$3").replaceAll(columnPattern1, value + "$2").replaceAll(columnPattern2, "$1" + value);
+    	expression = expression.replaceAll(columnPattern0, "$1" + value + "$3").replaceAll(columnPattern1, value + "$2").replaceAll(columnPattern2, "$1" + value).replaceAll(columnPattern3, value);
 
 		if(!tableName.equals(""))
-    		expression = expression.replaceAll(tnColumnPattern0, "$1" + value + "$3").replaceAll(tnColumnPattern1, value + "$2").replaceAll(tnColumnPattern2, "$1" + value);
+    		expression = expression.replaceAll(tnColumnPattern0, "$1" + value + "$3").replaceAll(tnColumnPattern1, value + "$2").replaceAll(tnColumnPattern2, "$1" + value).replaceAll(tnColumnPattern3, value);
 
 		if(!tableAlias.equals(""))
-    		expression = expression.replaceAll(taColumnPattern0, "$1" + value + "$3").replaceAll(taColumnPattern1, value + "$2").replaceAll(taColumnPattern2, "$1" + value);
+    		expression = expression.replaceAll(taColumnPattern0, "$1" + value + "$3").replaceAll(taColumnPattern1, value + "$2").replaceAll(taColumnPattern2, "$1" + value).replaceAll(taColumnPattern3, value);
 
 		return expression;
 	}

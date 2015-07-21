@@ -8,16 +8,17 @@ import pl.put.tpd.datagenerator.graphbuilding.NegateRestriction;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.ExpressionVisitor;
+import net.sf.jsqlparser.expression.operators.relational.InExpression;
 
 public class Restriction implements RestrictionInterface {
 	private String restrictionString;
 	private List<String> columns;
-	private BinaryExpression binaryExpression;
+	private Expression expression;
 	
-	public Restriction(String restrictionString, BinaryExpression binaryExpression) {
+	public Restriction(String restrictionString, Expression expression) {
 		this.restrictionString = restrictionString;
 		columns = new ArrayList<String>();
-		this.binaryExpression = binaryExpression;
+		this.expression = expression;
 	}
 
 	@Override
@@ -30,15 +31,29 @@ public class Restriction implements RestrictionInterface {
 	@Override
 	public void getUsedColumns() {
 		FinderUsedColumns finderUsedColumns = new FinderUsedColumns();
-		finderUsedColumns.visitBinaryExpression(binaryExpression);
+		finderUsedColumns.findUsedColumns(expression);
 		columns.addAll(finderUsedColumns.getUsedColumns());
-	}
+	} 
 	
 	public Restriction getNegative() {
-		BinaryExpression negativeBinaryExpression = NegateRestriction.negate(binaryExpression);
-		Restriction restriction = new Restriction(negativeBinaryExpression.toString(), negativeBinaryExpression);//TODO negate expression
-		restriction.columns.addAll(this.getColumns());
-		return restriction;
+		if(expression instanceof BinaryExpression) {
+			BinaryExpression negativeBinaryExpression = NegateRestriction.negateBinaryExpression(expression);
+			Restriction restriction = new Restriction(negativeBinaryExpression.toString(), negativeBinaryExpression);
+			restriction.columns.addAll(this.getColumns());
+			return restriction;
+		} else if(expression instanceof InExpression) {
+			InExpression inExpression = (InExpression)expression;
+			InExpression negativeExpression = new InExpression(inExpression.getLeftExpression(), inExpression.getItemsList());
+			negativeExpression.setNot(true);
+			Restriction restriction = new Restriction(negativeExpression.toString(), negativeExpression);
+			restriction.columns.addAll(this.getColumns());
+			System.out.println(restriction);
+			return restriction;
+		}
+		else {
+			System.out.println("Restriction.getNegative(), unknown expression to make negative");
+		}
+		return null;
 	}
 
 	public String getRestrictionString() {
@@ -62,11 +77,15 @@ public class Restriction implements RestrictionInterface {
 	}
 
 	public BinaryExpression getBinaryExpression() {
-		return binaryExpression;
+		return (BinaryExpression)expression;
+	}
+	
+	public Expression getExpression() {
+		return expression;
 	}
 
-	public void setBinaryExpression(BinaryExpression binaryExpression) {
-		this.binaryExpression = binaryExpression;
+	public void setExpression(Expression expression) {
+		this.expression = expression;
 	}
 
 	@Override
@@ -75,7 +94,7 @@ public class Restriction implements RestrictionInterface {
 	}
 	
 	public Restriction copy() {
-		Restriction restriction = new Restriction(new String(restrictionString), binaryExpression) ;
+		Restriction restriction = new Restriction(new String(restrictionString), expression) ;
 		restriction.columns.addAll(this.columns);
 		return restriction;
 	}

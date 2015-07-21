@@ -46,8 +46,8 @@ public class DataGenerator {
 				System.out.println("-----");
 				for(PatternNode pNod : pRow.getPatternNodes()) {
 					for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
-						if(pRes.getRestriction().getBinaryExpression().toString().contains("n")) {
-							System.out.println(pRes.getRestriction().getBinaryExpression().toString());
+						if(pRes.getRestriction().getExpression().toString().contains("n")) {
+							System.out.println(pRes.getRestriction().getExpression().toString());
 							for(PatternNode pNodRes : pRes.getPatternNodes()) {
 								System.out.print("   " + pNodRes.getName() + ":" + pNodRes.getValue());
 							}

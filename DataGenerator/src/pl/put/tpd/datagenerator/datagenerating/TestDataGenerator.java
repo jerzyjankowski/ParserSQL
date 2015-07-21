@@ -9,12 +9,12 @@ import pl.put.tpd.datagenerator.structures.pattern.PatternRow;
 import pl.put.tpd.datagenerator.structures.pattern.PatternTable;
 
 
-public class TestData {
+public class TestDataGenerator {
 	private String sqlQuery = new String();
 	private PatternAll patternAll = new PatternAll();
 	private OutputAll outputAll = new OutputAll();
 
-	public TestData(int i) {
+	public TestDataGenerator(int i) {
 		switch (i) {
 		case 10:
 			sqlQuery = "SELECT * FROM pracownicy WHERE etat = 'ASYSTENT';  ";
@@ -90,7 +90,7 @@ public class TestData {
 					" INNER JOIN pracownicy AS pb  ON zespoly.dodatek_min = pb.placa_dod " + 
 					" WHERE pa.placa_pod = 100 AND pb.placa_pod = 200;  ";
 			break;
-		case 70:// x <=-50 doesn't work
+		case 70:// x <=-50 didn't work
 			sqlQuery = "SELECT * FROM pracownicy WHERE placa_pod < -3;  ";
 			break;
 			
@@ -106,27 +106,27 @@ public class TestData {
 		
 		PatternTable patternTable = new PatternTable("pracownicy");
 		PatternRow patternRow = new PatternRow();
-		patternRow.addPatternNode(new PatternNode("integer", "nazwisko"));
-		patternRow.addPatternNode(new PatternNode("integer", "etat"));
-		patternRow.addPatternNode(new PatternNode("integer", "placa_pod"));
-		patternRow.addPatternNode(new PatternNode("integer", "placa_dod"));
+		patternRow.addPatternNode(new PatternNode("STRING", "nazwisko"));
+		patternRow.addPatternNode(new PatternNode("STRING", "etat"));
+		patternRow.addPatternNode(new PatternNode("INTEGER", "placa_pod"));
+		patternRow.addPatternNode(new PatternNode("INTEGER", "placa_dod"));
 		patternTable.setMainPatternRow(patternRow);
 		patternAll.addPatternTable(patternTable);
 		outputAll.addTable(new OutputTable(patternTable));
 
 		patternTable = new PatternTable("etaty");
 		patternRow = new PatternRow();
-		patternRow.addPatternNode(new PatternNode("integer", "nazwa"));
-		patternRow.addPatternNode(new PatternNode("integer", "placa_min"));
+		patternRow.addPatternNode(new PatternNode("STRING", "nazwa"));
+		patternRow.addPatternNode(new PatternNode("INTEGER", "placa_min"));
 		patternTable.setMainPatternRow(patternRow);
 		patternAll.addPatternTable(patternTable);
 		outputAll.addTable(new OutputTable(patternTable));
 
 		patternTable = new PatternTable("zespoly");
 		patternRow = new PatternRow();
-		patternRow.addPatternNode(new PatternNode("integer", "zespol_nazwa"));
-		patternRow.addPatternNode(new PatternNode("integer", "dodatek_min"));
-		patternRow.addPatternNode(new PatternNode("integer", "placa_dod"));
+		patternRow.addPatternNode(new PatternNode("STRING", "zespol_nazwa"));
+		patternRow.addPatternNode(new PatternNode("INTEGER", "dodatek_min"));
+		patternRow.addPatternNode(new PatternNode("INTEGER", "placa_dod"));
 		patternTable.setMainPatternRow(patternRow);
 		patternAll.addPatternTable(patternTable);
 		outputAll.addTable(new OutputTable(patternTable));
