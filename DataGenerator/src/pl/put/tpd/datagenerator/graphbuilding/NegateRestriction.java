@@ -45,7 +45,7 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 
 public class NegateRestriction {
 
-	static public BinaryExpression negateBinaryExpression(Expression expression) {
+	static public Expression negateExpression(Expression expression) {
 		if(expression instanceof BinaryExpression) {
 			BinaryExpression binaryExpression = (BinaryExpression)expression;
 			if (binaryExpression instanceof EqualsTo) {
@@ -79,6 +79,15 @@ public class NegateRestriction {
 				be.setRightExpression(binaryExpression.getRightExpression());
 				return be;
 			}
+		}
+		else if(expression instanceof InExpression) {
+			InExpression inExpression = (InExpression)expression;
+			InExpression negativeExpression = new InExpression(inExpression.getLeftExpression(), inExpression.getItemsList());
+			negativeExpression.setNot(true);
+			return negativeExpression;
+		}
+		else {
+			System.out.println("NegateRestriction.negateBinaryExpression(), unknown expression to make negative");
 		}
 		return null;
 

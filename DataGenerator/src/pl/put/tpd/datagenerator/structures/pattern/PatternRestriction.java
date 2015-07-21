@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pl.put.tpd.datagenerator.datagenerating.PatternFulfilledChecking;
+import pl.put.tpd.datagenerator.datagenerating.RestrictionChecking;
 import pl.put.tpd.datagenerator.structures.pattern.exceptions.UnexpectedExpression;
 import pl.put.tpd.datagenerator.structures.restriction.Restriction;
 
@@ -39,7 +39,7 @@ public class PatternRestriction {
 	 * @throws UnexpectedExpression
 	 */
 	public boolean check() throws UnexpectedExpression {
-		return PatternFulfilledChecking.check(this);
+		return RestrictionChecking.check(this);
 	}
 	
 	/**

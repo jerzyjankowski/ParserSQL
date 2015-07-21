@@ -10,7 +10,7 @@ import pl.put.tpd.datagenerator.structures.pattern.PatternNode;
 import pl.put.tpd.datagenerator.structures.pattern.PatternRestriction;
 import pl.put.tpd.datagenerator.structures.pattern.exceptions.UnexpectedExpression;
 
-public class PatternFulfilledChecking {
+public class RestrictionChecking {
 	/**
 	 * 
 	 * @return if expression is valid or true if there are some nodes connected that doesn't have values generated

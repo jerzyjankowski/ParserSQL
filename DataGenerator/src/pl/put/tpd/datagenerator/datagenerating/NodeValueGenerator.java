@@ -389,12 +389,11 @@ public class NodeValueGenerator {
 					value = minValue;
 			}
 			else {
-List<Integer> endPossibleVal = new ArrayList<>();
+				List<Integer> endPossibleVal = new ArrayList<>();
 				for(int pv : possibleVal) {
 					if(pv>=minValue && pv<=maxValue && !forbiddenVal.contains(pv))
 						endPossibleVal.add(pv);
 				}
-				System.out.println("endPossibleVal=" + endPossibleVal);
 				value = endPossibleVal.get(rand.nextInt(endPossibleVal.size()));
 			}
 		} while (forbiddenVal.contains(value));

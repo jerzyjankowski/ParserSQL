@@ -37,14 +37,13 @@ public class Restriction implements RestrictionInterface {
 	
 	public Restriction getNegative() {
 		if(expression instanceof BinaryExpression) {
-			BinaryExpression negativeBinaryExpression = NegateRestriction.negateBinaryExpression(expression);
+			BinaryExpression negativeBinaryExpression = (BinaryExpression)NegateRestriction.negateExpression(expression);
 			Restriction restriction = new Restriction(negativeBinaryExpression.toString(), negativeBinaryExpression);
 			restriction.columns.addAll(this.getColumns());
 			return restriction;
 		} else if(expression instanceof InExpression) {
 			InExpression inExpression = (InExpression)expression;
-			InExpression negativeExpression = new InExpression(inExpression.getLeftExpression(), inExpression.getItemsList());
-			negativeExpression.setNot(true);
+			InExpression negativeExpression = (InExpression)NegateRestriction.negateExpression(expression);
 			Restriction restriction = new Restriction(negativeExpression.toString(), negativeExpression);
 			restriction.columns.addAll(this.getColumns());
 			System.out.println(restriction);
