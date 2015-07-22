@@ -26,6 +26,9 @@ public class Main {
 		OutputAll outputAll;
 		String sqlQuery;
 		
+		/**
+		 * boolean printFirstGraph variable that decide if there will be printed out first generated graph in pattern structures or not 
+		 */
 		boolean printFirstGraph = false;
 		
 //		used for test purpose, without external input files

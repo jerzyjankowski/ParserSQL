@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 
+import pl.put.tpd.datagenerator.outputwriting.PatternAllWriter;
 import pl.put.tpd.datagenerator.structures.output.OutputAll;
 import pl.put.tpd.datagenerator.structures.output.OutputTable;
 import pl.put.tpd.datagenerator.structures.pattern.PatternAll;
@@ -196,7 +197,8 @@ public class DataGenerator {
 				break;
 //			testPatternAll();
 			if(j == 0 && printFirstGraph) {
-				System.out.println("patternAll: " + patternAll);
+				PatternAllWriter patternAllWriter = new PatternAllWriter();
+				patternAllWriter.write(patternAll);
 			}
 		}
 		
