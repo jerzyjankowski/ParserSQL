@@ -168,8 +168,8 @@ public class NodeValueGenerator {
 	
 	private static void generateIntValue(PatternNode patternNode) {
 
-		int minStartValue  = -1000;
-		int maxStartValue = 1000;
+		int minStartValue  = Integer.MIN_VALUE/2;
+		int maxStartValue = Integer.MAX_VALUE/2;
 		int minValue = minStartValue;
 		int maxValue = maxStartValue;
 		int tempMinValue, tempMaxValue;

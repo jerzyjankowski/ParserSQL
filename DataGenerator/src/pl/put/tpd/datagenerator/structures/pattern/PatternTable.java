@@ -15,8 +15,8 @@ public class PatternTable {
 	private String alias = "";
 
 	public static void main(String... args) {
-		PatternNode node1 = new PatternNode("integer", "placa_dod", 190);
-		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
+		PatternNode node1 = new PatternNode("INTEGER", "placa_dod", 190);
+		PatternNode node2 = new PatternNode("INTEGER", "placa_pod", 191);
 		PatternRestriction patternRestriction = new PatternRestriction(new Restriction("placa_pod<placa_dod", null));
 		node1.addPatternRestriction(patternRestriction);
 		node2.addPatternRestriction(patternRestriction);
@@ -24,8 +24,8 @@ public class PatternTable {
 		row1.addPatternNode(node1);
 		row1.addPatternNode(node2);
 		
-		node1 = new PatternNode("integer", "placa_dod");
-		node2 = new PatternNode("integer", "placa_pod");
+		node1 = new PatternNode("INTEGER", "placa_dod");
+		node2 = new PatternNode("INTEGER", "placa_pod");
 		patternRestriction = new PatternRestriction(new Restriction("placa_pod>=placa_dod", null));
 		node1.addPatternRestriction(patternRestriction);
 		node2.addPatternRestriction(patternRestriction);

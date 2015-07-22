@@ -29,14 +29,14 @@ public class PatternRow {
 //		node1.addPatternRestriction(patternRestriction);
 //		node2.addPatternRestriction(patternRestriction);
 
-		PatternNode node1 = new PatternNode("integer", "bonus", 190);
-		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
+		PatternNode node1 = new PatternNode("INTEGER", "bonus", 190);
+		PatternNode node2 = new PatternNode("INTEGER", "placa_pod", 191);
 		PatternRow row1 = new PatternRow();
 		row1.addPatternNode(node1);
 		row1.addPatternNode(node2);
 		
-		node1 = new PatternNode("integer", "placa_min", 192);
-		node2 = new PatternNode("integer", "nazwa", 193);
+		node1 = new PatternNode("INTEGER", "placa_min", 192);
+		node2 = new PatternNode("INTEGER", "nazwa", 193);
 		PatternRow row0 = new PatternRow();
 		row0.addPatternNode(node1);
 		row0.addPatternNode(node2);

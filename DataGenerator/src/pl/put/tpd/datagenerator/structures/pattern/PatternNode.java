@@ -28,8 +28,8 @@ public class PatternNode {
 	private List<PatternRestriction> patternRestrictions;
 	
 	public static void main(String... args) {
-		PatternNode node1 = new PatternNode("integer", "bonus", 190);
-		PatternNode node2 = new PatternNode("integer", "placa_pod", 191);
+		PatternNode node1 = new PatternNode("INTEGER", "bonus", 190);
+		PatternNode node2 = new PatternNode("INTEGER", "placa_pod", 191);
 		PatternRestriction patternRestriction = new PatternRestriction(new Restriction("placa_pod<bonus", null));
 		node1.addPatternRestriction(patternRestriction);
 		node2.addPatternRestriction(patternRestriction);

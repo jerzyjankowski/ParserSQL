@@ -26,6 +26,8 @@ public class Main {
 		OutputAll outputAll;
 		String sqlQuery;
 		
+		boolean printFirstGraph = false;
+		
 //		used for test purpose, without external input files
 //		TestDataGenerator testData = new TestDataGenerator(42);
 //		patternAll = testData.getPatternAll();
@@ -59,11 +61,16 @@ public class Main {
 			
 			//generate data
 			DataGenerator dataGenerator = new DataGenerator(patternAll, outputAll);
+			
+			dataGenerator.setPrintFirstGraph(printFirstGraph);
+			if(args.length > 0) {
+				if(args[0].equals("print"))
+					dataGenerator.setPrintFirstGraph(true); 
+			}
 			dataGenerator.generate(20, 20);
 
 			CSVWriter csvWriter = new CSVWriter(); 
 			csvWriter.write(outputAll);
-//			System.out.println("parsedPatternAll: " + parsedPatternAll);
 			
 			System.out.println("END\n");
 

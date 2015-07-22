@@ -20,6 +20,7 @@ import pl.put.tpd.datagenerator.structures.restriction.Restriction;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.GreaterThanEquals;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
@@ -115,7 +116,7 @@ public class SpecificationLoader {
 			Table table = new Table(null, xmlTable.getName());
 			Column column = new Column(table, xmlColumn.getName());
 			LongValue longValue = new LongValue(xmlColumn.getMinValue().toString());
-			BinaryExpression binaryExpression = new MinorThanEquals();
+			BinaryExpression binaryExpression = new GreaterThanEquals();
 			binaryExpression.setLeftExpression(column);
 			binaryExpression.setRightExpression(longValue);
 			Restriction restriction = new Restriction(xmlColumn.getName() + ">=" + xmlColumn.getMinValue(), binaryExpression);

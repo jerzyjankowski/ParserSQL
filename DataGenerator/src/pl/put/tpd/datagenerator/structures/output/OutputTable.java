@@ -58,7 +58,10 @@ public class OutputTable {
 		if(rows.size() < rowNum) {
 			Map<String, String> m = new HashMap<>();
 			for(PatternNode pn : row.getPatternNodes()) {
-				m.put(pn.getName(), pn.getValue().toString());
+				if(pn.getType().equals("STRING"))
+					m.put(pn.getName(), "\"" + pn.getValue().toString() + "\"");
+				else
+					m.put(pn.getName(), pn.getValue().toString());
 			}
 			OutputRow tempRow = new OutputRow();
 			for(String column : columns) {

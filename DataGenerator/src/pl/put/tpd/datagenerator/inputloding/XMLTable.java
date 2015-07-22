@@ -11,13 +11,10 @@ public class XMLTable {
 	private int minRowSize;
 	private List<XMLColumn> columns = new ArrayList<XMLColumn>();
 	
-		
 	public void addColumn(XMLColumn column)
 	{
 		columns.add(column);
 	}
-
-	
 
 	@Override
 	public String toString() {
@@ -25,8 +22,6 @@ public class XMLTable {
 				+ ", distribution=" + distribution + ", minRowSize="
 				+ minRowSize + "]";
 	}
-
-
 
 	public String getName() {
 		return name;

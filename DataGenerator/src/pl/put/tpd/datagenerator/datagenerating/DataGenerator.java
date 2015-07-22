@@ -21,10 +21,15 @@ public class DataGenerator {
 	private Map<PatternNode, PatternRow> nodeToRow = new HashMap<>();
 	private Map<PatternRow, PatternTable> rowToTable = new HashMap<>();
 	private Set<PatternRow> allRows = new HashSet<>();
+	private boolean printFirstGraph = false;
 	
 	public DataGenerator(PatternAll patternAll, OutputAll outputAll) {
 		this.patternAll = patternAll;
 		this.outputAll = outputAll;
+	}
+	
+	public void setPrintFirstGraph(boolean printFirstGraph) {
+		this.printFirstGraph = printFirstGraph;
 	}
 	
 	//fills maps and set
@@ -44,16 +49,14 @@ public class DataGenerator {
 	private void testPatternAll() {
 		for(PatternTable pTab : patternAll.getPatternTables()) {
 			for(PatternRow pRow : pTab.getPatternRows()) {
-				System.out.println("[DataGenerator.testPatternAll()]-----");
+				System.out.println("[DataGenerator.testPatternAll()]------another PatternRow-------");
 				for(PatternNode pNod : pRow.getPatternNodes()) {
 					for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
-						if(pRes.getRestriction().getExpression().toString().contains("n")) {
-							System.out.println("[DataGenerator.testPatternAll()]" + pRes.getRestriction().getExpression().toString());
-							for(PatternNode pNodRes : pRes.getPatternNodes()) {
-								System.out.print("[DataGenerator.testPatternAll()]   " + pNodRes.getName() + ":" + pNodRes.getValue());
-							}
-							System.out.println();
+						System.out.print("[DataGenerator.testPatternAll()]" + pRes.getRestriction().getExpression().toString() + "\n[DataGenerator.testPatternAll()]");
+						for(PatternNode pNodRes : pRes.getPatternNodes()) {
+							System.out.print("   " + pNodRes.getName() + ":" + pNodRes.getValue());
 						}
+						System.out.println();
 					}
 				}
 			}
@@ -192,6 +195,9 @@ public class DataGenerator {
 			if(isUndoneRow == false)
 				break;
 //			testPatternAll();
+			if(j == 0 && printFirstGraph) {
+				System.out.println("patternAll: " + patternAll);
+			}
 		}
 		
 		//generating spamRows example:	
