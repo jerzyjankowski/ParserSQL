@@ -10,8 +10,6 @@ public class XMLTable {
 	private String distribution;
 	private int minRowSize;
 	private List<XMLColumn> columns = new ArrayList<XMLColumn>();
-	private int M;
-	private int T;
 	
 		
 	public void addColumn(XMLColumn column)
@@ -68,37 +66,5 @@ public class XMLTable {
 
 	public void setColumns(List<XMLColumn> columns) {
 		this.columns = columns;
-	}
-
-
-
-	public int getM() {
-		return M;
-	}
-
-
-
-	public void setM(int m) {
-		this.M = m;
-	}
-
-
-
-	public int getT() {
-		return T;
-	}
-
-
-
-	public void setT(int t) {
-		this.T = t;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 }

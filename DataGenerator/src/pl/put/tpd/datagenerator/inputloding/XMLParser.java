@@ -18,6 +18,8 @@ public class XMLParser {
 	
 	private List<XMLTable> tables = new ArrayList<XMLTable>();
 	private boolean printMode = false;
+	private int M;
+	private int T;
 	
 	public void parseToObjects(String path)
 	{
@@ -27,12 +29,15 @@ public class XMLParser {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
 			doc.getDocumentElement().normalize();
+			
+			Element root = doc.getDocumentElement();
+			M = Integer.parseInt(root.getAttribute("M"));
+			T = Integer.parseInt(root.getAttribute("T"));			
  
 			NodeList tabList = doc.getElementsByTagName("TABLE");		 
 			for (int i = 0; i < tabList.getLength(); i++) {
 
 				XMLTable table = new XMLTable();
-				
 				Node tabNode = tabList.item(i);
 				if (tabNode.getNodeType() == Node.ELEMENT_NODE) {
 		 
@@ -145,6 +150,22 @@ public class XMLParser {
 
 	public void setTables(List<XMLTable> tables) {
 		this.tables = tables;
+	}
+
+	public int getM() {
+		return M;
+	}
+
+	public void setM(int m) {
+		this.M = m;
+	}
+
+	public int getT() {
+		return T;
+	}
+
+	public void setT(int t) {
+		this.T = t;
 	}
 	
 }

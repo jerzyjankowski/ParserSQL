@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import pl.put.tpd.datagenerator.structures.pattern.PatternAll;
 import pl.put.tpd.datagenerator.structures.restriction.Restriction;
+import pl.put.tpd.datagenerator.structures.restriction.RestrictionAndOr;
+import pl.put.tpd.datagenerator.structures.restriction.RestrictionInterface;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
 import net.sf.jsqlparser.expression.BinaryExpression;
@@ -73,11 +75,35 @@ import net.sf.jsqlparser.statement.select.Join;
 public class SQLSelectParser implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
 
 	private PatternAll patternAll;
+	private RestrictionInterface rootRestriction;
+	private RestrictionInterface rootRestrictionWhere;
+	private RestrictionInterface rootRestrictionJoins;
 	
 	public SQLSelectParser(PatternAll patternAll) {
 		this.patternAll = patternAll;
 	}
 
+	public RestrictionInterface getRootRestriction() {
+		return rootRestriction;
+	}
+	
+	private RestrictionInterface concatenateRestrictionsIntoTree(RestrictionInterface res1, RestrictionInterface res2) {
+		RestrictionInterface res;
+		if(res1 != null && res2 != null) {
+			RestrictionAndOr aores = new RestrictionAndOr("AND", "(" + res1.getRestrictionString() + ") AND (" + res2.getRestrictionString() + ")");
+			aores.setRestrictionL(res1);
+			aores.setRestrictionR(res2);
+			res = aores;
+		}
+		else if(res1 != null && res2 == null)
+			res = res1;
+		else if(res1 == null && res2 != null)
+			res = res2;
+		else 
+			res = null;
+		return res;
+	}
+	
 	public PatternAll parse(Select select) {
 		select.getSelectBody().accept(this);
 		return patternAll;
@@ -86,7 +112,6 @@ public class SQLSelectParser implements SelectVisitor, FromItemVisitor, Expressi
 	public void visitBinaryExpression(BinaryExpression binaryExpression) {
 		binaryExpression.getLeftExpression().accept(this);
 		binaryExpression.getRightExpression().accept(this);
-		System.out.println(binaryExpression.getStringExpression());
 	}
 	
 	@Override
@@ -98,6 +123,8 @@ public class SQLSelectParser implements SelectVisitor, FromItemVisitor, Expressi
 			FinderRestrictions finderRestrictions = new FinderRestrictions();
 			plainSelect.getWhere().accept(finderRestrictions);
 			finderRestrictions.getRootRestriction().getUsedColumns(); 
+			rootRestrictionWhere = finderRestrictions.getRootRestriction();
+			rootRestriction = concatenateRestrictionsIntoTree(rootRestriction, rootRestrictionWhere);
 			patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
 		}
 		
@@ -108,24 +135,12 @@ public class SQLSelectParser implements SelectVisitor, FromItemVisitor, Expressi
 					FinderRestrictions finderRestrictions = new FinderRestrictions();
 					join.getOnExpression().accept(finderRestrictions);
 					finderRestrictions.getRootRestriction().getUsedColumns();
+					rootRestrictionJoins = finderRestrictions.getRootRestriction();
+					rootRestriction = concatenateRestrictionsIntoTree(rootRestriction, rootRestrictionJoins);
 					patternAll.addRestrictions(finderRestrictions.getRootRestriction().getAllRestrictions());
 				}
-				
-				System.out.println("join:");
-				System.out.println("   toString: " + join.toString());
-				System.out.println("   getRightItem:" + join.getRightItem());
-				System.out.println("   getOnExpression: " + join.getOnExpression());
-				System.out.println("   getUsingColumns: " + join.getUsingColumns());
-				System.out.println("   isFull: " + join.isFull());
-				System.out.println("   isLeft: " + join.isLeft());
-				System.out.println("   isRight: " + join.isRight());
-				System.out.println("   isInner: " + join.isInner());
-				System.out.println("   isOuter: " + join.isOuter());
-				System.out.println("   isNatural: " + join.isNatural());
-				System.out.println("   isSimple: " + join.isSimple());
 			}
 		}
-		
 	}
 
 	@Override

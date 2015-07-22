@@ -68,7 +68,7 @@ public class TestDataGenerator {
 			sqlQuery = "SELECT * FROM pracownicy join etaty on etat = nazwa join zespoly on placa_dod > dodatek_min;  ";
 			break;
 		case 42:
-			sqlQuery = "SELECT * FROM pracownicy join etaty on etat = nazwa join zespoly on placa_dod > dodatek_min where placa_pod >2;  ";
+			sqlQuery = "SELECT * FROM pracownicy join etaty on etat = nazwa join zespoly on placa_dod > dodatek_min where placa_pod >1000 OR placa_dod <200;  ";
 			break;
 		case 50:// infinite loop because of unsatisfied where conditions
 			sqlQuery = "SELECT * FROM pracownicy join etaty on placa_pod = placa_min where placa_pod < 4 AND placa_min > 4;  ";

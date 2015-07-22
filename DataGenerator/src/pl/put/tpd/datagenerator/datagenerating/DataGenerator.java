@@ -44,13 +44,13 @@ public class DataGenerator {
 	private void testPatternAll() {
 		for(PatternTable pTab : patternAll.getPatternTables()) {
 			for(PatternRow pRow : pTab.getPatternRows()) {
-				System.out.println("-----");
+				System.out.println("[DataGenerator.testPatternAll()]-----");
 				for(PatternNode pNod : pRow.getPatternNodes()) {
 					for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
 						if(pRes.getRestriction().getExpression().toString().contains("n")) {
-							System.out.println(pRes.getRestriction().getExpression().toString());
+							System.out.println("[DataGenerator.testPatternAll()]" + pRes.getRestriction().getExpression().toString());
 							for(PatternNode pNodRes : pRes.getPatternNodes()) {
-								System.out.print("   " + pNodRes.getName() + ":" + pNodRes.getValue());
+								System.out.print("[DataGenerator.testPatternAll()]   " + pNodRes.getName() + ":" + pNodRes.getValue());
 							}
 							System.out.println();
 						}
@@ -117,13 +117,11 @@ public class DataGenerator {
 				}
 				else {
 					if(!usedRows.get(pr)) {
-						if(print)System.out.println("row from list, patternRow.getId()=" + pr.getId());
 						rowsToMake.push(pr);
 						visitedRows.put(pr, true);
 						while(!rowsToMake.empty()) {
 							
 							patternRow = rowsToMake.pop();
-							if(print)System.out.println("row popped from stack, patternRow.getId()=" + patternRow.getId());
 							usedRows.put(patternRow, true);
 							
 							for(PatternNode pNod : patternRow.getPatternNodes()) {
@@ -166,7 +164,7 @@ public class DataGenerator {
 									if(i == maxGeneratingTries) {
 										collisionRestriction.incrementCollisionCnt();
 										if(collisionRestriction.getCollisionCnt() > maxCollisionCnt) {
-											System.out.println("Couldn't make that restriction to happen: " + collisionRestriction);
+											System.out.println("[DataGenerator.generate()]Couldn't make that restriction to happen: " + collisionRestriction);
 											break;//there may be no chance to satisfy that restriction
 										}
 										for(PatternRestriction pRes : pNod.getPatternRestrictions()) {
@@ -208,22 +206,5 @@ public class DataGenerator {
 				outputTable.addRow(pr);
 			}
 		}
-		
-//		for(PatternTable patternTable : patternAll.getPatternTables()) {
-//			int rowNum = outputAll.getRowNumInTable(patternTable.getName());
-//			System.out.println(patternTable.getName() + " " + rowNum);
-//			for(PatternRow patternMainRow = patternTable.getMainPatternRow(); 
-//					rowNum < 42;
-//					rowNum++) {
-//				PatternRow pr = new PatternRow();
-//				for(PatternNode pNod : patternMainRow.getPatternNodes()) {
-//					pNod.generateValue();
-//					pr.addPatternNode(pNod);
-//				}
-//				outputAll.addRow(pr, patternTable);
-//			}
-//		}
-		
-//		System.out.println("********\n" + outputAll + "\n*********");
 	}
 }

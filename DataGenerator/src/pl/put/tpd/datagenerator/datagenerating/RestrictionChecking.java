@@ -32,7 +32,7 @@ public class RestrictionChecking {
 				}
 			}
 			catch(Exception e){
-				System.out.println("cought exception " + e);
+				System.out.println("[RestrictionChecking.check()] cought exception " + e);
 			}
 			expression1 = expression1.replace(" ", "");
 			expression1 = expression1.replace("\"", "");
@@ -47,7 +47,6 @@ public class RestrictionChecking {
 			
 			if(typesInExpression.size()==1 && typesInExpression.contains("STRING"))
 			{
-				System.out.println("String pattern: " + expression1);
 				if(operation.equals("=")) {
 					String[] expressionArr = expression1.split("=");
 					return (expressionArr[0].equals(expressionArr[1]));
@@ -97,7 +96,7 @@ public class RestrictionChecking {
 				}
 			}
 			catch(Exception e){
-				System.out.println("cought exception " + e);
+				System.out.println("[RestrictionChecking.check()] cought exception " + e);
 			}
 			int value = Integer.parseInt(leftExpression.trim());
 			

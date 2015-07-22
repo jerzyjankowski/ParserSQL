@@ -35,7 +35,6 @@ public class PatternAll {
 	 * @param restrictions
 	 */
 	public void addRestrictions(List<Restriction> restrictions) {
-		System.out.println(restrictions);
 		boolean containsColumnFlag;
 		for(Restriction restriction : restrictions) {
 			List<Integer> intList = new ArrayList<>();//contains list of numbers of PatternRows in tables
@@ -55,7 +54,6 @@ public class PatternAll {
 					intList.add(x);
 					product *= x;
 				}
-				System.out.println(patternTable.getName() + " " + containsColumnFlag);
 			}
 			for(int i = 0; i < product; i++) {
 				if(i<product/2)

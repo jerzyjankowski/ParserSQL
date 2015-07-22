@@ -87,7 +87,7 @@ public class FinderUsedColumns implements SelectVisitor, FromItemVisitor, Expres
 			}
 		}
 		else {
-			System.out.println("Restriction unexpected restriction");
+			System.out.println("[FinderUsedColumns.findUsedColumns()] Restriction unexpected expression=" + expression);
 		}
 	}
 	

@@ -27,7 +27,7 @@ public class Main {
 		String sqlQuery;
 		
 //		used for test purpose, without external input files
-//		TestDataGenerator testData = new TestDataGenerator(62);
+//		TestDataGenerator testData = new TestDataGenerator(42);
 //		patternAll = testData.getPatternAll();
 //		outputAll = testData.getOutputAll();
 //		sqlQuery = testData.getSqlQuery();
@@ -63,9 +63,9 @@ public class Main {
 
 			CSVWriter csvWriter = new CSVWriter(); 
 			csvWriter.write(outputAll);
-			System.out.println("parsedPatternAll: " + parsedPatternAll);
+//			System.out.println("parsedPatternAll: " + parsedPatternAll);
 			
-			System.out.println("STOP ALL: \n");
+			System.out.println("END\n");
 
 		}
 		else {

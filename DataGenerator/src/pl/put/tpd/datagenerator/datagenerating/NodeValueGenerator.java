@@ -107,13 +107,9 @@ public class NodeValueGenerator {
 	
 				String comparativeStringValue = null;
 				
-				System.out.println("operation=" + operation + ", expressionArr[0]=" + expressionArr[0].toString() + ", expressionArr[1]=" + expressionArr[1].toString());
-				
 				switch (getStringRestrictionType(pRes)) {
 				
 					case STRING_SIMPLE_AB: {
-						System.out.println("string_simple_ab");
-							
 						for(PatternNode tempNode : pRes.getPatternNodes()) {
 							if(tempNode != patternNode) {
 								comparativeStringValue = tempNode.getValue();
@@ -125,34 +121,25 @@ public class NodeValueGenerator {
 					break;
 					
 					case STRING_SIMPLE_AT: {
-						System.out.println("string_simple_at");
-	//					if(!patternNode.findSelfInString(expressionArr[0])) {
-	//						comparativeStringValue = expressionArr[0];
-	//					}
-	//					else {
-	//						comparativeStringValue = expressionArr[1];
-	//					}
 						comparativeStringValue = expressionArr[1].replace("\"", "");
 						comparativeStringValue = comparativeStringValue.replace("\'", "");
 					}
 					break;
 					
 					case STRING_SIMPLE_TB: {
-						System.out.println("string_simple_tb");
 						comparativeStringValue = expressionArr[0].replace("\"", "");
 						comparativeStringValue = comparativeStringValue.replace("\'", "");
 					}
 					break;
 					
 					case OTHER: {
-						System.out.println("NodeValueGenerator.generateStringValue not allowed OTHER restriction");
+						System.out.println("[NodeValueGenerator.generateStringValue()] not allowed OTHER restriction=" + pRes);
 					}
 					break;
 					
 					default:
-					System.out.println("NodeValueGenerator.generateStringValue not allowed restriction - incorrect parsed");
+					System.out.println("[NodeValueGenerator.generateStringValue()] not allowed restriction - incorrect parsed=" + pRes);
 				}
-				System.out.println("comparativeStringValue=" + comparativeStringValue);
 				if (operation.equals("=")) {
 					if(equalValue != null) {
 						//we have collision so we could set any value and we still have collision. we can set previous "must to set" value
@@ -202,7 +189,6 @@ public class NodeValueGenerator {
 //			int index = random.nextInt(tempPatternRestrictionList.size());
 //			PatternRestriction pRes = tempPatternRestrictionList.remove(index);
 		boolean print = false;
-		if(print)System.out.println("\n--------" + patternNode.getId());
 		for(PatternRestriction pRes : patternNode.getPatternRestrictions()) {
 			Expression expression = pRes.getRestriction().getExpression();
 			if(pRes.getRestriction().getExpression() instanceof BinaryExpression) {
@@ -258,12 +244,12 @@ public class NodeValueGenerator {
 					break;
 					
 					case OTHER: {
-						System.out.println("NodeValueGenerator.generateIntValue not allowed OTHER restriction");
+						System.out.println("[NodeValueGenerator.generateIntValue()] not allowed OTHER restriction=" + pRes);
 					}
 					break;
 					
 					default:
-					System.out.println("NodeValueGenerator.generateIntValue not allowed restriction - incorrect parsed");
+					System.out.println("[NodeValueGenerator.generateIntValue()] not allowed restriction - incorrect parsed=" + pRes);
 				}
 			} 
 			else if(expression instanceof InExpression) {
@@ -285,7 +271,7 @@ public class NodeValueGenerator {
 				
 			}
 			else {
-				System.out.println("[NodeValueGenerator.generateIntValue()] not supported expression");
+				System.out.println("[NodeValueGenerator.generateIntValue()] not supported expression=" + pRes);
 			}
 		}
 		//iterate by each multiargument restriction of BinaryRestriction type in random fashion and get minValue or maxValue if it won't be improper
@@ -309,13 +295,9 @@ public class NodeValueGenerator {
 				tempMaxValue = maxValue;
 				
 				if (operation.equals("=")) {
-					if(print)System.out.println("restriction: " + pRes);
 					for (PatternNode pNodRes : pRes.getPatternNodes()) {
-						if (pNodRes != patternNode)
-							if(print)System.out.println("  " + pNodRes.getTableAlias() + "." + pNodRes.getName() + "=" + pNodRes.getValue());
 						if (pNodRes != patternNode && pNodRes.getValue() != null) {
 							tempMinValue = tempMaxValue = Integer.parseInt(pNodRes.getValue());
-							if(print)System.out.println("  not null, tempMinValue=" + tempMinValue + ", tempMaxValue=" + tempMaxValue);
 						}
 					}
 				} else if (operation == "<>") {
@@ -363,8 +345,6 @@ public class NodeValueGenerator {
 						}
 					}
 				}
-				if(print)System.out.println("    tempMinValue=" + tempMinValue + ", tempMaxValue=" + tempMaxValue);
-				if(print)System.out.println("    minValue=" + minValue + ", maxValue=" + maxValue + ", ifIf=" + (tempMinValue <= maxValue && tempMaxValue >= minValue) );
 				if(tempMinValue <= maxValue && tempMaxValue >= minValue) {
 					if(minValue < tempMinValue)
 						minValue = tempMinValue;
@@ -376,7 +356,7 @@ public class NodeValueGenerator {
 				}
 			}
 			else
-				System.out.println("[NodeValueGenerator] that wasn't BinaryExpression");
+				System.out.println("[NodeValueGenerator] that wasn't BinaryExpression=" + pRes.getRestriction().getExpression());
 		}
 		
 		//generates value thanks to gained information about minValue and maxValue
@@ -397,7 +377,6 @@ public class NodeValueGenerator {
 				value = endPossibleVal.get(rand.nextInt(endPossibleVal.size()));
 			}
 		} while (forbiddenVal.contains(value));
-//		System.out.println("   value=" + value + ", minValue=" + minValue + ", maxValue=" + maxValue + ", possibleVal=" + possibleVal + ", forbiddenVal=" + forbiddenVal);
 		
 		patternNode.setValue(""+value);
 	}

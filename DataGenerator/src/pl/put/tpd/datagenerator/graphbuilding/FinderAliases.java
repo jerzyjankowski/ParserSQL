@@ -53,7 +53,7 @@ public class FinderAliases implements SelectVisitor, FromItemVisitor{
 						patternAll.addPatternTable(newPatternTable);
 					}
 					else
-						System.out.println("There is no patternTable with name of that duplicated table.");
+						System.out.println("[FinderAliases.visit(PlainSelect)] There is no patternTable with name of that duplicated table.");
 				} else {
 					tables.add(table.getName());
 					if(table.getAlias() != null)

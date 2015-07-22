@@ -55,8 +55,8 @@ public class SpecificationLoader {
 	public void load() {
 		XMLParser xmlParser = new XMLParser();
 		xmlParser.parseToObjects("input/tables.xml");
-		System.out.println("load");
-		
+		int M = xmlParser.getM();
+		int T = xmlParser.getT();
 		for(XMLTable xmlTable : xmlParser.getTables()) {
 			
 			PatternTable patternTable = new PatternTable(xmlTable.getName());
@@ -74,7 +74,14 @@ public class SpecificationLoader {
 			patternAll.addPatternTable(patternTable);
 			
 			OutputTable outputTable = new OutputTable(patternTable);
-			outputTable.setRowNum(50);
+			
+			int newN, N = xmlTable.getRowNum();
+			if(N>M)
+				newN = N*T/100;
+			else
+				newN = N;
+			
+			outputTable.setRowNum(newN);
 			outputAll.addTable(outputTable); 
 		}
 		patternAll.initiatePatternRow();
@@ -84,7 +91,6 @@ public class SpecificationLoader {
 	
 	private void addInListValueRestriction(PatternNode patternNode, XMLTable xmlTable, XMLColumn xmlColumn) {
 		if(!xmlColumn.getValues().isEmpty()) {
-			System.out.println("xmlColumn.getValues()=" + xmlColumn.getValues());
 			Table table = new Table(null, xmlTable.getName());
 			Column column = new Column(table, xmlColumn.getName());
 			ExpressionList list = new ExpressionList();
@@ -97,8 +103,6 @@ public class SpecificationLoader {
 			InExpression inExpression = new InExpression();
 			inExpression.setLeftExpression(column);
 			inExpression.setItemsList(list);
-			
-			System.out.println("inExpression=" + xmlColumn.getName() + " IN " + inExpression.getItemsList());
 			
 			Restriction restriction = new Restriction(xmlColumn.getName() + " IN " + inExpression.getItemsList(), inExpression);
 			restriction.addColumn(xmlColumn.getName()); 

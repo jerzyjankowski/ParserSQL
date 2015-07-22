@@ -46,11 +46,10 @@ public class Restriction implements RestrictionInterface {
 			InExpression negativeExpression = (InExpression)NegateRestriction.negateExpression(expression);
 			Restriction restriction = new Restriction(negativeExpression.toString(), negativeExpression);
 			restriction.columns.addAll(this.getColumns());
-			System.out.println(restriction);
 			return restriction;
 		}
 		else {
-			System.out.println("Restriction.getNegative(), unknown expression to make negative");
+			System.out.println("[Restriction.getNegative()] unknown expression to make negative=" + expression);
 		}
 		return null;
 	}

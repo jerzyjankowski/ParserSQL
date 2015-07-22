@@ -12,7 +12,6 @@ public class CSVWriter {
 
 	public void write(OutputAll outputAll) { 
 		PrintWriter resultWriter;
-//		System.out.println("outputAll:" + outputAll);
 		try {
 			for(OutputTable outputTable : outputAll.getTables()) {
 				resultWriter = new PrintWriter("output/" + outputTable.getName() + ".csv", "UTF-8");

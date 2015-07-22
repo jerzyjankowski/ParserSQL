@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TABLES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="pl.poznan.put.SqlDataGenerator schemat.xsd"
-	xmlns="pl.poznan.put.SqlDataGenerator">
+	xmlns="pl.poznan.put.SqlDataGenerator"
+	M="40" T="70">
 	
 	<TABLE>
 		<NAME>TABLE_A</NAME>
-		<ROWS_NUM>15</ROWS_NUM>
+		<ROWS_NUM>30</ROWS_NUM>
 		<DISTRIBUTION>RANDOM</DISTRIBUTION>
 		<MIN_ROW_SIZE>200</MIN_ROW_SIZE>
 		<ATTRIBUTES>
@@ -40,7 +41,7 @@
 	
 	<TABLE>
 		<NAME>TABLE_B</NAME>
-		<ROWS_NUM>15</ROWS_NUM>
+		<ROWS_NUM>50</ROWS_NUM>
 		<DISTRIBUTION>RANDOM</DISTRIBUTION>
 		<MIN_ROW_SIZE>200</MIN_ROW_SIZE>
 		<ATTRIBUTES>
@@ -65,7 +66,7 @@
 	
 	<TABLE>
 		<NAME>TABLE_C</NAME>
-		<ROWS_NUM>15</ROWS_NUM>
+		<ROWS_NUM>40</ROWS_NUM>
 		<DISTRIBUTION>RANDOM</DISTRIBUTION>
 		<MIN_ROW_SIZE>200</MIN_ROW_SIZE>
 		<ATTRIBUTES>

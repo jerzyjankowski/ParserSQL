@@ -87,7 +87,7 @@ public class NegateRestriction {
 			return negativeExpression;
 		}
 		else {
-			System.out.println("NegateRestriction.negateBinaryExpression(), unknown expression to make negative");
+			System.out.println("[NegateRestriction.negateBinaryExpression()] unknown expression to make negative=" + expression);
 		}
 		return null;
 
